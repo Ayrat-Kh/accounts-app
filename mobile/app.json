@@ -16,22 +16,17 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.mobile"
+      "bundleIdentifier": "com.airatkhisamiev.expensoapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.mobile"
+      "package": "com.airatkhisamiev.expensoapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "0991edb4-dba6-4e07-a778-748967fb7bf5"
-      }
     }
   }
 }

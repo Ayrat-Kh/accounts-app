@@ -1,4 +1,4 @@
-package com.anonymous.mobile;
+package com.airatkhisamiev.expensoapp;
 
 import android.app.Application;
 import android.content.res.Configuration;
