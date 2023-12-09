@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android", "web"],
+  "ios": {
+    "modules": ["MlKitWrapperModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.mlkitwrapper.MlKitWrapperModule"]
+  }
+}
