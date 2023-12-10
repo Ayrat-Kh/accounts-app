@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name           = 'MlKitWrapper'
   s.version        = '1.0.0'
-  s.summary        = 'A sample project summary'
+  s.summary        = 'Wrapper on ml kit text rekognition'
   s.description    = 'A sample project description'
   s.author         = ''
   s.homepage       = 'https://docs.expo.dev/modules/'
@@ -10,6 +10,7 @@ Pod::Spec.new do |s|
   s.static_framework = true
 
   s.dependency 'ExpoModulesCore'
+  s.dependency 'GoogleMLKit/TextRecognition', '~> 3.2.0'
 
   # Swift/Objective-C compatibility
   s.pod_target_xcconfig = {
