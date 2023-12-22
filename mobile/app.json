@@ -11,12 +11,19 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.airatkhisamiev.expensoapp"
+      "bundleIdentifier": "com.airatkhisamiev.expensoapp",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.402089960208-33i57vpi00o42cckhga0lc222lopbvk1"
+            ]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
