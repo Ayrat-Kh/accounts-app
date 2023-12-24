@@ -73,30 +73,30 @@ public class MlKitWrapperModule: Module {
 
           if let detectedText = request.results as? [VNRecognizedTextObservation] {
               
-              let recognizedStrings: [Result] = detectedText.compactMap { observation in
-              // Return the string of the top VNRecognizedText instance.
+//            let recognizedStrings: [Result] = detectedText.compactMap { observation in
+//              // Return the string of the top VNRecognizedText instance.
+//
+//              guard let candidate = observation.topCandidates(1).first else { return nil }
+//
+//              // Find the bounding-box observation for the string range.
+//              let stringRange = candidate.string.startIndex..<candidate.string.endIndex
+//              let boxObservation = try? candidate.boundingBox(for: stringRange)
+//
+//              // Get the normalized CGRect value.
+//              let boundingBox = boxObservation?.boundingBox ?? .zero
+//
+//              let result = Result()
+//
+//              result.text = candidate.string
+//              result.minX = boundingBox?.minX
+//              result.maxX = observation.maxX
+//              result.maxY = observation.maxY
+//              result.minY = observation.minY
+//
+//              return result
+//            }
 
-              guard let candidate = observation.topCandidates(1).first else { return nil }
-
-              // Find the bounding-box observation for the string range.
-              let stringRange = candidate.string.startIndex..<candidate.string.endIndex
-              let boxObservation = try? candidate.boundingBox(for: stringRange)
-
-              // Get the normalized CGRect value.
-              let boundingBox = boxObservation?.boundingBox ?? .zero
-
-              let result = Result()
-
-              result.text = candidate.string
-              result.minX = boundingBox?.minX
-              result.maxX = observation.maxX
-              result.maxY = observation.maxY
-              result.minY = observation.minY
-
-              return result
-            }
-
-            promise.resolve(recognizedStrings)
+            // promise.resolve(recognizedStrings)
           } else {
             promise.reject(
               NSError(

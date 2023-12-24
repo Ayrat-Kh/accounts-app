@@ -32,13 +32,25 @@
       },
       "package": "com.airatkhisamiev.expensoapp"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "extra": {
       "eas": {
         "projectId": "0991edb4-dba6-4e07-a778-748967fb7bf5"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 31,
+            "targetSdkVersion": 31,
+            "buildToolsVersion": "31.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "14.0"
+          }
+        }
+      ]
+    ]
   }
 }

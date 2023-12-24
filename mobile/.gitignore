@@ -38,3 +38,5 @@ yarn-error.*
 .expo
 dist/
 web-build/
+# ios/
+# android/
