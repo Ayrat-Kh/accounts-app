@@ -1,9 +1,9 @@
-import React from 'react';
 import {
-  createStackNavigator,
   type StackNavigationOptions,
+  createStackNavigator,
 } from '@react-navigation/stack';
-import { View } from 'react-native';
+
+import { Login } from '~/screens/Login';
 
 const Stack = createStackNavigator();
 
@@ -14,7 +14,7 @@ const loginOptions: StackNavigationOptions = {
 export const LoginNavigator = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Login" component={View} options={loginOptions} />
+      <Stack.Screen name="Login" component={Login} options={loginOptions} />
     </Stack.Navigator>
   );
 };
