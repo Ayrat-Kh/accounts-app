@@ -19,7 +19,8 @@ module.exports = {
             "parserOptions": {
                 "sourceType": "script"
             }
-        }
+        },
+
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -31,5 +32,6 @@ module.exports = {
         "react"
     ],
     "rules": {
+        "react/react-in-jsx-scope": "off"
     }
 }
