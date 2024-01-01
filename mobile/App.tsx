@@ -2,12 +2,12 @@ import 'react-native-gesture-handler';
 
 import { StatusBar } from 'expo-status-bar';
 
-import { NavigationContainer } from '~/navigations';
+import { AppProviders } from '~/components/providers';
 
 export default function App() {
   return (
     <>
-      <NavigationContainer />
+      <AppProviders />
       <StatusBar style="auto" />
     </>
   );

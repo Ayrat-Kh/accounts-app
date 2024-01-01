@@ -29,4 +29,5 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
   },
+  ignorePatterns: ['metro.config.js', 'babel.config.js', 'tailwind.config.js'],
 };
