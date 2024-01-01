@@ -1,14 +1,13 @@
-import { Text, View } from 'react-native';
+import { Button, Text } from '~/components/ui';
 
-import { Button } from '~/components/ui/Button';
+import { LoginContainer } from './Login.styles';
 
 export const Login = () => {
   return (
-    <View>
-      <Text className=" text-gray-50">Google login</Text>
+    <LoginContainer>
       <Button>
         <Text>Google login</Text>
       </Button>
-    </View>
+    </LoginContainer>
   );
 };

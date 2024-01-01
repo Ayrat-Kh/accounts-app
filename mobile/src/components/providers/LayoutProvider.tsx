@@ -10,6 +10,7 @@ export const LayoutProvider: React.FC<LayoutProviderProps> = ({
   const { bottom, left, right, top } = useSafeAreaInsets();
   return (
     <View
+      className="flex-1"
       style={{
         paddingTop: top,
         paddingLeft: left,
