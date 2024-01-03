@@ -1,31 +1,21 @@
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from '@react-native-google-signin/google-signin';
-
-import { Text } from '~/components/ui';
+import { Button, Text } from '~/components/ui';
+import { useGoogleSsoAuth } from '~/hooks/useGoogleSsoAuth';
 
 import { LoginContainer } from './Login.styles';
 
-GoogleSignin.configure();
-
 export const Login = () => {
+  const googleLogin = useGoogleSsoAuth();
+
   const handleLogin = async () => {
-    try {
-      const userInfo = await GoogleSignin.signIn();
-      console.log('userInfo', userInfo);
-    } catch (error) {
-      // no code
-    }
+    const user = await googleLogin();
+    console.log('user', user);
   };
 
   return (
     <LoginContainer>
-      <GoogleSigninButton
-        size={GoogleSigninButton.Size.Wide}
-        color={GoogleSigninButton.Color.Light}
-        onPress={handleLogin}
-      ></GoogleSigninButton>
+      <Button onPress={handleLogin}>
+        <Text>Google login 1</Text>
+      </Button>
     </LoginContainer>
   );
 };
