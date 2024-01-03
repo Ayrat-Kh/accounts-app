@@ -4,6 +4,6 @@ import { ButtonContainer } from './Button.styles';
 
 type ButtonProps = React.PropsWithChildren<TouchableOpacityProps>;
 
-export const Button: React.FC<ButtonProps> = ({ children }) => {
-  return <ButtonContainer>{children}</ButtonContainer>;
+export const Button: React.FC<ButtonProps> = ({ children, ...rest }) => {
+  return <ButtonContainer {...rest}>{children}</ButtonContainer>;
 };
