@@ -71,8 +71,7 @@ int main()
 
             // std::cout << "Broadcasting timestamp: " << millis << std::endl;
 
-            globalApp->publish("broadcast", std::string_view((char *)&millis, sizeof(millis)), uWS::OpCode::BINARY, false);
-        },
+            globalApp->publish("broadcast", std::string_view((char *)&millis, sizeof(millis)), uWS::OpCode::BINARY, false); },
         8, 8);
 
     globalApp = &app;
