@@ -19,3 +19,7 @@ make app
 ```
 cmake --build .
 ```
+
+```
+cmake .. && cmake --build .
+```
