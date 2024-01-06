@@ -1,6 +1,6 @@
 [submodule "backend/lib/uWebSockets"]
 	path = backend/lib/uWebSockets
 	url = git@github.com:uNetworking/uWebSockets.git
-[submodule "backend/lib/jwt-cpp"]
-	path = backend/lib/jwt-cpp
-	url = git@github.com:Thalhammer/jwt-cpp.git
+[submodule "backend/lib/poco"]
+	path = backend/lib/poco
+	url = git@github.com:pocoproject/poco.git

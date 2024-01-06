@@ -1,10 +1,13 @@
 
 CC=cc
 CXX=g++
+
+
+UWEB_SOCKET_INCLUDE=-Ilib/uWebSockets/uSockets/src -Ilib/uWebSockets/src
+POCO_INCLUDE=-Ilib/poco/JWT
+
 CXXFLAGS=-march=native -O3 -Wpedantic -Wall -Wextra -Wsign-conversion -Wconversion -std=c++20 \
--Ilib/uWebSockets/uSockets/src \
--Ilib/uWebSockets/src \
--Isrc
+${UWEB_SOCKET_INCLUDE} ${POCO_INCLUDE}
 
 LDFLAGS=lib/uWebSockets/uSockets/*.o -lz
 
