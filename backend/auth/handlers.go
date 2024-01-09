@@ -1,20 +1,23 @@
 package auth
 
 import (
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 )
 
-func AuthGoogleUser(c *fiber.Ctx) error {
-
-	json := GoogleLoginRequest{}
+func authGoogleUser(c *fiber.Ctx) error {
+	json := new(GoogleLoginRequest)
 	if err := c.BodyParser(json); err != nil {
+		log.Error("Invalid body", err)
 		return c.JSON(fiber.Map{
 			"code":    400,
-			"message": "Invalid JSON",
+			"message": "Invalid body",
 		})
 	}
 
-	validateGoogleUser(json.accessToken)
+	log.Debug("json", json)
+
+	validateGoogleUser(json.AccessToken)
 
 	return nil
 }

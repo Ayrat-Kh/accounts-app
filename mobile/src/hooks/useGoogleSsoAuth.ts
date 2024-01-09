@@ -52,6 +52,8 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
       };
     }
 
+    console.log('response?.type', response?.type);
+
     if (response?.type !== 'success') {
       console.error(`[${GOOGLE_AUTH_LOG_PREFIX}] error login #2`);
       return {
@@ -65,6 +67,11 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
         result: 'ERROR_EMPTY_TOKEN',
       };
     }
+
+    console.log(
+      'response.authentication.accessToken',
+      response.authentication.accessToken,
+    );
 
     const userInfo = await getGoogleUserInfo(
       response.authentication.accessToken,

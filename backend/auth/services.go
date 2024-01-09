@@ -8,24 +8,23 @@ import (
 	"github.com/gofiber/fiber/v2/log"
 )
 
-func validateGoogleUser(accessToken string) (GoogleUser, error) {
+func validateGoogleUser(accessToken string) (GoogleTokenInfo, error) {
 	u, _ := url.Parse("https://www.googleapis.com/oauth2/v3/tokeninfo")
-	u.Query().Set("access_token", accessToken)
+	queryValues := u.Query()
+	u.RawQuery = queryValues.Encode()
 
 	request := fiber.Get(u.String())
-	request.Debug()
 
 	_, data, err := request.Bytes()
 	if err != nil {
 		log.Error("Coudn't get user info", err)
-		return GoogleUser{}, err[0]
+		return GoogleTokenInfo{}, err[0]
 	}
 
-	var googleUser GoogleUser
-	jsonErr := json.Unmarshal(data, &googleUser)
-	if jsonErr != nil {
-		log.Error("Coudn't get user info", err)
-		return GoogleUser{}, jsonErr
+	var googleUser GoogleTokenInfo
+	if jsonErr := json.Unmarshal(data, &googleUser); jsonErr != nil {
+		log.Error("Coudn't parse user info", err)
+		return GoogleTokenInfo{}, jsonErr
 	}
 
 	return googleUser, nil

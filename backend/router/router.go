@@ -6,8 +6,8 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
+	"github.com/Ayrat-Kh/expenso-app/backend/auth"
 	"github.com/Ayrat-Kh/expenso-app/backend/constants"
-	jwtware "github.com/gofiber/contrib/jwt"
 )
 
 func Initalize(app *fiber.App) {
@@ -20,13 +20,15 @@ func Initalize(app *fiber.App) {
 		log.Fatalln("Please set " + constants.APP_JWT_SECRET + "env")
 	}
 
-	app.Use(jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: []byte(jwtSecret)},
-	}))
+	// app.Use(jwtware.New(jwtware.Config{
+	// 	SigningKey: jwtware.SigningKey{Key: []byte(jwtSecret)},
+	// }))
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Status(200).SendString("Hello, World!")
 	})
+
+	auth.Initalize(app)
 
 	// router.Use(middleware.Json)
 

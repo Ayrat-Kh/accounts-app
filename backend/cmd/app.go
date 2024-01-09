@@ -20,7 +20,7 @@ func main() {
 
 	router.Initalize(app)
 
-	database.InitializeDb()
+	database.ConnectDB()
 
 	log.Println("Staring the app")
 	log.Fatal(app.Listen(":3000"))
