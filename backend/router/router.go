@@ -17,7 +17,7 @@ func Initalize(app *fiber.App) {
 	jwtSecret := os.Getenv(constants.APP_JWT_SECRET)
 
 	if jwtSecret == "" {
-		log.Fatalln("Please set" + constants.APP_JWT_SECRET + "env")
+		log.Fatalln("Please set " + constants.APP_JWT_SECRET + "env")
 	}
 
 	app.Use(jwtware.New(jwtware.Config{

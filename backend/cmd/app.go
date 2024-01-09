@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/Ayrat-Kh/expenso-app/backend/database"
 	"github.com/Ayrat-Kh/expenso-app/backend/router"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -18,6 +19,8 @@ func main() {
 	}))
 
 	router.Initalize(app)
+
+	database.InitializeDb()
 
 	log.Println("Staring the app")
 	log.Fatal(app.Listen(":3000"))
