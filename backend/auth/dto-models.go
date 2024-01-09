@@ -1,15 +1,15 @@
 package auth
 
 type GoogleTokenInfo struct {
-	azp            string
-	aud            string
-	sub            string
-	scope          string
-	exp            string // num
-	expires_in     string // num
-	email          string
-	email_verified string // bool
-	access_type    string
+	Azp           string `json:"azp"`
+	Aud           string `json:"aud"`
+	Sub           string `json:"sub"`
+	Scope         string `json:"scope"`
+	Exp           string `json:"exp"`        // num
+	ExpiresIn     string `json:"expires_in"` // num
+	Email         string `json:"email"`
+	EmailVerified string `json:"email_verified"` // bool
+	AccessType    string `json:"access_type"`
 }
 
 type GoogleLoginRequest struct {

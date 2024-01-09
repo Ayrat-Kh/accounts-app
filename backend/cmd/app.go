@@ -5,8 +5,8 @@ import (
 
 	"github.com/Ayrat-Kh/expenso-app/backend/database"
 	"github.com/Ayrat-Kh/expenso-app/backend/router"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/joho/godotenv"
 )
 

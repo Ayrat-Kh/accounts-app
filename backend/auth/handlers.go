@@ -1,23 +1,26 @@
 package auth
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
+	"encoding/json"
+
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/log"
+	"github.com/gofiber/fiber/v3/middleware/requestid"
 )
 
-func authGoogleUser(c *fiber.Ctx) error {
-	json := new(GoogleLoginRequest)
-	if err := c.BodyParser(json); err != nil {
-		log.Error("Invalid body", err)
+func authGoogleUser(c fiber.Ctx) error {
+	requestId := requestid.FromContext(c)
+	googleLoginRequest := GoogleLoginRequest{}
+
+	if err := json.Unmarshal(c.Body(), &googleLoginRequest); err != nil {
+		log.Errorf("%s Invalid body %s", requestId, err)
 		return c.JSON(fiber.Map{
 			"code":    400,
 			"message": "Invalid body",
 		})
 	}
 
-	log.Debug("json", json)
-
-	validateGoogleUser(json.AccessToken)
+	validateGoogleUser(googleLoginRequest.AccessToken, requestid.FromContext(c))
 
 	return nil
 }
