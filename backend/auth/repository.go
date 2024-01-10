@@ -6,13 +6,13 @@ import (
 )
 
 type IUserRepository interface {
-	GetUser(userId guuid.UUID) (UserDb, error)
+	GetUserById(userId guuid.UUID) (UserDb, error)
 	FirstOrCreateByGoogleId(googleId string, user UserDb) (UserDb, error)
 }
 
 type UserRepository struct{}
 
-func (rep *UserRepository) GetUser(userId guuid.UUID) (UserDb, error) {
+func (rep *UserRepository) GetUserById(userId guuid.UUID) (UserDb, error) {
 	user := UserDb{}
 
 	database.DB.First(&user, userId)

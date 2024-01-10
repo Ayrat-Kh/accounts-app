@@ -14,3 +14,7 @@ type UserLoginResult struct {
 	User        UserDto `json:"user"`
 	AccessToken string  `json:"accessToken"`
 }
+
+type UserResult struct {
+	User UserDto `json:"user"`
+}
