@@ -1,17 +1,11 @@
 package auth
 
-type GoogleTokenInfo struct {
-	Azp           string `json:"azp"`
-	Aud           string `json:"aud"`
-	Sub           string `json:"sub"`
-	Scope         string `json:"scope"`
-	Exp           string `json:"exp"`        // num
-	ExpiresIn     string `json:"expires_in"` // num
-	Email         string `json:"email"`
-	EmailVerified string `json:"email_verified"` // bool
-	AccessType    string `json:"access_type"`
-}
+import guuid "github.com/google/uuid"
 
-type GoogleLoginRequest struct {
-	AccessToken string `json:"accessToken" xml:"accessToken" form:"accessToken"`
+type UserDto struct {
+	Id        guuid.UUID `json:"-"`
+	Username  string     `json:"username"`
+	Email     string     `json:"email"`
+	CreatedAt int64      `gorm:"autoCreateTime" json:"-" `
+	GoogleId  string     `json:"googleId"`
 }

@@ -1,34 +1,37 @@
 package auth
 
 import (
-	"encoding/json"
-	"net/url"
-
-	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/log"
+	"github.com/Ayrat-Kh/expenso-app/backend/shared/google"
 )
 
-func validateGoogleUser(accessToken string, requestId string) (GoogleTokenInfo, error) {
-	result := GoogleTokenInfo{}
+type IAuthService interface {
+	google.IGoogleApiClient
+	IUserRepository
+}
 
-	u, _ := url.Parse("https://www.googleapis.com/oauth2/v3/tokeninfo")
-	queryValues := u.Query()
-	queryValues.Set("access_token", accessToken)
-	u.RawQuery = queryValues.Encode()
+type authServiceImpl struct {
+	IAuthService
+}
 
-	request := fiber.Get(u.String())
+var AuthService authServiceImpl
 
-	_, data, err := request.Bytes()
+func handleGoogleApiAuth(
+	accessToken string,
+	requestId string,
+	deps IAuthService) (UserDto, error) {
+	result := UserDto{}
+	user, err := deps.GetGoogleUser(accessToken, requestId)
 
 	if err != nil {
-		log.Errorf("%s Coudn't get user info %s", requestId, err)
-		return result, err[0]
+		return result, err
 	}
 
-	if err := json.Unmarshal(data, &result); err != nil {
-		log.Errorf("%s Coudn't parse user info %s", requestId, err)
-		return GoogleTokenInfo{}, err
-	}
+	userDb, err := deps.FirstOrCreateByGoogleId(user.Sub, UserDb{GoogleId: user.Sub, Email: user.Email})
 
-	return result, nil
+	result.CreatedAt = userDb.CreatedAt
+	result.GoogleId = userDb.GoogleId
+	result.Username = userDb.Username
+	result.Email = userDb.Email
+
+	return result, err
 }

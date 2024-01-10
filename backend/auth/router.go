@@ -5,5 +5,5 @@ import (
 )
 
 func Initalize(app *fiber.App) {
-	app.Post("/login/google-auth", authGoogleUser)
+	app.Post("/login/google-auth", Controller.handleAuthGoogleUser(AuthService))
 }

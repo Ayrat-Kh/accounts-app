@@ -3,26 +3,46 @@ package auth
 import (
 	"encoding/json"
 
+	"github.com/Ayrat-Kh/expenso-app/backend/shared/google"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/log"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
 )
 
-func authGoogleUser(c fiber.Ctx) error {
-	requestId := requestid.FromContext(c)
-	googleLoginRequest := GoogleLoginRequest{}
+type controller struct {
+}
 
-	if err := json.Unmarshal(c.Body(), &googleLoginRequest); err != nil {
-		log.Errorf("%s Invalid body %s", requestId, err)
-		return c.JSON(fiber.Map{
-			"code":    400,
-			"message": "Invalid body",
+var Controller controller
+
+func (c *controller) handleAuthGoogleUser(deps IAuthService) func(c fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
+		requestId := requestid.FromContext(c)
+		googleLoginRequest := google.GoogleLoginRequest{}
+
+		if err := json.Unmarshal(c.Body(), &googleLoginRequest); err != nil {
+			log.Errorf("%s Invalid body %s", requestId, err)
+			return c.JSON(fiber.Map{
+				"code":    400,
+				"message": "Invalid body",
+			})
+		}
+
+		user, err := handleGoogleApiAuth(googleLoginRequest.AccessToken, requestid.FromContext(c), deps)
+
+		if err != nil {
+			if err := json.Unmarshal(c.Body(), &googleLoginRequest); err != nil {
+				log.Errorf("%s Can not auth user %s", requestId, err)
+				return c.JSON(fiber.Map{
+					"code":    400,
+					"message": "Invalid request",
+				})
+			}
+		}
+
+		return c.JSON({
+			user: user
 		})
 	}
-
-	validateGoogleUser(googleLoginRequest.AccessToken, requestid.FromContext(c))
-
-	return nil
 }
 
 // "github.com/NikSchaefer/go-fiber/database"
