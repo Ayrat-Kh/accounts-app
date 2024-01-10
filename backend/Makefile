@@ -7,3 +7,6 @@ run-db:
 
 run-app:
 	go run ./cmd/app.go
+
+test:
+	go test -v ./...

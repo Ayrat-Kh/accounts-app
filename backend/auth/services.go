@@ -46,7 +46,7 @@ func createUserAccessToken(userDto UserDto) (string, error) {
 	return t, err
 }
 
-func handleGoogleApiAuth(accessToken string, authService IAuthService) (UserLoginResult, error) {
+func HandleGoogleApiAuth(accessToken string, authService IAuthService) (UserLoginResult, error) {
 	result := UserLoginResult{}
 	user, err := authService.GetGoogleUser(accessToken)
 

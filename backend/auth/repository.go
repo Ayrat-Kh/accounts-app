@@ -7,8 +7,6 @@ import (
 
 type IUserRepository interface {
 	GetUser(userId guuid.UUID) (UserDb, error)
-	SaveUser(user UserDb) (UserDb, error)
-	FirstOrCreate(userId guuid.UUID, user UserDb) (UserDb, error)
 	FirstOrCreateByGoogleId(googleId string, user UserDb) (UserDb, error)
 }
 

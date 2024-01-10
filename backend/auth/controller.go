@@ -26,7 +26,7 @@ func (c *controller) handleAuthGoogleUser(authService IAuthService) func(c *fibe
 			)
 		}
 
-		userLoginResult, err := handleGoogleApiAuth(googleLoginRequest.AccessToken, authService)
+		userLoginResult, err := HandleGoogleApiAuth(googleLoginRequest.AccessToken, authService)
 
 		if err != nil {
 			log.Errorf("%s %s", requestId, err)
