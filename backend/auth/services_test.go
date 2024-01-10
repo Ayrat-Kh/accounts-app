@@ -6,6 +6,7 @@ import (
 	"github.com/Ayrat-Kh/expenso-app/backend/auth"
 	"github.com/Ayrat-Kh/expenso-app/backend/constants"
 	"github.com/Ayrat-Kh/expenso-app/backend/shared/google"
+	"github.com/stretchr/testify/assert"
 )
 
 type TestAuthService struct {
@@ -36,15 +37,9 @@ func TestSuccessGoogleLogin(t *testing.T) {
 
 	response, err := auth.HandleGoogleApiAuth(token, &TestAuthService{})
 
-	if err != nil {
-		t.Fatalf(`HandleGoogleApiAuth("%s", ...) shouldn't fails`, token)
-	}
+	assert.Nilf(t, err, `HandleGoogleApiAuth("%s", ...) shouldn't fails`, token)
 
-	if response.AccessToken == "" {
-		t.Fatalf(`HandleGoogleApiAuth("%s", ...) AccessToken should be set`, token)
-	}
+	assert.NotEmptyf(t, response.AccessToken, `HandleGoogleApiAuth("%s", ...) shouldn't fails`, token)
 
-	if response.User.GoogleId != "SUB" {
-		t.Fatalf(`HandleGoogleApiAuth("%s", ...) GoogleId should be set`, token)
-	}
+	assert.Equalf(t, response.User.GoogleId, "SUB", `HandleGoogleApiAuth("%s", ...) GoogleId should be set`, token)
 }
