@@ -4,9 +4,10 @@ import (
 	"log"
 
 	"github.com/Ayrat-Kh/expenso-app/backend/database"
+	databasemigrate "github.com/Ayrat-Kh/expenso-app/backend/database/database-migrate"
 	"github.com/Ayrat-Kh/expenso-app/backend/router"
-	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/cors"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -20,7 +21,8 @@ func main() {
 
 	router.Initalize(app)
 
-	database.ConnectDB()
+	database.ConnectDb()
+	databasemigrate.MigrateDb()
 
 	log.Println("Staring the app")
 	log.Fatal(app.Listen(":3000"))

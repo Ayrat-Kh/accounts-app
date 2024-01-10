@@ -12,9 +12,9 @@ type IUserRepository interface {
 	FirstOrCreateByGoogleId(googleId string, user UserDb) (UserDb, error)
 }
 
-type userRepositoryImpl struct{}
+type UserRepository struct{}
 
-func (rep *userRepositoryImpl) GetUser(userId guuid.UUID) (UserDb, error) {
+func (rep *UserRepository) GetUser(userId guuid.UUID) (UserDb, error) {
 	user := UserDb{}
 
 	database.DB.First(&user, userId)
@@ -22,22 +22,20 @@ func (rep *userRepositoryImpl) GetUser(userId guuid.UUID) (UserDb, error) {
 	return user, nil
 }
 
-func (rep *userRepositoryImpl) SaveUser(user UserDb) (UserDb, error) {
+func (rep *UserRepository) SaveUser(user UserDb) (UserDb, error) {
 	result := database.DB.Create(&user)
 
 	return user, result.Error
 }
 
-func (rep *userRepositoryImpl) FirstOrCreate(userId guuid.UUID, user UserDb) (UserDb, error) {
+func (rep *UserRepository) FirstOrCreate(userId guuid.UUID, user UserDb) (UserDb, error) {
 	result := database.DB.FirstOrCreate(&user, UserDb{Id: userId})
 
 	return user, result.Error
 }
 
-func (rep *userRepositoryImpl) FirstOrCreateByGoogleId(googleId string, user UserDb) (UserDb, error) {
-	result := database.DB.FirstOrCreate(&user, UserDb{GoogleId: googleId})
+func (rep *UserRepository) FirstOrCreateByGoogleId(googleId string, user UserDb) (UserDb, error) {
+	result := database.DB.Where(&UserDb{GoogleId: googleId}).FirstOrCreate(&user)
 
 	return user, result.Error
 }
-
-var UserRepository userRepositoryImpl

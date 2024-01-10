@@ -9,3 +9,8 @@ type UserDto struct {
 	CreatedAt int64      `gorm:"autoCreateTime" json:"-" `
 	GoogleId  string     `json:"googleId"`
 }
+
+type UserLoginResult struct {
+	User        UserDto `json:"user"`
+	AccessToken string  `json:"accessToken"`
+}

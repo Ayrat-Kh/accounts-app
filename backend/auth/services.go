@@ -1,7 +1,13 @@
 package auth
 
 import (
+	"os"
+	"time"
+
+	"github.com/Ayrat-Kh/expenso-app/backend/constants"
 	"github.com/Ayrat-Kh/expenso-app/backend/shared/google"
+
+	"github.com/golang-jwt/jwt"
 )
 
 type IAuthService interface {
@@ -9,29 +15,55 @@ type IAuthService interface {
 	IUserRepository
 }
 
-type authServiceImpl struct {
-	IAuthService
+type AuthService struct {
+	google.GoogleApiClient
+	UserRepository
 }
 
-var AuthService authServiceImpl
+func mapUserDbToUserDto(userDb UserDb) UserDto {
+	return UserDto{
+		CreatedAt: userDb.CreatedAt,
+		GoogleId:  userDb.GoogleId,
+		Username:  userDb.Username,
+		Email:     userDb.Email,
+	}
+}
 
-func handleGoogleApiAuth(
-	accessToken string,
-	requestId string,
-	deps IAuthService) (UserDto, error) {
-	result := UserDto{}
-	user, err := deps.GetGoogleUser(accessToken, requestId)
+func createUserClaims(userDto UserDto) jwt.MapClaims {
+	return jwt.MapClaims{
+		"id":  userDto.Id,
+		"exp": time.Now().Add(time.Hour * 24 * 7).Unix(),
+	}
+}
+
+func createUserAccessToken(userDto UserDto) (string, error) {
+	// Create token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, createUserClaims(userDto))
+
+	// Generate encoded token and send it as response.
+	t, err := token.SignedString([]byte(os.Getenv(constants.APP_JWT_SECRET)))
+
+	return t, err
+}
+
+func handleGoogleApiAuth(accessToken string, authService IAuthService) (UserLoginResult, error) {
+	result := UserLoginResult{}
+	user, err := authService.GetGoogleUser(accessToken)
 
 	if err != nil {
 		return result, err
 	}
 
-	userDb, err := deps.FirstOrCreateByGoogleId(user.Sub, UserDb{GoogleId: user.Sub, Email: user.Email})
+	userDb, err := authService.FirstOrCreateByGoogleId(user.Sub, UserDb{GoogleId: user.Sub, Email: user.Email})
 
-	result.CreatedAt = userDb.CreatedAt
-	result.GoogleId = userDb.GoogleId
-	result.Username = userDb.Username
-	result.Email = userDb.Email
+	if err != nil {
+		return result, err
+	}
+
+	result.User = mapUserDbToUserDto(userDb)
+
+	// Generate encoded token and send it as response.
+	result.AccessToken, err = createUserAccessToken(result.User)
 
 	return result, err
 }

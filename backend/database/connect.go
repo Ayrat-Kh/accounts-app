@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDB() {
+func ConnectDb() {
 	var err error // define error here to prevent overshadowing the global DB
 
 	env := os.Getenv("DATABASE_URL")
@@ -16,8 +16,5 @@ func ConnectDB() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// err = DB.AutoMigrate(&model.User{}, &model.Session{}, &model.Product{})
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+
 }

@@ -27,11 +27,11 @@ type IGoogleApiClient interface {
 	GetGoogleUser(accessToken string) (GoogleTokenInfo, error)
 }
 
-type GoogleApiClientImpl struct {
+type GoogleApiClient struct {
 	IGoogleApiClient
 }
 
-func (client *GoogleApiClientImpl) GetGoogleUser(accessToken string) (GoogleTokenInfo, error) {
+func (client *GoogleApiClient) GetGoogleUser(accessToken string) (GoogleTokenInfo, error) {
 	result := GoogleTokenInfo{}
 
 	u, _ := url.Parse("https://www.googleapis.com/oauth2/v3/tokeninfo")
