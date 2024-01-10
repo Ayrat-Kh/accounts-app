@@ -2,6 +2,7 @@ package google
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 )
@@ -23,14 +24,14 @@ type GoogleLoginRequest struct {
 }
 
 type IGoogleApiClient interface {
-	GetGoogleUser(accessToken string, requestId string) (GoogleTokenInfo, error)
+	GetGoogleUser(accessToken string) (GoogleTokenInfo, error)
 }
 
-type googleApiClientImpl struct {
+type GoogleApiClientImpl struct {
 	IGoogleApiClient
 }
 
-func (client *googleApiClientImpl) GetGoogleUser(accessToken string, requestId string) (GoogleTokenInfo, error) {
+func (client *GoogleApiClientImpl) GetGoogleUser(accessToken string) (GoogleTokenInfo, error) {
 	result := GoogleTokenInfo{}
 
 	u, _ := url.Parse("https://www.googleapis.com/oauth2/v3/tokeninfo")
@@ -40,14 +41,19 @@ func (client *googleApiClientImpl) GetGoogleUser(accessToken string, requestId s
 
 	response, err := http.Get(u.String())
 
+	if err != nil {
+		return GoogleTokenInfo{}, err
+	}
+
+	if response.StatusCode > http.StatusIMUsed {
+		return GoogleTokenInfo{}, errors.New("Bad request")
+	}
+
 	defer response.Body.Close()
 
 	if err = json.NewDecoder(response.Body).Decode(&result); err != nil {
-		//log.Errorf("%s Coudn't parse user info %s", requestId, err)
 		return GoogleTokenInfo{}, err
 	}
 
 	return result, nil
 }
-
-var GoogleApiClient googleApiClientImpl
