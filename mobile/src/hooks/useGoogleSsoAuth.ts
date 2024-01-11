@@ -2,7 +2,8 @@ import * as Google from 'expo-auth-session/providers/google';
 import { useCallback } from 'react';
 
 import { GOOGLE_AUTH_LOG_PREFIX } from '~/constants/google-auth';
-import { GoogleUser, getGoogleUserInfo } from '~/lib/api/google-auth';
+import { useGoogleAppLoginMutation } from '~/lib/api/auth-user';
+import { UserLoginResult } from '~/lib/api/auth-user.types';
 
 const GOOGLE_CLIENT_ID =
   process.env.GOOGLE_CLIENT_ID ??
@@ -14,7 +15,7 @@ type LoginResult =
     }
   | {
       result: 'SUCCESS';
-      userInfo: GoogleUser;
+      userInfo: UserLoginResult;
     };
 
 type UseAuthResult = () => Promise<LoginResult>;
@@ -34,6 +35,8 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
       'https://www.googleapis.com/auth/userinfo.email',
     ],
   });
+
+  const { mutateAsync: googleAppLogin } = useGoogleAppLoginMutation();
 
   return useCallback(async (): Promise<LoginResult> => {
     try {
@@ -73,19 +76,18 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
       response.authentication.accessToken,
     );
 
-    const userInfo = await getGoogleUserInfo(
-      response.authentication.accessToken,
-    );
-
-    if (!userInfo.success) {
+    try {
+      const userInfo = await googleAppLogin(
+        response.authentication.accessToken,
+      );
+      return {
+        result: 'SUCCESS',
+        userInfo: userInfo,
+      };
+    } catch (e) {
       return {
         result: 'ERROR_USER_FETCH',
       };
     }
-
-    return {
-      result: 'SUCCESS',
-      userInfo: userInfo.data,
-    };
   }, [response, prompt]);
 };
