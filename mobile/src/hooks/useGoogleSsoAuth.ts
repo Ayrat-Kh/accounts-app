@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import { GOOGLE_AUTH_LOG_PREFIX } from '~/constants/google-auth';
 import { useGoogleAppLoginMutation } from '~/lib/api/auth-user';
 import { UserLoginResult } from '~/lib/api/auth-user.types';
+import { useLoginStore, useUserStore } from '~/lib/store';
 
 const GOOGLE_CLIENT_ID =
   process.env.GOOGLE_CLIENT_ID ??
@@ -55,8 +56,6 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
       };
     }
 
-    console.log('response?.type', response?.type);
-
     if (response?.type !== 'success') {
       console.error(`[${GOOGLE_AUTH_LOG_PREFIX}] error login #2`);
       return {
@@ -71,15 +70,14 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
       };
     }
 
-    console.log(
-      'response.authentication.accessToken',
-      response.authentication.accessToken,
-    );
-
     try {
       const userInfo = await googleAppLogin(
         response.authentication.accessToken,
       );
+
+      useUserStore().setUser(userInfo.user);
+      useLoginStore().setAccessToken(userInfo.accessToken);
+
       return {
         result: 'SUCCESS',
         userInfo: userInfo,
