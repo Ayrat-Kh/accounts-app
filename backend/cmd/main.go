@@ -11,6 +11,13 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// @title Expenso-app API
+// @version 1.0
+// @contact.name API Support
+// @contact.email fiber@swagger.io
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @BasePath /
 func main() {
 	godotenv.Load()
 	app := fiber.New()

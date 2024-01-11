@@ -1,0 +1,101 @@
+basePath: /
+definitions:
+  auth.GoogleLoginRequest:
+    properties:
+      accessToken:
+        type: string
+    type: object
+  auth.UserDto:
+    properties:
+      email:
+        type: string
+      googleId:
+        type: string
+      username:
+        type: string
+    type: object
+  auth.UserLoginResult:
+    properties:
+      accessToken:
+        type: string
+      user:
+        $ref: '#/definitions/auth.UserDto'
+    type: object
+  auth.UserResult:
+    properties:
+      user:
+        $ref: '#/definitions/auth.UserDto'
+    type: object
+  helpers.ErrorResponse:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+info:
+  contact:
+    email: fiber@swagger.io
+    name: API Support
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Expenso-app API
+  version: "1.0"
+paths:
+  /login/google-auth:
+    post:
+      consumes:
+      - application/json
+      description: Google auth verification
+      parameters:
+      - description: Google login request
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/auth.GoogleLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.UserLoginResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ErrorResponse'
+      summary: Google auth login
+      tags:
+      - auth
+  /v1/me:
+    get:
+      description: Get user info
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Google login request
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/auth.GoogleLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.UserResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ErrorResponse'
+      summary: Get user info
+      tags:
+      - user
+swagger: "2.0"

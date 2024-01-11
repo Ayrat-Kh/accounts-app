@@ -8,5 +8,6 @@ func Initalize(app *fiber.App) {
 	constroller := Controller{}
 
 	app.Post("/login/google-auth", constroller.postAuthGoogleUser(&AuthService{}))
-	app.Post("/v1/me", constroller.getMe(&AuthService{}))
+
+	app.Get("/v1/me", constroller.getMe(&AuthService{}))
 }

@@ -19,10 +19,6 @@ type GoogleTokenInfo struct {
 	AccessType    string `json:"access_type"`
 }
 
-type GoogleLoginRequest struct {
-	AccessToken string `json:"accessToken" xml:"accessToken" form:"accessToken"`
-}
-
 type IGoogleApiClient interface {
 	GetGoogleUser(accessToken string) (GoogleTokenInfo, error)
 }

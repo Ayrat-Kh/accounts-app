@@ -7,12 +7,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
+	"github.com/gofiber/swagger"
 
 	"github.com/Ayrat-Kh/expenso-app/backend/auth"
 	"github.com/Ayrat-Kh/expenso-app/backend/constants"
 	"github.com/Ayrat-Kh/expenso-app/backend/helpers"
 
 	jwtware "github.com/gofiber/contrib/jwt"
+
+	_ "github.com/Ayrat-Kh/expenso-app/backend/docs"
 )
 
 func Initalize(app *fiber.App) {
@@ -33,6 +36,13 @@ func Initalize(app *fiber.App) {
 
 	auth.Initalize(app)
 
+	// app.Use(swagger.New(swagger.Config{
+	// 	BasePath: "/api/v1/",
+	// 	FilePath: "./docs/v1/swagger.json",
+	// 	Path:     "docs",
+	// }))
+	app.Get("/swagger/*", swagger.HandlerDefault)
+
 	app.Use(jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{Key: []byte(jwtSecret)},
 	}))
@@ -40,5 +50,4 @@ func Initalize(app *fiber.App) {
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Status(404).JSON(helpers.BuildErrorResponse(helpers.CODE_NOT_FOUND, "NotFound"))
 	})
-
 }

@@ -10,6 +10,10 @@ type UserDto struct {
 	GoogleId  string     `json:"googleId"`
 }
 
+type GoogleLoginRequest struct {
+	AccessToken string `json:"accessToken" xml:"accessToken" form:"accessToken"`
+}
+
 type UserLoginResult struct {
 	User        UserDto `json:"user"`
 	AccessToken string  `json:"accessToken"`
