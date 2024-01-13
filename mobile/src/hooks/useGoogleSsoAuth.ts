@@ -75,8 +75,8 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
         response.authentication.accessToken,
       );
 
-      useUserStore().setUser(userInfo.user);
-      useLoginStore().setAccessToken(userInfo.accessToken);
+      useUserStore.getState().setUser(userInfo.user);
+      useLoginStore.getState().setAccessToken(userInfo.accessToken);
 
       return {
         result: 'SUCCESS',

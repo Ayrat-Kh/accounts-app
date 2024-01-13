@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { UserDto } from '../api/auth-user.types';
 
@@ -27,7 +27,7 @@ export const useUserStore = create(
       onRehydrateStorage: (state: UserState) => {
         state.setHasHydrated(true);
       },
-      getStorage: () => AsyncStorage,
+      storage: createJSONStorage(() => AsyncStorage),
     },
   ),
 );

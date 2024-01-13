@@ -3,11 +3,10 @@ package auth
 import guuid "github.com/google/uuid"
 
 type UserDto struct {
-	Id        guuid.UUID `json:"-"`
-	Username  string     `json:"username"`
-	Email     string     `json:"email"`
-	CreatedAt int64      `gorm:"autoCreateTime" json:"-" `
-	GoogleId  string     `json:"googleId"`
+	Id       guuid.UUID `json:"id"`
+	Username string     `json:"username"`
+	Email    string     `json:"email"`
+	GoogleId string     `json:"googleId"`
 }
 
 type GoogleLoginRequest struct {

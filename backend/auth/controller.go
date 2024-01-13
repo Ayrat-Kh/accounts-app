@@ -6,7 +6,6 @@ import (
 	"github.com/Ayrat-Kh/expenso-app/backend/helpers"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 type Controller struct {
@@ -22,7 +21,7 @@ type Controller struct {
 // @Success      200  {object} auth.UserLoginResult
 // @Failure      400  {object} helpers.ErrorResponse
 // @Router       /login/google-auth [post]
-func (c *Controller) postAuthGoogleUser(authService IAuthService) func(c *fiber.Ctx) error {
+func (c *Controller) PostAuthGoogleUser(authService IAuthService) func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		requestId := helpers.GetRequestId(c)
 		googleLoginRequest := GoogleLoginRequest{}
@@ -56,11 +55,20 @@ func (c *Controller) postAuthGoogleUser(authService IAuthService) func(c *fiber.
 // @Success      200  {object} auth.UserResult
 // @Failure      400  {object} helpers.ErrorResponse
 // @Router       /v1/me [get]
-func (c *Controller) getMe(authService IAuthService) func(c *fiber.Ctx) error {
+func (c *Controller) GetMe(authService IAuthService) func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		requestId := helpers.GetRequestId(c)
 
-		user, err := HandleGetMe(c.Locals("user").(*jwt.Token).Claims, authService)
+		userClaims, err := helpers.GetUserClaims(c)
+
+		if err != nil {
+			log.Errorf("%s %s", requestId, err)
+			return c.Status(400).JSON(
+				helpers.BuildErrorResponse(helpers.CODE_UNAUTHORIZED, err.Error()),
+			)
+		}
+
+		user, err := HandleGetMe(userClaims, authService)
 
 		if err != nil {
 			log.Errorf("%s %s", requestId, err)

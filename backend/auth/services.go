@@ -23,10 +23,10 @@ type AuthService struct {
 
 func mapUserDbToUserDto(userDb UserDb) UserDto {
 	return UserDto{
-		CreatedAt: userDb.CreatedAt,
-		GoogleId:  userDb.GoogleId,
-		Username:  userDb.Username,
-		Email:     userDb.Email,
+		Id:       userDb.Id,
+		GoogleId: userDb.GoogleId,
+		Username: userDb.Username,
+		Email:    userDb.Email,
 	}
 }
 

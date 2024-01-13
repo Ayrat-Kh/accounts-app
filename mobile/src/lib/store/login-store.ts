@@ -1,6 +1,6 @@
 import { deleteItemAsync, getItemAsync, setItemAsync } from 'expo-secure-store';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 type LoginState = {
   isSignedIn: boolean;
@@ -38,11 +38,11 @@ export const useLoginStore = create(
       onRehydrateStorage: (state: LoginState) => {
         state.setHasHydrated(true);
       },
-      getStorage: () => ({
+      storage: createJSONStorage(() => ({
         setItem: setItemAsync,
         getItem: getItemAsync,
         removeItem: deleteItemAsync,
-      }),
+      })),
     },
   ),
 );

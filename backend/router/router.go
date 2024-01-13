@@ -34,18 +34,16 @@ func Initalize(app *fiber.App) {
 		return c.Status(200).SendString("Hello, World!")
 	})
 
-	auth.Initalize(app)
+	authConstroller := auth.Controller{}
+	app.Post("/login/google-auth", authConstroller.PostAuthGoogleUser(&auth.AuthService{}))
 
-	// app.Use(swagger.New(swagger.Config{
-	// 	BasePath: "/api/v1/",
-	// 	FilePath: "./docs/v1/swagger.json",
-	// 	Path:     "docs",
-	// }))
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	app.Use(jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{Key: []byte(jwtSecret)},
 	}))
+
+	app.Get("/v1/me", authConstroller.GetMe(&auth.AuthService{}))
 
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Status(404).JSON(helpers.BuildErrorResponse(helpers.CODE_NOT_FOUND, "NotFound"))

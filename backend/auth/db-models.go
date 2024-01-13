@@ -5,7 +5,7 @@ import (
 )
 
 type UserDb struct {
-	Id        guuid.UUID `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	Id        guuid.UUID `json:"id" gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
 	Username  string     `json:"username"`
 	Email     string     `json:"email"`
 	Password  string     `json:"-"`
