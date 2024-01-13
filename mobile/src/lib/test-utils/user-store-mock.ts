@@ -3,4 +3,5 @@ export const userMock = {
   username: 'John Doe',
   email: 'email',
   googleId: 'googleId',
+  _hasHydrated: true,
 };

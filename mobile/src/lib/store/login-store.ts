@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import { deleteItemAsync, getItemAsync, setItemAsync } from 'expo-secure-store';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -43,9 +43,9 @@ export const useLoginStore = create(
         };
       },
       storage: createJSONStorage(() => ({
-        setItem: SecureStore.setItemAsync,
-        getItem: SecureStore.getItemAsync,
-        removeItem: SecureStore.deleteItemAsync,
+        setItem: setItemAsync,
+        getItem: getItemAsync,
+        removeItem: deleteItemAsync,
       })),
     },
   ),
