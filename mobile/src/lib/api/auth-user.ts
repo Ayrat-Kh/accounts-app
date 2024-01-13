@@ -43,9 +43,11 @@ const getMe = async (): Promise<UserResult> => {
   }
 };
 
+export const UseGetMeKey = ['me'];
+
 export const useGetMe = (params: UseGetMeParams | undefined = undefined) =>
   useQuery({
-    queryKey: ['me'],
+    queryKey: UseGetMeKey,
     queryFn: getMe,
     retry: 1,
     ...params,

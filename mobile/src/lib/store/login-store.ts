@@ -11,6 +11,8 @@ type LoginState = {
   logout: () => void;
 };
 
+export const LoginStoreKey = 'login-store';
+
 export const useLoginStore = create(
   persist<LoginState>(
     (set) => ({

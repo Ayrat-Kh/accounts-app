@@ -10,6 +10,10 @@ export type UserState = UserDto & {
   setUser: (user: UserDto) => void;
 };
 
+console.log('AsyncStorage', AsyncStorage);
+
+export const UserStoreKey = 'user-store';
+
 export const useUserStore = create(
   persist<UserState>(
     (set) => ({
