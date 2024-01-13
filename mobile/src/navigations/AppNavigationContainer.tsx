@@ -1,4 +1,4 @@
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { useGetMe } from '~/lib/api/auth-user';
 
@@ -32,7 +32,11 @@ export const AppNavigationContainer = () => {
     !isUserStoreLoaded ||
     (Boolean(accessToken) && isLoadingMeInfo)
   ) {
-    return <ActivityIndicator />;
+    return (
+      <View className="flex-1 justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   return <AppNavigationContainerInner />;

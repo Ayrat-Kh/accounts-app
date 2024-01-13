@@ -24,8 +24,8 @@ export const useUserStore = create(
     }),
     {
       name: 'user-store',
-      onRehydrateStorage: (state: UserState) => {
-        state.setHasHydrated(true);
+      onRehydrateStorage: () => (state?: UserState) => {
+        state?.setHasHydrated(true);
       },
       storage: createJSONStorage(() => AsyncStorage),
     },

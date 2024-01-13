@@ -47,5 +47,6 @@ export const useGetMe = (params: UseGetMeParams | undefined = undefined) =>
   useQuery({
     queryKey: ['me'],
     queryFn: getMe,
+    retry: 1,
     ...params,
   });

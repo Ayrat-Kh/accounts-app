@@ -1,4 +1,4 @@
-import { deleteItemAsync, getItemAsync, setItemAsync } from 'expo-secure-store';
+import * as SecureStore from 'expo-secure-store';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -35,13 +35,15 @@ export const useLoginStore = create(
     }),
     {
       name: 'login-store',
-      onRehydrateStorage: (state: LoginState) => {
-        state.setHasHydrated(true);
+      onRehydrateStorage: () => {
+        return (state?: LoginState) => {
+          state?.setHasHydrated(true);
+        };
       },
       storage: createJSONStorage(() => ({
-        setItem: setItemAsync,
-        getItem: getItemAsync,
-        removeItem: deleteItemAsync,
+        setItem: SecureStore.setItemAsync,
+        getItem: SecureStore.getItemAsync,
+        removeItem: SecureStore.deleteItemAsync,
       })),
     },
   ),

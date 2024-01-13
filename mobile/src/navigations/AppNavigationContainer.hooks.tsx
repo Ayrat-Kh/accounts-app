@@ -14,5 +14,5 @@ export const useLogoutWatcher = () => {
     if (Boolean(accessToken) && isError) {
       useLoginStore.getState().logout();
     }
-  }, []);
+  }, [accessToken, isError]);
 };
