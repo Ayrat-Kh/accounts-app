@@ -12,6 +12,7 @@ import (
 	"github.com/Ayrat-Kh/expenso-app/backend/auth"
 	"github.com/Ayrat-Kh/expenso-app/backend/constants"
 	"github.com/Ayrat-Kh/expenso-app/backend/helpers"
+	"github.com/Ayrat-Kh/expenso-app/backend/user"
 
 	jwtware "github.com/gofiber/contrib/jwt"
 
@@ -34,8 +35,7 @@ func Initalize(app *fiber.App) {
 		return c.Status(200).SendString("Hello, World!")
 	})
 
-	authConstroller := auth.Controller{}
-	app.Post("/login/google-auth", authConstroller.PostAuthGoogleUser(&auth.AuthService{}))
+	auth.InitPublic(app)
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
@@ -43,7 +43,7 @@ func Initalize(app *fiber.App) {
 		SigningKey: jwtware.SigningKey{Key: []byte(jwtSecret)},
 	}))
 
-	app.Get("/v1/me", authConstroller.GetMe(&auth.AuthService{}))
+	user.InitPrivate(app)
 
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Status(404).JSON(helpers.BuildErrorResponse(helpers.CODE_NOT_FOUND, "NotFound"))

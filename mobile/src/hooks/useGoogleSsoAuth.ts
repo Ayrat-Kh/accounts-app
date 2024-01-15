@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { GOOGLE_AUTH_LOG_PREFIX } from '~/constants/google-auth';
 import { useGoogleAppLoginMutation } from '~/lib/api/auth-user';
 import { UserLoginResult } from '~/lib/api/auth-user.types';
-import { useLoginStore, useUserStore } from '~/lib/store';
+import { useLoginStore } from '~/lib/store';
 
 const GOOGLE_CLIENT_ID =
   process.env.GOOGLE_CLIENT_ID ??
@@ -75,7 +75,6 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
         response.authentication.accessToken,
       );
 
-      useUserStore.getState().setUser(userInfo.user);
       useLoginStore.getState().setAccessToken(userInfo.accessToken);
 
       return {
