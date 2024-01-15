@@ -19,12 +19,12 @@ type GoogleTokenInfo struct {
 	AccessType    string `json:"access_type"`
 }
 
-type IGoogleApiClient interface {
+type GoogleLoginInterface interface {
 	GetGoogleUser(accessToken string) (GoogleTokenInfo, error)
 }
 
 type GoogleApiClient struct {
-	IGoogleApiClient
+	GoogleLoginInterface
 }
 
 func (client *GoogleApiClient) GetGoogleUser(accessToken string) (GoogleTokenInfo, error) {

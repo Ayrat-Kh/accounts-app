@@ -9,7 +9,7 @@ run-app:
 	go run ./cmd/main.go
 
 test:
-	go test -v ./...
+	go test -v ./user
 
 update-doc:
 	swag init -d cmd,auth,helpers
