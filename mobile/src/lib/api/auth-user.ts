@@ -34,7 +34,7 @@ export const useGoogleAppLoginMutation = () =>
 
 const getMe = async (): Promise<UserResult> => {
   try {
-    const { data } = await axiosInstance.get<UserResult>('/v1/me');
+    const { data } = await axiosInstance.get<UserResult>('/v1/users/me');
 
     return data;
   } catch (error) {

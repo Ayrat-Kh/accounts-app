@@ -5,26 +5,14 @@ definitions:
       accessToken:
         type: string
     type: object
-  auth.UserDto:
-    properties:
-      email:
-        type: string
-      googleId:
-        type: string
-      username:
-        type: string
-    type: object
   auth.UserLoginResult:
     properties:
       accessToken:
         type: string
+      sessionToken:
+        type: string
       user:
-        $ref: '#/definitions/auth.UserDto'
-    type: object
-  auth.UserResult:
-    properties:
-      user:
-        $ref: '#/definitions/auth.UserDto'
+        $ref: '#/definitions/user.UserDto'
     type: object
   helpers.ErrorResponse:
     properties:
@@ -32,6 +20,35 @@ definitions:
         type: string
       message:
         type: string
+    type: object
+  user.UpdateUserDto:
+    properties:
+      alias:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+    type: object
+  user.UserDto:
+    properties:
+      alias:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      googleId:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+    type: object
+  user.UserResult:
+    properties:
+      user:
+        $ref: '#/definitions/user.UserDto'
     type: object
 info:
   contact:
@@ -69,33 +86,52 @@ paths:
       summary: Google auth login
       tags:
       - auth
-  /v1/me:
+  /v1/users/:userId:
     get:
       description: Get user info
       parameters:
-      - description: With the bearer started
+      - description: Bearer
         in: header
         name: Authorization
         required: true
         type: string
-      - description: Google login request
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/auth.GoogleLoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.UserResult'
+            $ref: '#/definitions/user.UserResult'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/helpers.ErrorResponse'
       summary: Get user info
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Update user info
+      parameters:
+      - description: User update data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdateUserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.UserResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ErrorResponse'
+      summary: Update user info
       tags:
       - user
 swagger: "2.0"

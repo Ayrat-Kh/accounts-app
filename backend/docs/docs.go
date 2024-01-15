@@ -62,7 +62,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/me": {
+        "/v1/users/:userId": {
             "get": {
                 "description": "Get user info",
                 "produces": [
@@ -75,18 +75,47 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "With the bearer started",
+                        "description": "Bearer",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.UserResult"
+                        }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update user info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update user info",
+                "parameters": [
                     {
-                        "description": "Google login request",
+                        "description": "User update data",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.GoogleLoginRequest"
+                            "$ref": "#/definitions/user.UpdateUserDto"
                         }
                     }
                 ],
@@ -94,7 +123,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.UserResult"
+                            "$ref": "#/definitions/user.UserResult"
                         }
                     },
                     "400": {
@@ -116,36 +145,17 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.UserDto": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "googleId": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "auth.UserLoginResult": {
             "type": "object",
             "properties": {
                 "accessToken": {
                     "type": "string"
                 },
+                "sessionToken": {
+                    "type": "string"
+                },
                 "user": {
-                    "$ref": "#/definitions/auth.UserDto"
-                }
-            }
-        },
-        "auth.UserResult": {
-            "type": "object",
-            "properties": {
-                "user": {
-                    "$ref": "#/definitions/auth.UserDto"
+                    "$ref": "#/definitions/user.UserDto"
                 }
             }
         },
@@ -157,6 +167,51 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "user.UpdateUserDto": {
+            "type": "object",
+            "properties": {
+                "alias": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserDto": {
+            "type": "object",
+            "properties": {
+                "alias": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "googleId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserResult": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/user.UserDto"
                 }
             }
         }
