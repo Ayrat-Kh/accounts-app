@@ -10,22 +10,17 @@ import (
 	guuid "github.com/google/uuid"
 )
 
-var di = userServiceDI{}
-
 // Update user info
 // @Summary      Update user info
 // @Description  Update user info
 // @Tags         user
 // @Accept       json
 // @Produce      json
-// @Param        data body auth.UpdateUserDto true "User update data"
-// @Success      200  {object} auth.UserResult
+// @Param        data body user.UpdateUserDto true "User update data"
+// @Success      200  {object} user.UserResult
 // @Failure      400  {object} helpers.ErrorResponse
 // @Router       /v1/users/:userId [put]
 func handlePutUser(app *fiber.App) {
-	// di
-	services := &di
-
 	// handler
 	app.Put("/v1/users/:userId", func(c *fiber.Ctx) error {
 		ctx, err := helpers.BuildAuthAppContext(c, context.Background())
@@ -47,7 +42,7 @@ func handlePutUser(app *fiber.App) {
 			)
 		}
 
-		userResult, err := UpdateUser(userId, updateUserDto, services, ctx)
+		userResult, err := UserService.UpdateUser(userId, updateUserDto, ctx)
 
 		if err != nil {
 			log.Errorf("%s %s", requestId, err)
@@ -66,12 +61,10 @@ func handlePutUser(app *fiber.App) {
 // @Tags         user
 // @Param        Authorization header string true "Bearer"
 // @Produce      json
-// @Success      200  {object} auth.UserResult
+// @Success      200  {object} user.UserResult
 // @Failure      400  {object} helpers.ErrorResponse
 // @Router       /v1/users/:userId [get]
 func handleGetUser(app *fiber.App) {
-	// di
-	services := &di
 
 	// handler
 	app.Get("/v1/users/:userId", func(c *fiber.Ctx) error {
@@ -106,7 +99,7 @@ func handleGetUser(app *fiber.App) {
 			)
 		}
 
-		user, err := GetUser(userId, services, ctx)
+		user, err := UserService.GetUser(userId, ctx)
 
 		if err != nil {
 			log.Errorf("%s %s", requestId, err)

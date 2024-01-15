@@ -10,29 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type TestUserService struct{}
-
-func (t *TestUserService) GetUserById(userId guuid.UUID) (user.UserDb, error) {
-	return user.UserDb{
-		GoogleId:  "googleId",
-		FirstName: "username",
-	}, nil
-}
-
-func (t *TestUserService) UpdateUser(userId guuid.UUID, u user.UpdateUserDb) (user.UserDb, error) {
-	return user.UserDb{
-
-		FirstName: u.FirstName + "updated",
-		LastName:  u.LastName + "updated",
-		Alias:     u.Alias + "updated",
-	}, nil
-
-}
-
 func TestSuccessGetUser(t *testing.T) {
-	response, err := user.GetUser(
+	response, err := user.MockUserService.GetUser(
 		guuid.UUID{},
-		&TestUserService{},
+
 		context.Background(),
 	)
 
@@ -42,13 +23,12 @@ func TestSuccessGetUser(t *testing.T) {
 }
 
 func TestSuccessUpdateUser(t *testing.T) {
-	response, err := user.UpdateUser(
+	response, err := user.MockUserService.UpdateUser(
 		guuid.UUID{},
 		user.UpdateUserDto{
 			FirstName: "firstname",
 			LastName:  "lastname",
 		},
-		&TestUserService{},
 		helpers.BuildAuthContextWithValue(context.Background(), guuid.UUID{}),
 	)
 

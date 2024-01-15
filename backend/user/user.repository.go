@@ -7,15 +7,9 @@ import (
 	guuid "github.com/google/uuid"
 )
 
-type GetUserByIdDbInterface interface {
+type userRepositoryInterface interface {
 	GetUserById(userId guuid.UUID) (UserDb, error)
-}
-
-type UpdateUserDbInterface interface {
 	UpdateUser(userId guuid.UUID, user UpdateUserDb) (UserDb, error)
-}
-
-type UpsertUserByGoogleIdDbInterface interface {
 	UpsertUserByGoogleId(googleId string, user UserDb) (UserDb, error)
 }
 
@@ -39,9 +33,7 @@ func (rep *userRepository) UpdateUser(userId guuid.UUID, user UpdateUserDb) (Use
 }
 
 func (rep *userRepository) UpsertUserByGoogleId(googleId string, user UserDb) (UserDb, error) {
-	updateUser := UserDb{}
+	result := database.DB.Model(&user).Where("google_id = @googleId", sql.Named("googleId", googleId)).Save(&user)
 
-	result := database.DB.Model(&updateUser).Where("google_id = @googleId", sql.Named("googleId", googleId)).Save(&user)
-
-	return updateUser, result.Error
+	return user, result.Error
 }

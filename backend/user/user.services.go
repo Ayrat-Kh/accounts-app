@@ -9,14 +9,6 @@ import (
 	guuid "github.com/google/uuid"
 )
 
-type UserService struct {
-}
-
-type userServiceDI struct {
-	userRepository
-	UserService
-}
-
 func MapUpdateUserDbToUserDto(updateUserDto UpdateUserDto) UpdateUserDb {
 	return UpdateUserDb{
 		LastName:  updateUserDto.LastName,
@@ -36,11 +28,17 @@ func MapUserDbToUserDto(userDb UserDb) UserDto {
 	}
 }
 
-type UpdateUserInterface interface {
-	UpdateUserDbInterface
+type UserServiceInterface interface {
+	GetUser(userId guuid.UUID, ctx context.Context) (UserResult, error)
+	UpdateUser(userId guuid.UUID, user UpdateUserDto, ctx context.Context) (UserResult, error)
+	UpsertUserByGoogleId(googleId string, user UserDb) (UserDb, error)
 }
 
-func UpdateUser(userId guuid.UUID, user UpdateUserDto, userService UpdateUserInterface, ctx context.Context) (UserResult, error) {
+type userService struct {
+	userRepositoryInterface
+}
+
+func (dep *userService) UpdateUser(userId guuid.UUID, user UpdateUserDto, ctx context.Context) (UserResult, error) {
 	result := UserResult{}
 
 	authUserId, err := helpers.GetCtxAuthUserId(ctx)
@@ -53,7 +51,7 @@ func UpdateUser(userId guuid.UUID, user UpdateUserDto, userService UpdateUserInt
 		return result, fmt.Errorf("User can update only own information")
 	}
 
-	userDb, err := userService.UpdateUser(userId, MapUpdateUserDbToUserDto(user))
+	userDb, err := dep.userRepositoryInterface.UpdateUser(userId, MapUpdateUserDbToUserDto(user))
 
 	if err != nil {
 		return result, err
@@ -64,13 +62,10 @@ func UpdateUser(userId guuid.UUID, user UpdateUserDto, userService UpdateUserInt
 	return result, err
 }
 
-type HandleGetUserInterface interface {
-	GetUserByIdDbInterface
-}
-
-func GetUser(userId guuid.UUID, userService HandleGetUserInterface, ctx context.Context) (UserResult, error) {
+func (dep *userService) GetUser(userId guuid.UUID, ctx context.Context) (UserResult, error) {
 	result := UserResult{}
-	user, err := userService.GetUserById(userId)
+
+	user, err := dep.userRepositoryInterface.GetUserById(userId)
 
 	if err != nil {
 		return result, err
@@ -79,4 +74,12 @@ func GetUser(userId guuid.UUID, userService HandleGetUserInterface, ctx context.
 	result.User = MapUserDbToUserDto(user)
 
 	return result, nil
+}
+
+func (dep *userService) UpsertUserByGoogleId(googleId string, user UserDb) (UserDb, error) {
+	return dep.userRepositoryInterface.UpsertUserByGoogleId(googleId, user)
+}
+
+var UserService UserServiceInterface = &userService{
+	userRepositoryInterface: &userRepository{},
 }
