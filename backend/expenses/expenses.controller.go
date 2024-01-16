@@ -54,7 +54,7 @@ func postExpenses(app *fiber.App) {
 // @Accept       json
 // @Produce      json
 // @Param        Authorization header string true "Bearer"
-// @Param        expenseId   path      uuid  true  ":expenseId"
+// @Param        expenseId   path      string  true  ":expenseId"
 // @Param        data body expenses.ExpenseUpsertDto true "Update expense model"
 // @Success      200  {object} expenses.ExpenseResult
 // @Failure      400  {object} helpers.ErrorResponse
@@ -127,7 +127,7 @@ func getExpenses(app *fiber.App) {
 // @Accept       json
 // @Produce      json
 // @Param        Authorization header string true "Bearer"
-// @Param        expenseId   path      uuid  true  ":expenseId"
+// @Param        expenseId   path      string  true  ":expenseId"
 // @Success      200  {object} expenses.ExpenseResult
 // @Failure      400  {object} helpers.ErrorResponse
 // @Router       /v1/expenses/:expenseId [get]
