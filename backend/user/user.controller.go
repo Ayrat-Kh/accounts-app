@@ -59,7 +59,7 @@ func handlePutUser(app *fiber.App) {
 // @Description  Get user info
 // @Tags         user
 // @Param        Authorization header string true "Bearer"
-// @Param        userId   path      string  true  ":userId|me"
+// @Param        userId   path      string  true  "uuid or me - to get info for the logged in user"
 // @Produce      json
 // @Success      200  {object} user.UserResult
 // @Failure      400  {object} helpers.ErrorResponse

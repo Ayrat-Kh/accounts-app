@@ -12,4 +12,4 @@ test:
 	go test -v ./user ./auth
 
 update-doc:
-	swag init -d cmd,auth,helpers,user
+	swag init -d cmd,auth,helpers,user,expenses
