@@ -9,8 +9,8 @@ import (
 
 type expensesRepositoryInterface interface {
 	GetUserExpenses(userId guuid.UUID, page uint32, pageSize uint32) ([]ExpenseDb, error)
-	GetExpense(expenseId guuid.UUID) (ExpenseDb, error)
-	UpsertExpense(expense ExpenseDb) (ExpenseDb, error)
+	GetExpenseByUserId(expenseId guuid.UUID) (ExpenseDb, error)
+	UpsertExpense(userId guuid.UUID, expense ExpenseDb) (ExpenseDb, error)
 }
 
 type expensesRepository struct {
@@ -24,18 +24,18 @@ func (rep *expensesRepository) GetUserExpenses(userId guuid.UUID, page int, page
 	return userExpenses, result.Error
 }
 
-func (rep *expensesRepository) GetExpense(expenseId guuid.UUID) (ExpenseDb, error) {
+func (rep *expensesRepository) GetExpenseByUserId(userId guuid.UUID, expenseId guuid.UUID) (ExpenseDb, error) {
 	userExpense := ExpenseDb{}
 
-	result := database.DB.Where("id = @expenseId", sql.Named("expenseId", expenseId)).First(&userExpense)
+	result := database.DB.Where("id = @expenseId AND user_id = @userId", sql.Named("expenseId", expenseId), sql.Named("userId", userId)).First(&userExpense)
 
 	return userExpense, result.Error
 }
 
-func (rep *expensesRepository) UpsertExpense(expense ExpenseDb) (ExpenseDb, error) {
+func (rep *expensesRepository) UpsertExpense(userId guuid.UUID, expense ExpenseDb) (ExpenseDb, error) {
 	updateExpense := ExpenseDb{}
 
-	result := database.DB.Save(expense)
+	result := database.DB.Where("user_id = @userId", sql.Named("userId", userId)).Save(expense)
 
 	return updateExpense, result.Error
 }

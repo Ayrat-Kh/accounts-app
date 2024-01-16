@@ -13,6 +13,14 @@ type ExpenseItemDto struct {
 
 type ExpenseItemsDto []ExpenseItemDto
 
+type ExpenseUpsertDto struct {
+	Details      ExpenseItemsDb `json:"details"`
+	Total        float64        `json:"total"`
+	CurrencyCode string         `json:"currencyCode"`
+	Category     string         `json:"category"`
+	Name         string         `json:"name"`
+}
+
 type ExpenseDto struct {
 	Id           guuid.UUID     `json:"id"`
 	CreatedAt    int64          `json:"createdAt"`
