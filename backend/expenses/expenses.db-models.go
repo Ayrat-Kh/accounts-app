@@ -36,13 +36,13 @@ func (j ExpenseItemsDb) Scan(value interface{}) error {
 
 type ExpenseDb struct {
 	Id           guuid.UUID     `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
-	CreatedAt    int64          `gorm:"autoCreateTime"`
+	CreatedAt    int64          `gorm:"autoCreateTime;index"`
 	UpdatedAt    int64          `gorm:"autoUpdateTime:milli"`
-	UserId       guuid.UUID     `gorm:"references:Id"`
+	UserId       guuid.UUID     `gorm:"references:Id;index"`
 	UserDb       user.UserDb    `gorm:"references:Id;foreignKey:UserId;constraint:OnUpdate:CASCADE;OnDelete:CASCADE;"`
+	CurrencyCode string         `gorm:"type:varchar(100);"`
+	Category     string         `gorm:"type:varchar(100);"`
+	Name         string         `gorm:"type:varchar(100);"`
 	Details      ExpenseItemsDb `gorm:"type:jsonb"`
 	Total        float64
-	CurrencyCode string `gorm:"type:varchar(100);"`
-	Category     string `gorm:"type:varchar(100);"`
-	Name         string `gorm:"type:varchar(100);"`
 }
