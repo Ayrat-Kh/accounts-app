@@ -24,3 +24,11 @@ type ExpenseDto struct {
 	Category     string         `json:"category"`
 	Name         string         `json:"name"`
 }
+
+type ExpensesResult struct {
+	Expenses []ExpenseDto `json:"expenses"`
+}
+
+type ExpenseResult struct {
+	Expense ExpenseDto `json:"expense"`
+}
