@@ -14,6 +14,65 @@ definitions:
       user:
         $ref: '#/definitions/user.UserDto'
     type: object
+  expenses.ExpenseDto:
+    properties:
+      category:
+        type: string
+      createdAt:
+        type: integer
+      currencyCode:
+        type: string
+      details:
+        items:
+          $ref: '#/definitions/expenses.ExpenseItemDb'
+        type: array
+      id:
+        type: string
+      name:
+        type: string
+      total:
+        type: number
+      updatedAt:
+        type: integer
+      userId:
+        type: string
+    type: object
+  expenses.ExpenseItemDb:
+    properties:
+      currencyCode:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  expenses.ExpenseResult:
+    properties:
+      expense:
+        $ref: '#/definitions/expenses.ExpenseDto'
+    type: object
+  expenses.ExpenseUpsertDto:
+    properties:
+      category:
+        type: string
+      currencyCode:
+        type: string
+      details:
+        items:
+          $ref: '#/definitions/expenses.ExpenseItemDb'
+        type: array
+      name:
+        type: string
+      total:
+        type: number
+    type: object
+  expenses.ExpensesResult:
+    properties:
+      expenses:
+        items:
+          $ref: '#/definitions/expenses.ExpenseDto'
+        type: array
+    type: object
   helpers.ErrorResponse:
     properties:
       code:
@@ -29,6 +88,8 @@ definitions:
         type: string
       lastName:
         type: string
+      settings:
+        $ref: '#/definitions/user.UserSettingsDb'
     type: object
   user.UserDto:
     properties:
@@ -44,11 +105,23 @@ definitions:
         type: string
       lastName:
         type: string
+      settings:
+        $ref: '#/definitions/user.UserSettingsDto'
     type: object
   user.UserResult:
     properties:
       user:
         $ref: '#/definitions/user.UserDto'
+    type: object
+  user.UserSettingsDb:
+    properties:
+      defaultCurrency:
+        type: string
+    type: object
+  user.UserSettingsDto:
+    properties:
+      defaultCurrency:
+        type: string
     type: object
 info:
   contact:
@@ -86,6 +159,136 @@ paths:
       summary: Google auth login
       tags:
       - auth
+  /v1/expenses:
+    get:
+      consumes:
+      - application/json
+      description: Get expenses for the logged in user
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: page or 1 by default
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: pageSize or 300 by default
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/expenses.ExpensesResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ErrorResponse'
+      summary: Get expenses for the logged in user
+      tags:
+      - expenses
+    post:
+      consumes:
+      - application/json
+      description: Create an expense for a logged in user
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Update expense model
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/expenses.ExpenseUpsertDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/expenses.ExpenseResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ErrorResponse'
+      summary: Create an expense for a logged in user
+      tags:
+      - expenses
+  /v1/expenses/:expenseId:
+    get:
+      consumes:
+      - application/json
+      description: Get expense by expenseId
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: :expenseId
+        in: path
+        name: expenseId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/expenses.ExpenseResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ErrorResponse'
+      summary: Get expense by expenseId
+      tags:
+      - expenses
+    put:
+      consumes:
+      - application/json
+      description: Update an expense for a logged in user
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: :expenseId
+        in: path
+        name: expenseId
+        required: true
+        type: string
+      - description: Update expense model
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/expenses.ExpenseUpsertDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/expenses.ExpenseResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ErrorResponse'
+      summary: Update an expense for a logged in user
+      tags:
+      - expenses
   /v1/users/:userId:
     get:
       description: Get user info
@@ -93,6 +296,11 @@ paths:
       - description: Bearer
         in: header
         name: Authorization
+        required: true
+        type: string
+      - description: uuid or me - to get info for the logged in user
+        in: path
+        name: userId
         required: true
         type: string
       produces:

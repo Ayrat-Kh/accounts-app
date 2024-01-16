@@ -21,7 +21,6 @@ import (
 // @Failure      400  {object} helpers.ErrorResponse
 // @Router       /v1/users/:userId [put]
 func handlePutUser(app *fiber.App) {
-	// handler
 	app.Put("/v1/users/:userId", func(c *fiber.Ctx) error {
 		ctx, err := helpers.BuildAuthAppContext(c, context.Background())
 		requestId := helpers.GetCtxRequestId(ctx)
@@ -60,13 +59,12 @@ func handlePutUser(app *fiber.App) {
 // @Description  Get user info
 // @Tags         user
 // @Param        Authorization header string true "Bearer"
+// @Param        userId   path      string  true  "uuid or me - to get info for the logged in user"
 // @Produce      json
 // @Success      200  {object} user.UserResult
 // @Failure      400  {object} helpers.ErrorResponse
 // @Router       /v1/users/:userId [get]
 func handleGetUser(app *fiber.App) {
-
-	// handler
 	app.Get("/v1/users/:userId", func(c *fiber.Ctx) error {
 		ctx, err := helpers.BuildAuthAppContext(c, context.Background())
 		requestId := helpers.GetCtxRequestId(ctx)

@@ -11,6 +11,7 @@ import (
 
 	"github.com/Ayrat-Kh/expenso-app/backend/auth"
 	"github.com/Ayrat-Kh/expenso-app/backend/constants"
+	"github.com/Ayrat-Kh/expenso-app/backend/expenses"
 	"github.com/Ayrat-Kh/expenso-app/backend/helpers"
 	"github.com/Ayrat-Kh/expenso-app/backend/user"
 
@@ -44,6 +45,7 @@ func Initalize(app *fiber.App) {
 	}))
 
 	user.InitPrivate(app)
+	expenses.InitPrivate(app)
 
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Status(404).JSON(helpers.BuildErrorResponse(helpers.CODE_NOT_FOUND, "NotFound"))

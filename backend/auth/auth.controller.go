@@ -20,7 +20,6 @@ import (
 // @Failure      400  {object} helpers.ErrorResponse
 // @Router       /login/google-auth [post]
 func postAuthGoogleUser(app *fiber.App) {
-	// handler
 	app.Post("/login/google-auth", func(c *fiber.Ctx) error {
 		ctx := helpers.BuildAppContext(c, context.Background())
 		requestId := helpers.GetCtxRequestId(ctx)
