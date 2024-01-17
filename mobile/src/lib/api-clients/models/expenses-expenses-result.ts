@@ -13,8 +13,21 @@
  */
 
 
+// May contain unused imports in some cases
+// @ts-ignore
+import { ExpensesExpenseDto } from './expenses-expense-dto';
 
-export * from './api/auth-api';
-export * from './api/expenses-api';
-export * from './api/user-api';
+/**
+ * 
+ * @export
+ * @interface ExpensesExpensesResult
+ */
+export interface ExpensesExpensesResult {
+    /**
+     * 
+     * @type {Array<ExpensesExpenseDto>}
+     * @memberof ExpensesExpensesResult
+     */
+    'expenses': Array<ExpensesExpenseDto>;
+}
 

@@ -13,8 +13,21 @@
  */
 
 
+// May contain unused imports in some cases
+// @ts-ignore
+import { UserUserDto } from './user-user-dto';
 
-export * from './api/auth-api';
-export * from './api/expenses-api';
-export * from './api/user-api';
+/**
+ * 
+ * @export
+ * @interface UserUserResult
+ */
+export interface UserUserResult {
+    /**
+     * 
+     * @type {UserUserDto}
+     * @memberof UserUserResult
+     */
+    'user': UserUserDto;
+}
 

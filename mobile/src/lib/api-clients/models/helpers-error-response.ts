@@ -14,7 +14,23 @@
 
 
 
-export * from './api/auth-api';
-export * from './api/expenses-api';
-export * from './api/user-api';
+/**
+ * 
+ * @export
+ * @interface HelpersErrorResponse
+ */
+export interface HelpersErrorResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof HelpersErrorResponse
+     */
+    'code': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof HelpersErrorResponse
+     */
+    'message': string;
+}
 

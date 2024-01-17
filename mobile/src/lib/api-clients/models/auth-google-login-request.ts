@@ -14,7 +14,17 @@
 
 
 
-export * from './api/auth-api';
-export * from './api/expenses-api';
-export * from './api/user-api';
+/**
+ * 
+ * @export
+ * @interface AuthGoogleLoginRequest
+ */
+export interface AuthGoogleLoginRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof AuthGoogleLoginRequest
+     */
+    'accessToken': string;
+}
 

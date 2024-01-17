@@ -14,7 +14,17 @@
 
 
 
-export * from './api/auth-api';
-export * from './api/expenses-api';
-export * from './api/user-api';
+/**
+ * 
+ * @export
+ * @interface UserUserSettingsDb
+ */
+export interface UserUserSettingsDb {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserUserSettingsDb
+     */
+    'defaultCurrency'?: string;
+}
 
