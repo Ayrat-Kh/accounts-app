@@ -8,8 +8,10 @@ import type { AxiosError, AxiosResponse } from 'axios';
 import type { definitions } from '../api-schema';
 import { axiosInstance } from './axios';
 
-export type UserLoginResult = definitions['auth.UserLoginResult'];
-export type GoogleLoginRequest = definitions['auth.GoogleLoginRequest'];
+export type ExpenseResult = definitions['expenses.ExpenseResult'];
+export type ExpensesResult = definitions['expenses.ExpensesResult'];
+export type ExpenseDto = definitions['expenses.ExpenseDto'];
+export type ExpenseItemDto = definitions['expenses.ExpenseItemDto'];
 export type ErrorResponse = definitions['helpers.ErrorResponse'];
 
 const googleAppLoginMutation = async (
