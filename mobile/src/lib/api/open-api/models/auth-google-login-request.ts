@@ -25,6 +25,6 @@ export interface AuthGoogleLoginRequest {
      * @type {string}
      * @memberof AuthGoogleLoginRequest
      */
-    'accessToken': string;
+    'idToken': string;
 }
 

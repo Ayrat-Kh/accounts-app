@@ -341,10 +341,10 @@ const docTemplate = `{
         "auth.GoogleLoginRequest": {
             "type": "object",
             "required": [
-                "accessToken"
+                "idToken"
             ],
             "properties": {
-                "accessToken": {
+                "idToken": {
                     "type": "string"
                 }
             }

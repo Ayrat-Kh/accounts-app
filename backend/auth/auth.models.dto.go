@@ -4,7 +4,7 @@ import user "github.com/Ayrat-Kh/expenso-app/backend/user"
 
 // service dtos
 type GoogleLoginRequest struct {
-	AccessToken string `json:"accessToken" validate:"required"`
+	IdToken string `json:"idToken" validate:"required"`
 }
 
 type UserLoginResult struct {

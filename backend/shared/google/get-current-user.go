@@ -8,34 +8,42 @@ import (
 )
 
 type GoogleTokenInfo struct {
+	Iss           string `json:"iss"`
 	Azp           string `json:"azp"`
 	Aud           string `json:"aud"`
 	Sub           string `json:"sub"`
-	Scope         string `json:"scope"`
-	Exp           string `json:"exp"`        // num
-	ExpiresIn     string `json:"expires_in"` // num
+	Exp           string `json:"exp"` // num
 	Email         string `json:"email"`
 	EmailVerified string `json:"email_verified"` // bool
-	AccessType    string `json:"access_type"`
+	AtHash        string `json:"at_hash"`
+	GivenName     string `json:"given_name"`
+	FamilyName    string `json:"family_name"`
+	Name          string `json:"name"`
+	Picture       string `json:"picture"`
+	Locale        string `json:"locale"`
+	Iat           string `json:"iat"`
+	ALg           string `json:"alg"`
+	Kid           string `json:"kid"`
+	Typ           string `json:"typ"`
 }
 
 type GoogleLoginInterface interface {
-	GetGoogleUser(accessToken string) (GoogleTokenInfo, error)
+	GetGoogleUser(idToken string) (GoogleTokenInfo, error)
 }
 
 type GoogleApiClient struct {
 	GoogleLoginInterface
 }
 
-func (client *GoogleApiClient) GetGoogleUser(accessToken string) (GoogleTokenInfo, error) {
+func (client *GoogleApiClient) GetGoogleUser(idToken string) (GoogleTokenInfo, error) {
 	result := GoogleTokenInfo{}
 
 	u, _ := url.Parse("https://www.googleapis.com/oauth2/v3/tokeninfo")
 	queryValues := u.Query()
-	queryValues.Set("access_token", accessToken)
+	queryValues.Set("id_token", idToken)
 	u.RawQuery = queryValues.Encode()
 
-	response, err := http.Get(u.String())
+	response, err := http.Post(u.String(), "application/x-www-form-urlencoded", nil)
 
 	if err != nil {
 		return GoogleTokenInfo{}, err

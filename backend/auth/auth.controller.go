@@ -33,7 +33,7 @@ func postAuthGoogleUser(app *fiber.App) {
 			)
 		}
 
-		userLoginResult, err := AuthService.GoogleAuth(googleLoginRequest.AccessToken, ctx)
+		userLoginResult, err := AuthService.GoogleAuth(googleLoginRequest.IdToken, ctx)
 
 		if err != nil {
 			log.Errorf("%s %s", requestId, err)
