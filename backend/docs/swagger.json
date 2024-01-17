@@ -469,7 +469,8 @@
         "expenses.ExpensesResult": {
             "type": "object",
             "required": [
-                "expenses"
+                "expenses",
+                "paginationResult"
             ],
             "properties": {
                 "expenses": {
@@ -477,6 +478,9 @@
                     "items": {
                         "$ref": "#/definitions/expenses.ExpenseDto"
                     }
+                },
+                "paginationResult": {
+                    "$ref": "#/definitions/helpers.PaginationResult"
                 }
             }
         },
@@ -492,6 +496,25 @@
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "helpers.PaginationResult": {
+            "type": "object",
+            "required": [
+                "currentPage",
+                "itemsPerPage",
+                "totalPages"
+            ],
+            "properties": {
+                "currentPage": {
+                    "type": "integer"
+                },
+                "itemsPerPage": {
+                    "type": "integer"
+                },
+                "totalPages": {
+                    "type": "integer"
                 }
             }
         },

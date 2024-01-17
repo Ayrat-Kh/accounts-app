@@ -1,6 +1,7 @@
 package expenses
 
 import (
+	"github.com/Ayrat-Kh/expenso-app/backend/helpers"
 	guuid "github.com/google/uuid"
 	_ "github.com/lib/pq"
 )
@@ -34,7 +35,8 @@ type ExpenseDto struct {
 }
 
 type ExpensesResult struct {
-	Expenses []ExpenseDto `json:"expenses" validate:"required"`
+	Expenses         []ExpenseDto             `json:"expenses" validate:"required"`
+	PaginationResult helpers.PaginationResult `json:"paginationResult" validate:"required"`
 }
 
 type ExpenseResult struct {

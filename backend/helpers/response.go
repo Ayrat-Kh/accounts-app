@@ -14,6 +14,12 @@ type ErrorResponse struct {
 	Message string `json:"message" validate:"required"`
 }
 
+type PaginationResult struct {
+	ItemsPerPage int `json:"itemsPerPage" validate:"required"`
+	CurrentPage  int `json:"currentPage" validate:"required"`
+	TotalPages   int `json:"totalPages" validate:"required"`
+}
+
 func BuildErrorResponse(code string, message string) ErrorResponse {
 	return ErrorResponse{
 		code,

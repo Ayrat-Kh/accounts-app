@@ -477,7 +477,8 @@ const docTemplate = `{
         "expenses.ExpensesResult": {
             "type": "object",
             "required": [
-                "expenses"
+                "expenses",
+                "paginationResult"
             ],
             "properties": {
                 "expenses": {
@@ -485,6 +486,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/expenses.ExpenseDto"
                     }
+                },
+                "paginationResult": {
+                    "$ref": "#/definitions/helpers.PaginationResult"
                 }
             }
         },
@@ -500,6 +504,25 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "helpers.PaginationResult": {
+            "type": "object",
+            "required": [
+                "currentPage",
+                "itemsPerPage",
+                "totalPages"
+            ],
+            "properties": {
+                "currentPage": {
+                    "type": "integer"
+                },
+                "itemsPerPage": {
+                    "type": "integer"
+                },
+                "totalPages": {
+                    "type": "integer"
                 }
             }
         },

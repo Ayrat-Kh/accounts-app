@@ -83,13 +83,14 @@ func (service *expenseService) GetUserExpenses(userId guuid.UUID, page int, page
 
 	}
 
-	expenses := make([]ExpenseDto, len(resultDb))
+	expenses := make([]ExpenseDto, len(resultDb.Expenses))
 	for i := range expenses {
-		resultDb[i].ToExpenseDto(&expenses[i])
+		resultDb.Expenses[i].ToExpenseDto(&expenses[i])
 	}
 
 	return ExpensesResult{
-		Expenses: expenses,
+		Expenses:         expenses,
+		PaginationResult: resultDb.PaginationResult,
 	}, err
 }
 

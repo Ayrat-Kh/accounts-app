@@ -100,8 +100,11 @@ definitions:
         items:
           $ref: '#/definitions/expenses.ExpenseDto'
         type: array
+      paginationResult:
+        $ref: '#/definitions/helpers.PaginationResult'
     required:
     - expenses
+    - paginationResult
     type: object
   helpers.ErrorResponse:
     properties:
@@ -112,6 +115,19 @@ definitions:
     required:
     - code
     - message
+    type: object
+  helpers.PaginationResult:
+    properties:
+      currentPage:
+        type: integer
+      itemsPerPage:
+        type: integer
+      totalPages:
+        type: integer
+    required:
+    - currentPage
+    - itemsPerPage
+    - totalPages
     type: object
   user.UpdateUserDto:
     properties:
