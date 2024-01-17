@@ -332,6 +332,9 @@
     "definitions": {
         "auth.GoogleLoginRequest": {
             "type": "object",
+            "required": [
+                "accessToken"
+            ],
             "properties": {
                 "accessToken": {
                     "type": "string"
@@ -340,6 +343,11 @@
         },
         "auth.UserLoginResult": {
             "type": "object",
+            "required": [
+                "accessToken",
+                "sessionToken",
+                "user"
+            ],
             "properties": {
                 "accessToken": {
                     "type": "string"
@@ -354,6 +362,17 @@
         },
         "expenses.ExpenseDto": {
             "type": "object",
+            "required": [
+                "category",
+                "createdAt",
+                "currencyCode",
+                "details",
+                "id",
+                "name",
+                "total",
+                "updatedAt",
+                "userId"
+            ],
             "properties": {
                 "category": {
                     "type": "string"
@@ -367,7 +386,7 @@
                 "details": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/expenses.ExpenseItemDb"
+                        "$ref": "#/definitions/expenses.ExpenseItemDto"
                     }
                 },
                 "id": {
@@ -387,8 +406,13 @@
                 }
             }
         },
-        "expenses.ExpenseItemDb": {
+        "expenses.ExpenseItemDto": {
             "type": "object",
+            "required": [
+                "currencyCode",
+                "name",
+                "price"
+            ],
             "properties": {
                 "currencyCode": {
                     "type": "string"
@@ -403,6 +427,9 @@
         },
         "expenses.ExpenseResult": {
             "type": "object",
+            "required": [
+                "expense"
+            ],
             "properties": {
                 "expense": {
                     "$ref": "#/definitions/expenses.ExpenseDto"
@@ -411,6 +438,13 @@
         },
         "expenses.ExpenseUpsertDto": {
             "type": "object",
+            "required": [
+                "category",
+                "currencyCode",
+                "details",
+                "name",
+                "total"
+            ],
             "properties": {
                 "category": {
                     "type": "string"
@@ -421,7 +455,7 @@
                 "details": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/expenses.ExpenseItemDb"
+                        "$ref": "#/definitions/expenses.ExpenseItemDto"
                     }
                 },
                 "name": {
@@ -434,6 +468,9 @@
         },
         "expenses.ExpensesResult": {
             "type": "object",
+            "required": [
+                "expenses"
+            ],
             "properties": {
                 "expenses": {
                     "type": "array",
@@ -445,6 +482,10 @@
         },
         "helpers.ErrorResponse": {
             "type": "object",
+            "required": [
+                "code",
+                "message"
+            ],
             "properties": {
                 "code": {
                     "type": "string"
@@ -456,6 +497,9 @@
         },
         "user.UpdateUserDto": {
             "type": "object",
+            "required": [
+                "settings"
+            ],
             "properties": {
                 "alias": {
                     "type": "string"
@@ -473,6 +517,11 @@
         },
         "user.UserDto": {
             "type": "object",
+            "required": [
+                "email",
+                "id",
+                "settings"
+            ],
             "properties": {
                 "alias": {
                     "type": "string"
@@ -499,6 +548,9 @@
         },
         "user.UserResult": {
             "type": "object",
+            "required": [
+                "user"
+            ],
             "properties": {
                 "user": {
                     "$ref": "#/definitions/user.UserDto"

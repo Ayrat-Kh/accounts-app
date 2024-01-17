@@ -340,6 +340,9 @@ const docTemplate = `{
     "definitions": {
         "auth.GoogleLoginRequest": {
             "type": "object",
+            "required": [
+                "accessToken"
+            ],
             "properties": {
                 "accessToken": {
                     "type": "string"
@@ -348,6 +351,11 @@ const docTemplate = `{
         },
         "auth.UserLoginResult": {
             "type": "object",
+            "required": [
+                "accessToken",
+                "sessionToken",
+                "user"
+            ],
             "properties": {
                 "accessToken": {
                     "type": "string"
@@ -362,6 +370,17 @@ const docTemplate = `{
         },
         "expenses.ExpenseDto": {
             "type": "object",
+            "required": [
+                "category",
+                "createdAt",
+                "currencyCode",
+                "details",
+                "id",
+                "name",
+                "total",
+                "updatedAt",
+                "userId"
+            ],
             "properties": {
                 "category": {
                     "type": "string"
@@ -375,7 +394,7 @@ const docTemplate = `{
                 "details": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/expenses.ExpenseItemDb"
+                        "$ref": "#/definitions/expenses.ExpenseItemDto"
                     }
                 },
                 "id": {
@@ -395,8 +414,13 @@ const docTemplate = `{
                 }
             }
         },
-        "expenses.ExpenseItemDb": {
+        "expenses.ExpenseItemDto": {
             "type": "object",
+            "required": [
+                "currencyCode",
+                "name",
+                "price"
+            ],
             "properties": {
                 "currencyCode": {
                     "type": "string"
@@ -411,6 +435,9 @@ const docTemplate = `{
         },
         "expenses.ExpenseResult": {
             "type": "object",
+            "required": [
+                "expense"
+            ],
             "properties": {
                 "expense": {
                     "$ref": "#/definitions/expenses.ExpenseDto"
@@ -419,6 +446,13 @@ const docTemplate = `{
         },
         "expenses.ExpenseUpsertDto": {
             "type": "object",
+            "required": [
+                "category",
+                "currencyCode",
+                "details",
+                "name",
+                "total"
+            ],
             "properties": {
                 "category": {
                     "type": "string"
@@ -429,7 +463,7 @@ const docTemplate = `{
                 "details": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/expenses.ExpenseItemDb"
+                        "$ref": "#/definitions/expenses.ExpenseItemDto"
                     }
                 },
                 "name": {
@@ -442,6 +476,9 @@ const docTemplate = `{
         },
         "expenses.ExpensesResult": {
             "type": "object",
+            "required": [
+                "expenses"
+            ],
             "properties": {
                 "expenses": {
                     "type": "array",
@@ -453,6 +490,10 @@ const docTemplate = `{
         },
         "helpers.ErrorResponse": {
             "type": "object",
+            "required": [
+                "code",
+                "message"
+            ],
             "properties": {
                 "code": {
                     "type": "string"
@@ -464,6 +505,9 @@ const docTemplate = `{
         },
         "user.UpdateUserDto": {
             "type": "object",
+            "required": [
+                "settings"
+            ],
             "properties": {
                 "alias": {
                     "type": "string"
@@ -481,6 +525,11 @@ const docTemplate = `{
         },
         "user.UserDto": {
             "type": "object",
+            "required": [
+                "email",
+                "id",
+                "settings"
+            ],
             "properties": {
                 "alias": {
                     "type": "string"
@@ -507,6 +556,9 @@ const docTemplate = `{
         },
         "user.UserResult": {
             "type": "object",
+            "required": [
+                "user"
+            ],
             "properties": {
                 "user": {
                     "$ref": "#/definitions/user.UserDto"

@@ -6,37 +6,37 @@ import (
 )
 
 type ExpenseItemDto struct {
-	Name         string  `json:"name"`
-	Price        float64 `json:"price"`
-	CurrencyCode string  `json:"currencyCode"`
+	Name         string  `json:"name" validate:"required"`
+	Price        float64 `json:"price" validate:"required"`
+	CurrencyCode string  `json:"currencyCode" validate:"required"`
 }
 
 type ExpenseItemsDto []ExpenseItemDto
 
 type ExpenseUpsertDto struct {
-	Details      ExpenseItemsDb `json:"details"`
-	Total        float64        `json:"total"`
-	CurrencyCode string         `json:"currencyCode"`
-	Category     string         `json:"category"`
-	Name         string         `json:"name"`
+	Details      ExpenseItemsDto `json:"details" validate:"required"`
+	Total        float64         `json:"total" validate:"required"`
+	CurrencyCode string          `json:"currencyCode" validate:"required"`
+	Category     string          `json:"category" validate:"required"`
+	Name         string          `json:"name" validate:"required"`
 }
 
 type ExpenseDto struct {
-	Id           guuid.UUID     `json:"id"`
-	CreatedAt    int64          `json:"createdAt"`
-	UpdatedAt    int64          `json:"updatedAt"`
-	UserId       guuid.UUID     `json:"userId"`
-	Details      ExpenseItemsDb `json:"details"`
-	Total        float64        `json:"total"`
-	CurrencyCode string         `json:"currencyCode"`
-	Category     string         `json:"category"`
-	Name         string         `json:"name"`
+	Id           guuid.UUID      `json:"id" validate:"required"`
+	CreatedAt    int64           `json:"createdAt" validate:"required"`
+	UpdatedAt    int64           `json:"updatedAt" validate:"required"`
+	UserId       guuid.UUID      `json:"userId" validate:"required"`
+	Details      ExpenseItemsDto `json:"details" validate:"required"`
+	Total        float64         `json:"total" validate:"required"`
+	CurrencyCode string          `json:"currencyCode" validate:"required"`
+	Category     string          `json:"category" validate:"required"`
+	Name         string          `json:"name" validate:"required"`
 }
 
 type ExpensesResult struct {
-	Expenses []ExpenseDto `json:"expenses"`
+	Expenses []ExpenseDto `json:"expenses" validate:"required"`
 }
 
 type ExpenseResult struct {
-	Expense ExpenseDto `json:"expense"`
+	Expense ExpenseDto `json:"expense" validate:"required"`
 }

@@ -4,6 +4,8 @@ definitions:
     properties:
       accessToken:
         type: string
+    required:
+    - accessToken
     type: object
   auth.UserLoginResult:
     properties:
@@ -13,6 +15,10 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/user.UserDto'
+    required:
+    - accessToken
+    - sessionToken
+    - user
     type: object
   expenses.ExpenseDto:
     properties:
@@ -24,7 +30,7 @@ definitions:
         type: string
       details:
         items:
-          $ref: '#/definitions/expenses.ExpenseItemDb'
+          $ref: '#/definitions/expenses.ExpenseItemDto'
         type: array
       id:
         type: string
@@ -36,8 +42,18 @@ definitions:
         type: integer
       userId:
         type: string
+    required:
+    - category
+    - createdAt
+    - currencyCode
+    - details
+    - id
+    - name
+    - total
+    - updatedAt
+    - userId
     type: object
-  expenses.ExpenseItemDb:
+  expenses.ExpenseItemDto:
     properties:
       currencyCode:
         type: string
@@ -45,11 +61,17 @@ definitions:
         type: string
       price:
         type: number
+    required:
+    - currencyCode
+    - name
+    - price
     type: object
   expenses.ExpenseResult:
     properties:
       expense:
         $ref: '#/definitions/expenses.ExpenseDto'
+    required:
+    - expense
     type: object
   expenses.ExpenseUpsertDto:
     properties:
@@ -59,12 +81,18 @@ definitions:
         type: string
       details:
         items:
-          $ref: '#/definitions/expenses.ExpenseItemDb'
+          $ref: '#/definitions/expenses.ExpenseItemDto'
         type: array
       name:
         type: string
       total:
         type: number
+    required:
+    - category
+    - currencyCode
+    - details
+    - name
+    - total
     type: object
   expenses.ExpensesResult:
     properties:
@@ -72,6 +100,8 @@ definitions:
         items:
           $ref: '#/definitions/expenses.ExpenseDto'
         type: array
+    required:
+    - expenses
     type: object
   helpers.ErrorResponse:
     properties:
@@ -79,6 +109,9 @@ definitions:
         type: string
       message:
         type: string
+    required:
+    - code
+    - message
     type: object
   user.UpdateUserDto:
     properties:
@@ -90,6 +123,8 @@ definitions:
         type: string
       settings:
         $ref: '#/definitions/user.UserSettingsDb'
+    required:
+    - settings
     type: object
   user.UserDto:
     properties:
@@ -107,11 +142,17 @@ definitions:
         type: string
       settings:
         $ref: '#/definitions/user.UserSettingsDto'
+    required:
+    - email
+    - id
+    - settings
     type: object
   user.UserResult:
     properties:
       user:
         $ref: '#/definitions/user.UserDto'
+    required:
+    - user
     type: object
   user.UserSettingsDb:
     properties:
