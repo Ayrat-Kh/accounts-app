@@ -5,20 +5,19 @@ import {
 } from '@tanstack/react-query';
 import type { AxiosError, AxiosResponse } from 'axios';
 
-import type { definitions } from '../api-schema';
 import { axiosInstance } from './axios';
-
-export type UserLoginResult = definitions['auth.UserLoginResult'];
-export type GoogleLoginRequest = definitions['auth.GoogleLoginRequest'];
-export type ErrorResponse = definitions['helpers.ErrorResponse'];
+import type { AuthGoogleLoginRequest } from './models/auth-google-login-request';
+import type { AuthUserLoginResult } from './models/auth-user-login-result';
+import type { HelpersErrorResponse } from './models/helpers-error-response';
+import type { UserUserResult } from './models/user-user-result';
 
 const googleAppLoginMutation = async (
-  request: GoogleLoginRequest,
-): Promise<definitions['auth.UserLoginResult']> => {
+  request: AuthGoogleLoginRequest,
+): Promise<AuthUserLoginResult> => {
   try {
     const { data } = await axiosInstance.post<
-      GoogleLoginRequest,
-      AxiosResponse<UserLoginResult>
+      AuthGoogleLoginRequest,
+      AxiosResponse<AuthUserLoginResult>
     >('/login/google-auth', request);
 
     return data;
@@ -33,11 +32,9 @@ export const useGoogleAppLoginMutation = () =>
     mutationFn: googleAppLoginMutation,
   });
 
-export type UserResult = definitions['user.UserResult'];
-
-const getMe = async (): Promise<UserResult> => {
+const getMe = async (): Promise<UserUserResult> => {
   try {
-    const { data } = await axiosInstance.get<UserResult>('/v1/users/me');
+    const { data } = await axiosInstance.get<UserUserResult>('/v1/users/me');
 
     return data;
   } catch (error) {
@@ -49,7 +46,7 @@ const getMe = async (): Promise<UserResult> => {
 export const UseGetMeKey = ['me'];
 
 export type UseGetMeParams = Omit<
-  UseQueryOptions<UserResult, ErrorResponse>,
+  UseQueryOptions<UserUserResult, HelpersErrorResponse>,
   'queryFn' | 'queryKey'
 >;
 
