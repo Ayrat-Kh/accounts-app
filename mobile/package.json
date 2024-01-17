@@ -7,7 +7,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "test": "jest",
-    "generate-api-schema": "openapi-generator-cli generate -g typescript-axios -i ../backend/docs/swagger.yaml -o ./src/lib/api/ -c open-api-config.yaml --global-property models"
+    "generate-api-schema": "openapi-generator-cli generate -g typescript-axios -i ../backend/docs/swagger.yaml -o ./src/lib/api/open-api -c open-api-config.yaml --global-property models,apis,supportingFiles"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.18.2",

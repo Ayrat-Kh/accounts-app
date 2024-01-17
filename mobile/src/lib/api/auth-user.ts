@@ -3,23 +3,26 @@ import {
   useMutation,
   useQuery,
 } from '@tanstack/react-query';
-import type { AxiosError, AxiosResponse } from 'axios';
+import type { AxiosError } from 'axios';
 
 import { axiosInstance } from './axios';
-import type { AuthGoogleLoginRequest } from './models/auth-google-login-request';
-import type { AuthUserLoginResult } from './models/auth-user-login-result';
-import type { HelpersErrorResponse } from './models/helpers-error-response';
-import type { UserUserResult } from './models/user-user-result';
+import {
+  AuthApi,
+  type AuthGoogleLoginRequest,
+  type AuthUserLoginResult,
+  type HelpersErrorResponse,
+  UserApi,
+  type UserUserResult,
+} from './open-api';
+
+const authApi = new AuthApi(undefined, undefined, axiosInstance);
+const userApi = new UserApi(undefined, undefined, axiosInstance);
 
 const googleAppLoginMutation = async (
   request: AuthGoogleLoginRequest,
 ): Promise<AuthUserLoginResult> => {
   try {
-    const { data } = await axiosInstance.post<
-      AuthGoogleLoginRequest,
-      AxiosResponse<AuthUserLoginResult>
-    >('/login/google-auth', request);
-
+    const { data } = await authApi.loginGoogleAuthPost(request);
     return data;
   } catch (error) {
     const axiosError = error as AxiosError;
@@ -34,7 +37,8 @@ export const useGoogleAppLoginMutation = () =>
 
 const getMe = async (): Promise<UserUserResult> => {
   try {
-    const { data } = await axiosInstance.get<UserUserResult>('/v1/users/me');
+    // authorization should be empty token will be passed in interceptor
+    const { data } = await userApi.v1UsersUserIdGet('', 'me');
 
     return data;
   } catch (error) {
@@ -45,7 +49,7 @@ const getMe = async (): Promise<UserUserResult> => {
 
 export const UseGetMeKey = ['me'];
 
-export type UseGetMeParams = Omit<
+type UseGetMeParams = Omit<
   UseQueryOptions<UserUserResult, HelpersErrorResponse>,
   'queryFn' | 'queryKey'
 >;

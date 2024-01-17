@@ -16,6 +16,9 @@
 // May contain unused imports in some cases
 // @ts-ignore
 import { ExpensesExpenseDto } from './expenses-expense-dto';
+// May contain unused imports in some cases
+// @ts-ignore
+import { HelpersPaginationResult } from './helpers-pagination-result';
 
 /**
  * 
@@ -29,5 +32,11 @@ export interface ExpensesExpensesResult {
      * @memberof ExpensesExpensesResult
      */
     'expenses': Array<ExpensesExpenseDto>;
+    /**
+     * 
+     * @type {HelpersPaginationResult}
+     * @memberof ExpensesExpensesResult
+     */
+    'paginationResult': HelpersPaginationResult;
 }
 

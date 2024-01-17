@@ -1,27 +1,30 @@
 import {
-  type UseQueryOptions,
-  useMutation,
-  useQuery,
+  type InfiniteData,
+  type UndefinedInitialDataInfiniteOptions,
+  useInfiniteQuery,
 } from '@tanstack/react-query';
-import type { AxiosError, AxiosResponse } from 'axios';
+import type { AxiosError } from 'axios';
 
-import type { definitions } from '../api-schema';
 import { axiosInstance } from './axios';
+import {
+  ExpensesApi,
+  type ExpensesExpensesResult,
+  type HelpersErrorResponse,
+} from './open-api';
 
-export type ExpenseResult = definitions['expenses.ExpenseResult'];
-export type ExpensesResult = definitions['expenses.ExpensesResult'];
-export type ExpenseDto = definitions['expenses.ExpenseDto'];
-export type ExpenseItemDto = definitions['expenses.ExpenseItemDto'];
-export type ErrorResponse = definitions['helpers.ErrorResponse'];
+const expeneApi = new ExpensesApi(undefined, undefined, axiosInstance);
 
-const googleAppLoginMutation = async (
-  request: GoogleLoginRequest,
-): Promise<definitions['auth.UserLoginResult']> => {
+type GetUserExpensesParams = {
+  pageParam: number;
+  pageSize: number;
+};
+
+const getUserExpenses = async ({
+  pageParam,
+  pageSize,
+}: GetUserExpensesParams): Promise<ExpensesExpensesResult> => {
   try {
-    const { data } = await axiosInstance.post<
-      GoogleLoginRequest,
-      AxiosResponse<UserLoginResult>
-    >('/login/google-auth', request);
+    const { data } = await expeneApi.v1ExpensesGet('', pageParam, pageSize);
 
     return data;
   } catch (error) {
@@ -30,35 +33,34 @@ const googleAppLoginMutation = async (
   }
 };
 
-export const useGoogleAppLoginMutation = () =>
-  useMutation({
-    mutationFn: googleAppLoginMutation,
-  });
+export const UseGetUserExpensesKey = ['useGetUserExpenses'];
 
-export type UserResult = definitions['user.UserResult'];
-
-const getMe = async (): Promise<UserResult> => {
-  try {
-    const { data } = await axiosInstance.get<UserResult>('/v1/users/me');
-
-    return data;
-  } catch (error) {
-    const axiosError = error as AxiosError;
-    throw axiosError.response?.data;
-  }
-};
-
-export const UseGetMeKey = ['me'];
-
-export type UseGetMeParams = Omit<
-  UseQueryOptions<UserResult, ErrorResponse>,
+type UseGetUserExpenses = Omit<
+  UndefinedInitialDataInfiniteOptions<
+    ExpensesExpensesResult,
+    HelpersErrorResponse,
+    InfiniteData<ExpensesExpensesResult, unknown>,
+    string[],
+    number
+  >,
   'queryFn' | 'queryKey'
 >;
 
-export const useGetMe = (params: UseGetMeParams | undefined = undefined) =>
-  useQuery({
-    queryKey: UseGetMeKey,
-    queryFn: getMe,
+export const useGetUserExpenses = (options?: UseGetUserExpenses) =>
+  useInfiniteQuery({
+    initialPageParam: 1,
+    queryKey: UseGetUserExpensesKey,
+    queryFn: ({ pageParam }: { pageParam: number }) =>
+      getUserExpenses({ pageParam, pageSize: 300 }),
     retry: 1,
-    ...params,
+    getNextPageParam: (lastPage) =>
+      lastPage.paginationResult.currentPage <
+      lastPage.paginationResult.totalPages
+        ? lastPage.paginationResult.currentPage + 1
+        : null,
+    getPreviousPageParam: (firstPage) =>
+      firstPage.paginationResult.currentPage > 1
+        ? firstPage.paginationResult.currentPage - 1
+        : null,
+    ...options,
   });
