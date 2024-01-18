@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 
 import { axiosInstance } from './axios';
 
@@ -12,13 +12,22 @@ export type ExchangeAuthCodeParams = {
   scopes: string[];
 };
 
-export type ExchangeAuthCodeResult = {
+type ExchangeAuthCodeRawResult = {
   access_token: string;
   refresh_token: string;
   expires_in: number;
   scope: string;
   token_type: string;
   id_token: string;
+};
+
+export type ExchangeAuthCodeResult = {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+  scope: string;
+  tokenType: string;
+  idToken: string;
 };
 
 const exchangeGoogleAuthCode = async ({
@@ -30,21 +39,30 @@ const exchangeGoogleAuthCode = async ({
   code,
 }: ExchangeAuthCodeParams): Promise<ExchangeAuthCodeResult> => {
   try {
-    const params = new URLSearchParams();
+    const bodyParams = {
+      scopes: scopes.join(' '),
+      grant_type: grantType,
+      code,
+      client_id: clientId,
+      code_verifier: codeVerifier,
+      redirect_uri: redirectUri,
+    };
 
-    params.append('scopes', scopes.join(' '));
-    params.append('grant_type', grantType);
-    params.append('code', code);
-    params.append('client_id', clientId);
-    params.append('code_verifier', codeVerifier);
-    params.append('redirect_uri', redirectUri);
-
-    const { data } = await axiosInstance.post('token', params, {
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    const { data } = await axiosInstance.post<
+      typeof bodyParams,
+      AxiosResponse<ExchangeAuthCodeRawResult>
+    >('token', bodyParams, {
       baseURL: 'https://oauth2.googleapis.com',
     });
 
-    return data as ExchangeAuthCodeResult;
+    return {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      expiresIn: data.expires_in,
+      scope: data.scope,
+      tokenType: data.token_type,
+      idToken: data.id_token,
+    };
   } catch (error) {
     const axiosError = error as AxiosError;
 

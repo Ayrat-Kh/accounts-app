@@ -5,14 +5,14 @@ import {
 } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
-import { axiosInstance } from './axios';
+import { APP_BASE_URL, axiosInstance } from './axios';
 import {
   ExpensesApi,
   type ExpensesExpensesResult,
   type HelpersErrorResponse,
 } from './open-api';
 
-const expeneApi = new ExpensesApi(undefined, undefined, axiosInstance);
+const expeneApi = new ExpensesApi(undefined, APP_BASE_URL, axiosInstance);
 
 type GetUserExpensesParams = {
   pageParam: number;

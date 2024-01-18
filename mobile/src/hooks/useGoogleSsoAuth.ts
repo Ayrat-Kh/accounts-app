@@ -9,9 +9,7 @@ import {
 import type { AuthUserLoginResult } from '~/lib/api/open-api';
 import { useLoginStore } from '~/lib/store';
 
-const GOOGLE_CLIENT_ID =
-  process.env.GOOGLE_CLIENT_ID ??
-  '402089960208-33i57vpi00o42cckhga0lc222lopbvk1.apps.googleusercontent.com'; // todo: remove me
+const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
 
 type LoginResult =
   | {
@@ -76,7 +74,7 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
 
     try {
       const userInfo = await googleAppLogin({
-        idToken: exchangeTokenResult.id_token,
+        idToken: exchangeTokenResult.idToken,
       });
 
       useLoginStore.getState().setAccessToken(userInfo.accessToken);

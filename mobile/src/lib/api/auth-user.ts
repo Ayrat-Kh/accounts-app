@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
-import { axiosInstance } from './axios';
+import { APP_BASE_URL, axiosInstance } from './axios';
 import {
   AuthApi,
   type AuthGoogleLoginRequest,
@@ -15,8 +15,8 @@ import {
   type UserUserResult,
 } from './open-api';
 
-const authApi = new AuthApi(undefined, undefined, axiosInstance);
-const userApi = new UserApi(undefined, undefined, axiosInstance);
+const authApi = new AuthApi(undefined, APP_BASE_URL, axiosInstance);
+const userApi = new UserApi(undefined, APP_BASE_URL, axiosInstance);
 
 const googleAppLoginMutation = async (
   request: AuthGoogleLoginRequest,
