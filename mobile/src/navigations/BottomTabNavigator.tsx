@@ -1,12 +1,15 @@
-import { createStackNavigator } from '@react-navigation/stack';
-import { View } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-const Stack = createStackNavigator();
+import { Expenses } from '~/screens/Expenses';
+import { Profile } from '~/screens/Profile';
+
+const Tab = createBottomTabNavigator();
 
 export const BottomTabNavigator = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Home" component={View} />
-    </Stack.Navigator>
+    <Tab.Navigator>
+      <Tab.Screen name="Expenses" component={Expenses} />
+      <Tab.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>
   );
 };
