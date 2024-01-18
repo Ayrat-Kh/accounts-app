@@ -48,7 +48,7 @@ export const ExpensesApiAxiosParamCreator = function (configuration?: Configurat
             assertParamExists('v1ExpensesExpenseIdGet', 'authorization', authorization)
             // verify required parameter 'expenseId' is not null or undefined
             assertParamExists('v1ExpensesExpenseIdGet', 'expenseId', expenseId)
-            const localVarPath = `/v1/expenses/:expenseId`
+            const localVarPath = `/v1/expenses/{expenseId}`
                 .replace(`{${"expenseId"}}`, encodeURIComponent(String(expenseId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -92,7 +92,7 @@ export const ExpensesApiAxiosParamCreator = function (configuration?: Configurat
             assertParamExists('v1ExpensesExpenseIdPut', 'authorization', authorization)
             // verify required parameter 'expenseId' is not null or undefined
             assertParamExists('v1ExpensesExpenseIdPut', 'expenseId', expenseId)
-            const localVarPath = `/v1/expenses/:expenseId`
+            const localVarPath = `/v1/expenses/{expenseId}`
                 .replace(`{${"expenseId"}}`, encodeURIComponent(String(expenseId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);

@@ -46,7 +46,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             assertParamExists('v1UsersUserIdGet', 'authorization', authorization)
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('v1UsersUserIdGet', 'userId', userId)
-            const localVarPath = `/v1/users/:userId`
+            const localVarPath = `/v1/users/{userId}`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);

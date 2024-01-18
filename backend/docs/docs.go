@@ -159,7 +159,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/expenses/:expenseId": {
+        "/v1/expenses/{expenseId}": {
             "get": {
                 "description": "Get expense by expenseId",
                 "consumes": [
@@ -257,6 +257,46 @@ const docTemplate = `{
             }
         },
         "/v1/users/:userId": {
+            "put": {
+                "description": "Update user info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update user info",
+                "parameters": [
+                    {
+                        "description": "User update data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UpdateUserDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.UserResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/{userId}": {
             "get": {
                 "description": "Get user info",
                 "produces": [
@@ -280,44 +320,6 @@ const docTemplate = `{
                         "name": "userId",
                         "in": "path",
                         "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user.UserResult"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/helpers.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update user info",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Update user info",
-                "parameters": [
-                    {
-                        "description": "User update data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user.UpdateUserDto"
-                        }
                     }
                 ],
                 "responses": {
