@@ -27,7 +27,7 @@ export const Button: React.FC<ButtonProps> = ({
   }
 
   return (
-    <ButtonContainer {...rest} className={classNames.join(' ')}>
+    <ButtonContainer className={classNames.join(' ')} {...rest}>
       {leftIcon}
 
       {Boolean(leftIcon && children) && <View className="mr-2" />}

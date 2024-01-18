@@ -10,7 +10,7 @@ export type BaseSettingProps = Omit<SvgProps, 'width' | 'height'> & {
 export const getIconFillColor = (color: FillColor) => {
   switch (color) {
     case 'secondary': {
-      return 'fill-app-secondary-800';
+      return 'fill-app-secondary-1000';
     }
     case 'primary':
     default:
@@ -21,7 +21,7 @@ export const getIconFillColor = (color: FillColor) => {
 export const getIconStrokeColor = (color: FillColor) => {
   switch (color) {
     case 'secondary': {
-      return 'stroke-app-secondary-800';
+      return 'stroke-app-secondary-1000';
     }
     case 'primary':
     default:
