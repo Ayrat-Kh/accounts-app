@@ -10,9 +10,9 @@ import { LoginNavigator } from './LoginNavigator';
 const AppNavigationContainerInner = () => {
   const isSignedIn = useLoginStore((state) => state.isSignedIn);
 
-  if (isSignedIn) {
-    return <BottomTabNavigator />;
-  }
+  // if (isSignedIn) {
+  //   return <BottomTabNavigator />;
+  // }
 
   return <LoginNavigator />;
 };

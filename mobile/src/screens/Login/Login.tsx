@@ -1,3 +1,4 @@
+import { IconGoogle } from '~/assets/icons/icon-google';
 import { Button, Text } from '~/components/ui';
 import { useGoogleSsoAuth } from '~/hooks/useGoogleSsoAuth';
 
@@ -8,8 +9,11 @@ export const Login = () => {
 
   return (
     <LoginContainer>
-      <Button onPress={googleLogin}>
-        <Text>Google login</Text>
+      <Text variant="h1" kind="bold" className="mb-28">
+        Expenso
+      </Text>
+      <Button variant="ghost" onPress={googleLogin}>
+        <IconGoogle />
       </Button>
     </LoginContainer>
   );
