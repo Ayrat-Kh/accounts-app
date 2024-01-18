@@ -1,25 +1,28 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import type { AxiosError, AxiosResponse } from 'axios';
+import {
+  type UseQueryOptions,
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 
-import type {
-  GoogleLoginRequest,
-  UseGetMeParams,
-  UserLoginResult,
-  UserResult,
-} from './auth-user.types';
-import { axiosInstance } from './axios';
+import { APP_BASE_URL, axiosInstance } from './axios';
+import {
+  AuthApi,
+  type AuthGoogleLoginRequest,
+  type AuthUserLoginResult,
+  type HelpersErrorResponse,
+  UserApi,
+  type UserUserResult,
+} from './open-api';
+
+const authApi = new AuthApi(undefined, APP_BASE_URL, axiosInstance);
+const userApi = new UserApi(undefined, APP_BASE_URL, axiosInstance);
 
 const googleAppLoginMutation = async (
-  accessToken: string,
-): Promise<UserLoginResult> => {
+  request: AuthGoogleLoginRequest,
+): Promise<AuthUserLoginResult> => {
   try {
-    const { data } = await axiosInstance.post<
-      GoogleLoginRequest,
-      AxiosResponse<UserLoginResult>
-    >('/login/google-auth', {
-      accessToken,
-    });
-
+    const { data } = await authApi.loginGoogleAuthPost(request);
     return data;
   } catch (error) {
     const axiosError = error as AxiosError;
@@ -32,9 +35,10 @@ export const useGoogleAppLoginMutation = () =>
     mutationFn: googleAppLoginMutation,
   });
 
-const getMe = async (): Promise<UserResult> => {
+const getMe = async (): Promise<UserUserResult> => {
   try {
-    const { data } = await axiosInstance.get<UserResult>('/v1/users/me');
+    // authorization should be empty token will be passed in interceptor
+    const { data } = await userApi.v1UsersUserIdGet('', 'me');
 
     return data;
   } catch (error) {
@@ -44,6 +48,11 @@ const getMe = async (): Promise<UserResult> => {
 };
 
 export const UseGetMeKey = ['me'];
+
+type UseGetMeParams = Omit<
+  UseQueryOptions<UserUserResult, HelpersErrorResponse>,
+  'queryFn' | 'queryKey'
+>;
 
 export const useGetMe = (params: UseGetMeParams | undefined = undefined) =>
   useQuery({

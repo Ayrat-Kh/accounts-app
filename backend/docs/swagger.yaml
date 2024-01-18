@@ -2,8 +2,10 @@ basePath: /
 definitions:
   auth.GoogleLoginRequest:
     properties:
-      accessToken:
+      idToken:
         type: string
+    required:
+    - idToken
     type: object
   auth.UserLoginResult:
     properties:
@@ -13,6 +15,10 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/user.UserDto'
+    required:
+    - accessToken
+    - sessionToken
+    - user
     type: object
   expenses.ExpenseDto:
     properties:
@@ -24,7 +30,7 @@ definitions:
         type: string
       details:
         items:
-          $ref: '#/definitions/expenses.ExpenseItemDb'
+          $ref: '#/definitions/expenses.ExpenseItemDto'
         type: array
       id:
         type: string
@@ -36,8 +42,18 @@ definitions:
         type: integer
       userId:
         type: string
+    required:
+    - category
+    - createdAt
+    - currencyCode
+    - details
+    - id
+    - name
+    - total
+    - updatedAt
+    - userId
     type: object
-  expenses.ExpenseItemDb:
+  expenses.ExpenseItemDto:
     properties:
       currencyCode:
         type: string
@@ -45,11 +61,17 @@ definitions:
         type: string
       price:
         type: number
+    required:
+    - currencyCode
+    - name
+    - price
     type: object
   expenses.ExpenseResult:
     properties:
       expense:
         $ref: '#/definitions/expenses.ExpenseDto'
+    required:
+    - expense
     type: object
   expenses.ExpenseUpsertDto:
     properties:
@@ -59,12 +81,18 @@ definitions:
         type: string
       details:
         items:
-          $ref: '#/definitions/expenses.ExpenseItemDb'
+          $ref: '#/definitions/expenses.ExpenseItemDto'
         type: array
       name:
         type: string
       total:
         type: number
+    required:
+    - category
+    - currencyCode
+    - details
+    - name
+    - total
     type: object
   expenses.ExpensesResult:
     properties:
@@ -72,6 +100,11 @@ definitions:
         items:
           $ref: '#/definitions/expenses.ExpenseDto'
         type: array
+      paginationResult:
+        $ref: '#/definitions/helpers.PaginationResult'
+    required:
+    - expenses
+    - paginationResult
     type: object
   helpers.ErrorResponse:
     properties:
@@ -79,6 +112,22 @@ definitions:
         type: string
       message:
         type: string
+    required:
+    - code
+    - message
+    type: object
+  helpers.PaginationResult:
+    properties:
+      currentPage:
+        type: integer
+      itemsPerPage:
+        type: integer
+      totalPages:
+        type: integer
+    required:
+    - currentPage
+    - itemsPerPage
+    - totalPages
     type: object
   user.UpdateUserDto:
     properties:
@@ -90,6 +139,8 @@ definitions:
         type: string
       settings:
         $ref: '#/definitions/user.UserSettingsDb'
+    required:
+    - settings
     type: object
   user.UserDto:
     properties:
@@ -107,11 +158,17 @@ definitions:
         type: string
       settings:
         $ref: '#/definitions/user.UserSettingsDto'
+    required:
+    - email
+    - id
+    - settings
     type: object
   user.UserResult:
     properties:
       user:
         $ref: '#/definitions/user.UserDto'
+    required:
+    - user
     type: object
   user.UserSettingsDb:
     properties:
@@ -224,7 +281,7 @@ paths:
       summary: Create an expense for a logged in user
       tags:
       - expenses
-  /v1/expenses/:expenseId:
+  /v1/expenses/{expenseId}:
     get:
       consumes:
       - application/json
@@ -290,6 +347,32 @@ paths:
       tags:
       - expenses
   /v1/users/:userId:
+    put:
+      consumes:
+      - application/json
+      description: Update user info
+      parameters:
+      - description: User update data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdateUserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.UserResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.ErrorResponse'
+      summary: Update user info
+      tags:
+      - user
+  /v1/users/{userId}:
     get:
       description: Get user info
       parameters:
@@ -315,31 +398,6 @@ paths:
           schema:
             $ref: '#/definitions/helpers.ErrorResponse'
       summary: Get user info
-      tags:
-      - user
-    put:
-      consumes:
-      - application/json
-      description: Update user info
-      parameters:
-      - description: User update data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/user.UpdateUserDto'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user.UserResult'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.ErrorResponse'
-      summary: Update user info
       tags:
       - user
 swagger: "2.0"
