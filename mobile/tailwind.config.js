@@ -5,5 +5,7 @@ module.exports = {
   content: ['./App.tsx', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     colors,
+    fill: colors,
+    stroke: colors,
   },
 };
