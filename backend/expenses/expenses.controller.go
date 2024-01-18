@@ -58,7 +58,7 @@ func postExpenses(app *fiber.App) {
 // @Param        data body expenses.ExpenseUpsertDto true "Update expense model"
 // @Success      200  {object} expenses.ExpenseResult
 // @Failure      400  {object} helpers.ErrorResponse
-// @Router       /v1/expenses/:expenseId [put]
+// @Router       /v1/expenses/{expenseId} [put]
 func putExpenses(app *fiber.App) {
 	// handler
 	app.Put("/v1/expenses/:expenseId", func(c *fiber.Ctx) error {
@@ -130,7 +130,7 @@ func getExpenses(app *fiber.App) {
 // @Param        expenseId   path      string  true  ":expenseId"
 // @Success      200  {object} expenses.ExpenseResult
 // @Failure      400  {object} helpers.ErrorResponse
-// @Router       /v1/expenses/:expenseId [get]
+// @Router       /v1/expenses/{expenseId} [get]
 func getExpense(app *fiber.App) {
 	app.Get("/v1/expenses/:expenseId", func(c *fiber.Ctx) error {
 		ctx := helpers.BuildAppContext(c, context.Background())

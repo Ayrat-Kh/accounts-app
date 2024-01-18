@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 
+	"github.com/Ayrat-Kh/expenso-app/backend/helpers"
 	"github.com/Ayrat-Kh/expenso-app/backend/user"
 	guuid "github.com/google/uuid"
 	_ "github.com/lib/pq"
@@ -45,4 +46,9 @@ type ExpenseDb struct {
 	Name         string         `gorm:"type:varchar(100);"`
 	Details      ExpenseItemsDb `gorm:"type:jsonb"`
 	Total        float64
+}
+
+type ExpensesDb struct {
+	Expenses         []ExpenseDb
+	PaginationResult helpers.PaginationResult
 }

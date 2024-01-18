@@ -6,16 +6,33 @@ import (
 	guuid "github.com/google/uuid"
 )
 
+func (expenseDb *ExpenseItemDb) ToExpenseDto(expenseDto *ExpenseItemDto) {
+	expenseDto.CurrencyCode = expenseDb.CurrencyCode
+	expenseDto.Name = expenseDb.Name
+	expenseDto.Price = expenseDb.Price
+}
+
+func (expenseItemDto *ExpenseItemDto) ToExpenseDto(expenseDb *ExpenseItemDb) {
+	expenseDb.CurrencyCode = expenseItemDto.CurrencyCode
+	expenseDb.Name = expenseItemDto.Name
+	expenseDb.Price = expenseItemDto.Price
+}
+
 func (expenseDb *ExpenseDb) ToExpenseDto(expenseDto *ExpenseDto) {
 	expenseDto.CreatedAt = expenseDb.CreatedAt
 	expenseDto.UpdatedAt = expenseDb.UpdatedAt
 	expenseDto.Id = expenseDb.Id
 	expenseDto.UserId = expenseDb.UserId
-	expenseDto.Details = expenseDb.Details
 	expenseDto.Total = expenseDb.Total
 	expenseDto.CurrencyCode = expenseDb.CurrencyCode
 	expenseDto.Category = expenseDb.Category
 	expenseDto.Name = expenseDb.Name
+
+	expenseDetails := make([]ExpenseItemDto, len(expenseDb.Details))
+	for i := range expenseDetails {
+		expenseDb.Details[i].ToExpenseDto(&expenseDetails[i])
+	}
+	expenseDto.Details = expenseDetails
 }
 
 func (expenseDto *ExpenseDto) ToExpenseDb(expenseDb *ExpenseDb) {
@@ -24,16 +41,24 @@ func (expenseDto *ExpenseDto) ToExpenseDb(expenseDb *ExpenseDb) {
 	expenseDb.UpdatedAt = expenseDto.UpdatedAt
 	expenseDb.Id = expenseDto.Id
 	expenseDb.UserId = expenseDto.UserId
-	expenseDb.Details = expenseDto.Details
 	expenseDb.Total = expenseDto.Total
 	expenseDb.CurrencyCode = expenseDto.CurrencyCode
 	expenseDb.Category = expenseDto.Category
 	expenseDb.Name = expenseDto.Name
 
+	expenseDetailsDb := make([]ExpenseItemDb, len(expenseDto.Details))
+	for i := range expenseDetailsDb {
+		expenseDto.Details[i].ToExpenseDto(&expenseDetailsDb[i])
+	}
+	expenseDb.Details = expenseDetailsDb
 }
 
 func (expenseUpdateDto ExpenseUpsertDto) ToToExpenseDb(expense *ExpenseDb) {
-	expense.Details = expenseUpdateDto.Details
+	expenseDetails := make([]ExpenseItemDb, len(expenseUpdateDto.Details))
+	for i := range expenseDetails {
+		expenseUpdateDto.Details[i].ToExpenseDto(&expenseDetails[i])
+	}
+	expense.Details = expenseDetails
 	expense.Total = expenseUpdateDto.Total
 	expense.CurrencyCode = expenseUpdateDto.CurrencyCode
 	expense.Category = expenseUpdateDto.Category
@@ -58,13 +83,14 @@ func (service *expenseService) GetUserExpenses(userId guuid.UUID, page int, page
 
 	}
 
-	expences := make([]ExpenseDto, len(resultDb))
-	for i := range expences {
-		resultDb[i].ToExpenseDto(&expences[i])
+	expenses := make([]ExpenseDto, len(resultDb.Expenses))
+	for i := range expenses {
+		resultDb.Expenses[i].ToExpenseDto(&expenses[i])
 	}
 
 	return ExpensesResult{
-		Expenses: expences,
+		Expenses:         expenses,
+		PaginationResult: resultDb.PaginationResult,
 	}, err
 }
 

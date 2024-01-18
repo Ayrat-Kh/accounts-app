@@ -63,7 +63,7 @@ func handlePutUser(app *fiber.App) {
 // @Produce      json
 // @Success      200  {object} user.UserResult
 // @Failure      400  {object} helpers.ErrorResponse
-// @Router       /v1/users/:userId [get]
+// @Router       /v1/users/{userId} [get]
 func handleGetUser(app *fiber.App) {
 	app.Get("/v1/users/:userId", func(c *fiber.Ctx) error {
 		ctx, err := helpers.BuildAuthAppContext(c, context.Background())

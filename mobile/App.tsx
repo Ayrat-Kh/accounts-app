@@ -1,6 +1,7 @@
 import 'react-native-gesture-handler';
 
 import { StatusBar } from 'expo-status-bar';
+import 'react-native-url-polyfill/auto';
 
 import { AppProviders } from '~/components/providers';
 import { axiosInstance } from '~/lib/api/axios';
