@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -48,7 +49,17 @@ func (self *authService) GoogleAuth(accessToken string, context context.Context)
 		return result, err
 	}
 
-	userDb, err := self.UserServiceInterface.UpsertUserByGoogleId(user.Sub, userPackage.UserDb{GoogleId: user.Sub, Email: user.Email})
+	if user.Aud != os.Getenv(constants.APP_GOOGLE_CLIENT_ID) {
+		return result, fmt.Errorf("Invalid google token")
+	}
+
+	userDb, err := self.UserServiceInterface.UpsertUserByGoogleId(user.Sub, userPackage.UserDb{
+		GoogleId:  user.Sub,
+		Email:     user.Email,
+		FirstName: user.GivenName,
+		LastName:  user.FamilyName,
+		Alias:     user.Name,
+	})
 
 	if err != nil {
 		return result, err
