@@ -11,7 +11,6 @@ import { Button } from '~/components/ui';
 import { Expenses, ExpensesUpsert } from '~/screens/Expenses';
 import { Profile } from '~/screens/Profile';
 
-const Tab = createBottomTabNavigator();
 const tabBarLabelStyle: StyleProp<TextStyle> = {
   position: 'absolute',
 };
@@ -21,6 +20,37 @@ const tabBarItemStyle = {
   height: 30,
   marginTop: 5,
 };
+
+type BarIconProps = {
+  focused: boolean;
+  color: string;
+  size: number;
+};
+
+const ExpensesIcon = ({ focused }: BarIconProps) => (
+  <IconBook color={focused ? 'primary' : 'secondary'} size={24} />
+);
+
+const ExpenseCreateTabBarIcon = ({ focused }: BarIconProps) => (
+  <IconAddOutlinedNoBorder
+    color={focused ? 'primary' : 'secondary'}
+    size={40}
+  />
+);
+
+const ProfileTabBarIcon = ({ focused }: BarIconProps) => (
+  <IconSetting color={focused ? 'primary' : 'secondary'} size={40} />
+);
+
+const ExpenseCreateTabBarButton = (props: BottomTabBarButtonProps) => (
+  <View className="mb-1 top-[-30] h-16 w-16 rounded-full bg-app-primary-200 border-app-secondary-300">
+    <Button variant="ghost" className=" " {...props}>
+      {props.children}
+    </Button>
+  </View>
+);
+
+const Tab = createBottomTabNavigator();
 
 export const BottomTabNavigator = () => {
   return (
@@ -41,7 +71,7 @@ export const BottomTabNavigator = () => {
           tabBarShowLabel: false,
           tabBarLabelStyle,
           tabBarItemStyle,
-          tabBarIcon: () => <IconBook color="secondary" size={24} />,
+          tabBarIcon: ExpensesIcon,
         }}
       />
       <Tab.Screen
@@ -53,16 +83,8 @@ export const BottomTabNavigator = () => {
           tabBarShowLabel: false,
           tabBarLabelStyle,
           tabBarItemStyle,
-          tabBarButton: (props: BottomTabBarButtonProps) => (
-            <View className="mb-1 top-[-30] h-16 w-16 rounded-full bg-app-primary-200 border-app-secondary-300">
-              <Button variant="ghost" className=" " {...props}>
-                {props.children}
-              </Button>
-            </View>
-          ),
-          tabBarIcon: () => (
-            <IconAddOutlinedNoBorder color="secondary" size={40} />
-          ),
+          tabBarButton: ExpenseCreateTabBarButton,
+          tabBarIcon: ExpenseCreateTabBarIcon,
         }}
       />
       <Tab.Screen
@@ -73,7 +95,7 @@ export const BottomTabNavigator = () => {
           tabBarShowLabel: false,
           tabBarLabelStyle,
           tabBarItemStyle,
-          tabBarIcon: () => <IconSetting color="secondary" size={24} />,
+          tabBarIcon: ProfileTabBarIcon,
         }}
       />
     </Tab.Navigator>
