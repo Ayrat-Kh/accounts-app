@@ -1,11 +1,18 @@
-const colors = require('./src/components/ui/colors');
+import { appColors } from './src/components/ui/colors';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./App.tsx', './src/**/*.{js,jsx,ts,tsx}'],
+  presets: [require('nativewind/preset')],
   theme: {
-    colors,
-    fill: colors,
-    stroke: colors,
+    extend: {
+      colors: appColors,
+      fill: appColors,
+      stroke: appColors,
+    },
   },
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
+  plugins: [],
 };

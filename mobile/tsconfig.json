@@ -8,6 +8,6 @@
       "~/*": ["src/*"]
     }
   },
-  "include": ["./"],
-  "exclude": ["node_modules", "jest.config.js"]
+  "include": ["./src/global.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

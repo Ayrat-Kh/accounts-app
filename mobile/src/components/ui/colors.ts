@@ -41,4 +41,4 @@ export const appColors = {
     1100: '#646464',
     1200: '#202020',
   },
-} satisfies Required<Config>['theme']['colors'];
+} as const satisfies Required<Config>['theme']['colors'];

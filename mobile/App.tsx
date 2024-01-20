@@ -7,6 +7,8 @@ import { AppProviders } from '~/components/providers';
 import { axiosInstance } from '~/lib/api/axios';
 import { registerAccessTokenHeader } from '~/lib/api/interceptors/register-acess-token-header';
 
+import './src/global.css';
+
 registerAccessTokenHeader(axiosInstance);
 
 export default function App() {

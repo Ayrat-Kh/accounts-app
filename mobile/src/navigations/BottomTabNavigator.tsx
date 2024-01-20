@@ -8,13 +8,14 @@ import { IconAddOutlinedNoBorder } from '~/assets/icons/icon-add-outlined-no-bor
 import { IconBook } from '~/assets/icons/icon-book';
 import { IconSetting } from '~/assets/icons/icon-setting';
 import { Button } from '~/components/ui';
+import { appColors } from '~/components/ui/colors';
 import { Expenses, ExpensesUpsert } from '~/screens/Expenses';
 import { Profile } from '~/screens/Profile';
 
 const tabBarLabelStyle: StyleProp<TextStyle> = {
   position: 'absolute',
 };
-const color = '#F5FBF5'; // fix me
+const color = appColors['app-primary'][200];
 
 const tabBarItemStyle = {
   height: 30,
@@ -42,14 +43,15 @@ const ProfileTabBarIcon = ({ focused }: BarIconProps) => (
   <IconSetting color={focused ? 'primary' : 'secondary'} size={24} />
 );
 
-const ExpenseCreateTabBarButton = (props: BottomTabBarButtonProps) => (
-  <View className="mb-1 top-[-30] h-16 w-16 rounded-full bg-app-primary-200 border-app-secondary-300">
-    <Button variant="ghost" className=" " {...props}>
-      {props.children}
-    </Button>
-  </View>
-);
-
+const ExpenseCreateTabBarButton = (props: BottomTabBarButtonProps) => {
+  return (
+    <View className="mb-1 top-[-30] h-16 w-16 rounded-full bg-app-primary-200 border-app-secondary-300">
+      <Button variant="ghost" className=" " {...props}>
+        {props.children}
+      </Button>
+    </View>
+  );
+};
 const Tab = createBottomTabNavigator();
 
 export const BottomTabNavigator = () => {

@@ -1,9 +1,6 @@
-import { styled } from 'nativewind';
 import { Line, Svg } from 'react-native-svg';
 
 import { type BaseSettingProps, getIconStrokeColor } from './utils';
-
-const StyledLine = styled(Line, { classProps: ['stroke'] });
 
 export const IconAddOutlinedNoBorder: React.FC<BaseSettingProps> = ({
   size = 50,
@@ -11,7 +8,7 @@ export const IconAddOutlinedNoBorder: React.FC<BaseSettingProps> = ({
 }: BaseSettingProps) => {
   return (
     <Svg width={size} height={size} viewBox="0 0 256 256">
-      <StyledLine
+      <Line
         fill="none"
         stroke={getIconStrokeColor(color)}
         strokeLinecap="round"
@@ -22,7 +19,7 @@ export const IconAddOutlinedNoBorder: React.FC<BaseSettingProps> = ({
         y1="128"
         y2="128"
       />
-      <StyledLine
+      <Line
         fill="none"
         stroke={getIconStrokeColor(color)}
         strokeLinecap="round"
