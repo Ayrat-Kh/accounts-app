@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 export const appColors = {
-  transparent: 'transparent',
+  transparent: '#00000000',
   white: '#ffffff',
   ['app-primary']: {
     // bg

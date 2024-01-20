@@ -17,6 +17,11 @@ const tabBarLabelStyle: StyleProp<TextStyle> = {
 };
 const color = appColors['app-primary'][200];
 
+const tabBarStyle = {
+  backgroundColor: color,
+  height: 40,
+};
+
 const tabBarItemStyle = {
   height: 30,
   marginTop: 5,
@@ -32,22 +37,15 @@ const ExpensesIcon = ({ focused }: BarIconProps) => (
   <IconBook color={focused ? 'primary' : 'secondary'} size={24} />
 );
 
-const ExpenseCreateTabBarIcon = ({ focused }: BarIconProps) => (
-  <IconAddOutlinedNoBorder
-    color={focused ? 'primary' : 'secondary'}
-    size={40}
-  />
-);
-
 const ProfileTabBarIcon = ({ focused }: BarIconProps) => (
   <IconSetting color={focused ? 'primary' : 'secondary'} size={24} />
 );
 
-const ExpenseCreateTabBarButton = (props: BottomTabBarButtonProps) => {
+const ExpenseCreateTabBarButton: React.FC<BottomTabBarButtonProps> = () => {
   return (
-    <View className="mb-1 top-[-30] h-16 w-16 rounded-full bg-app-primary-200 border-app-secondary-300">
-      <Button variant="ghost" className=" " {...props}>
-        {props.children}
+    <View className="top-[-28] h-[56] max-w-[56] flex-1 justify-center items-center rounded-full bg-app-primary-200">
+      <Button variant="primary" rounded maxWidth>
+        <IconAddOutlinedNoBorder color="primary" size={40} />
       </Button>
     </View>
   );
@@ -57,12 +55,8 @@ const Tab = createBottomTabNavigator();
 export const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
-      sceneContainerStyle={{}}
       screenOptions={{
-        tabBarStyle: {
-          backgroundColor: color,
-          height: 40,
-        },
+        tabBarStyle,
       }}
     >
       <Tab.Screen
@@ -86,7 +80,7 @@ export const BottomTabNavigator = () => {
           tabBarLabelStyle,
           tabBarItemStyle,
           tabBarButton: ExpenseCreateTabBarButton,
-          tabBarIcon: ExpenseCreateTabBarIcon,
+          tabBarIcon: () => null,
         }}
       />
       <Tab.Screen
