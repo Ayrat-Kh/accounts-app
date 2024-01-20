@@ -65,8 +65,6 @@ const exchangeGoogleAuthCode = async ({
     };
   } catch (error) {
     const axiosError = error as AxiosError;
-
-    console.log('axiosError', axiosError.request);
     throw axiosError.response?.data;
   }
 };

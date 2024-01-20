@@ -13,7 +13,7 @@ export const Login = () => {
         Expenso
       </Text>
       <Button variant="ghost" onPress={googleLogin}>
-        <IconGoogle color="primary" />
+        <IconGoogle color="primary" size={40} />
       </Button>
     </LoginContainer>
   );

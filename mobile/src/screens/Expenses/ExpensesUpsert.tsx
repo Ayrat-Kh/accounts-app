@@ -1,13 +1,15 @@
 import { Text } from '~/components/ui';
 
-import { ExpensesUpsert } from './ExpensesUpsert.styles';
+import { ExpensesUpsertContainer } from './ExpensesUpsert.styles';
 
-export const Expenses = () => {
+//
+
+export const ExpensesUpsert = () => {
   return (
-    <ExpensesUpsert>
-      <Text variant="h1" kind="bold" className="mb-28">
+    <ExpensesUpsertContainer>
+      {/* <Form variant="h1" kind="bold" className="mb-28">
         Create expenses
-      </Text>
-    </ExpensesUpsert>
+      </Text> */}
+    </ExpensesUpsertContainer>
   );
 };

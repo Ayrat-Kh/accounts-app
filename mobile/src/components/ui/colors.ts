@@ -1,6 +1,7 @@
-/** @type {Required<import('tailwindcss').Config>['theme']['colors']} */
-module.exports = {
-  transparent: 'transparent',
+import type { Config } from 'tailwindcss';
+
+export const appColors = {
+  transparent: '#00000000',
   white: '#ffffff',
   ['app-primary']: {
     // bg
@@ -40,4 +41,4 @@ module.exports = {
     1100: '#646464',
     1200: '#202020',
   },
-};
+} as const satisfies Required<Config>['theme']['colors'];
