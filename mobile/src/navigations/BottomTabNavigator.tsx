@@ -39,7 +39,7 @@ const ExpenseCreateTabBarIcon = ({ focused }: BarIconProps) => (
 );
 
 const ProfileTabBarIcon = ({ focused }: BarIconProps) => (
-  <IconSetting color={focused ? 'primary' : 'secondary'} size={40} />
+  <IconSetting color={focused ? 'primary' : 'secondary'} size={24} />
 );
 
 const ExpenseCreateTabBarButton = (props: BottomTabBarButtonProps) => (
