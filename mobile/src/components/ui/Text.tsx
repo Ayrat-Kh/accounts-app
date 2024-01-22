@@ -1,4 +1,5 @@
 import { Text as TextRN, type TextProps as TextRNProps } from 'react-native';
+import { twJoin } from 'tailwind-merge';
 
 type TextProps = React.PropsWithChildren<
   TextRNProps & {
@@ -20,6 +21,7 @@ export const Text: React.FC<TextProps> = ({
   variant = 'base1',
   color = 'primary',
   kind = 'normal',
+  className,
   children,
   ...rest
 }: TextProps) => {
@@ -95,7 +97,7 @@ export const Text: React.FC<TextProps> = ({
   }
 
   return (
-    <TextRN {...rest} className={classNames.join(' ')}>
+    <TextRN {...rest} className={twJoin(classNames.join(' '), className)}>
       {children}
     </TextRN>
   );
