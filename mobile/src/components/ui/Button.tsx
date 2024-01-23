@@ -4,7 +4,6 @@ import {
   type TouchableOpacityProps,
   View,
 } from 'react-native';
-import { twJoin } from 'tailwind-merge';
 
 type ButtonProps = React.PropsWithChildren<TouchableOpacityProps> & {
   leftIcon?: React.ReactNode;
@@ -22,7 +21,11 @@ export const Button: React.FC<ButtonProps> = ({
   className,
   ...rest
 }) => {
-  const classNames = ['flex-row', 'justify-center', 'items-center'];
+  const classNames: (string | undefined)[] = [
+    'flex-row',
+    'justify-center',
+    'items-center',
+  ];
 
   if (maxWidth) {
     classNames.push('w-full');
@@ -46,11 +49,10 @@ export const Button: React.FC<ButtonProps> = ({
     classNames.push('rounded-md');
   }
 
+  classNames.push(className);
+
   return (
-    <TouchableOpacity
-      {...rest}
-      className={twJoin(classNames.join(' '), className)}
-    >
+    <TouchableOpacity {...rest} className={classNames.join(' ')}>
       {leftIcon}
 
       {Boolean(leftIcon && children) && <View className="mr-2" />}
