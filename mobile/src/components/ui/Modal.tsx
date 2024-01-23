@@ -2,7 +2,8 @@ import React, { PropsWithChildren } from 'react';
 import { Modal as ModalRN, View } from 'react-native';
 
 import { IconCloseOutlinedNoBorder } from '~/assets/icons';
-import { Button, Text } from '~/components/ui';
+import { Button } from '~/components/ui/Button';
+import { Text } from '~/components/ui/Text';
 
 type ModalProps = PropsWithChildren<{
   title: string | React.ReactNode;
