@@ -8,28 +8,34 @@ import {
   type UseFormStateReturn,
 } from 'react-hook-form';
 
-import { type AccessebilityLabel, Input, type InputProps } from '../ui';
+import {
+  type AccessebilityLabel,
+  SelectPicker,
+  type SelectPickerProps,
+} from '../ui';
 
-type FormInputProps<
+type FormSelectProps<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TFieldValues extends Record<string, any> = Record<string, any>,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TLabel extends AccessebilityLabel = string,
 > = {
   name: TName;
-  label: AccessebilityLabel;
+  label: TLabel;
   control: Control<TFieldValues>;
-} & Omit<InputProps, 'onChange'>;
+} & SelectPickerProps<TLabel>;
 
-export const FormInput = <
+export const FormSelect = <
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TFieldValues extends Record<string, any> = Record<string, any>,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TLabel extends AccessebilityLabel = string,
 >({
   name,
   label,
   control,
   ...restInputProps
-}: FormInputProps<TFieldValues, TName>): React.ReactElement => {
+}: FormSelectProps<TFieldValues, TName, TLabel>): React.ReactElement => {
   return (
     <Controller
       control={control}
@@ -42,11 +48,13 @@ export const FormInput = <
         fieldState: ControllerFieldState;
         formState: UseFormStateReturn<TFieldValues>;
       }) => (
-        <Input
+        <SelectPicker<TFieldValues[TName]>
           {...restInputProps}
           label={label}
           error={fieldState.error?.message}
-          onChange={field.onChange}
+          onChange={(text) => {
+            field.onChange(text);
+          }}
         />
       )}
     />

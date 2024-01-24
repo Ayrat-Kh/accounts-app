@@ -1,10 +1,10 @@
-import React from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-type LayoutProviderProps = React.PropsWithChildren;
+type LayoutProviderProps = PropsWithChildren;
 
-export const LayoutProvider: React.FC<LayoutProviderProps> = ({
+export const LayoutProvider: FC<LayoutProviderProps> = ({
   children,
 }: LayoutProviderProps) => {
   const { bottom, left, right, top } = useSafeAreaInsets();

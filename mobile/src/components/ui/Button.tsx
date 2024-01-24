@@ -1,18 +1,18 @@
-import React from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import {
   TouchableOpacity,
   type TouchableOpacityProps,
   View,
 } from 'react-native';
 
-type ButtonProps = React.PropsWithChildren<TouchableOpacityProps> & {
+type ButtonProps = PropsWithChildren<TouchableOpacityProps> & {
   leftIcon?: React.ReactNode;
   variant: 'primary' | 'secondary' | 'ghost';
   maxWidth?: boolean;
   rounded?: boolean;
 };
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button: FC<ButtonProps> = ({
   children,
   leftIcon,
   variant,
