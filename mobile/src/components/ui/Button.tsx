@@ -5,6 +5,8 @@ import {
   View,
 } from 'react-native';
 
+import { Text } from './Text';
+
 type ButtonProps = PropsWithChildren<TouchableOpacityProps> & {
   leftIcon?: React.ReactNode;
   variant: 'primary' | 'secondary' | 'ghost';
@@ -36,12 +38,12 @@ export const Button: FC<ButtonProps> = ({
   }
   if (variant === 'primary') {
     classNames.push(
-      'bg-app-primary-300 border-2 border-app-primary-700 font-bold py-2 px-2',
+      'bg-primary border-2 border-app-primary-700 font-bold py-2 px-2',
     );
   }
   if (variant === 'secondary') {
     classNames.push(
-      'bg-app-secondary-300 border-2 border-app-secondary-700 font-bold py-2 px-2',
+      'bg-secondary border-2 border-secondary font-bold py-2 px-2',
     );
   }
 
@@ -59,7 +61,20 @@ export const Button: FC<ButtonProps> = ({
 
       {Boolean(leftIcon && children) && <View className="mr-2" />}
 
-      {children}
+      {typeof children === 'string' ? (
+        <Text
+          className=""
+          variant="base1"
+          kind="semibold"
+          color={
+            ['ghost', 'primary'].includes(variant) ? 'primary' : 'secondary'
+          }
+        >
+          {children}
+        </Text>
+      ) : (
+        children
+      )}
     </TouchableOpacity>
   );
 };

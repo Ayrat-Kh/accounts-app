@@ -79,19 +79,19 @@ export const Text: FC<TextProps> = ({
 
   switch (color) {
     case 'primary': {
-      classNames.push('text-app-primary-1200'); // 26
+      classNames.push('text-primary'); // 26
       break;
     }
     case 'primary-low': {
-      classNames.push('text-app-primary-1100'); // 26
+      classNames.push('text-primaryLow'); // 26
       break;
     }
     case 'secondary': {
-      classNames.push('text-app-secondary-1200'); // 24
+      classNames.push('text-secondary'); // 24
       break;
     }
     case 'secondary-low': {
-      classNames.push('text-app-secondary-1100'); // 24
+      classNames.push('text-secondaryLow'); // 24
       break;
     }
   }

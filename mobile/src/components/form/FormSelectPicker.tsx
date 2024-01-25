@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 import {
-  Control,
+  type Control,
   Controller,
   type ControllerFieldState,
   type ControllerRenderProps,
@@ -59,8 +59,8 @@ export const FormSelect = <
           label={label}
           error={fieldState.error?.message}
           selected={field.value}
-          onChange={() => {
-            // field.onChange(text);
+          onChange={(value) => {
+            field.onChange(value);
           }}
         />
       )}

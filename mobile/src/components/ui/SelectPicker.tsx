@@ -54,6 +54,10 @@ export const SelectPicker = <
   const { bottom } = useSafeAreaInsets();
   const { isVisible, show, close } = useModal();
 
+  const itemKey = isMultiple
+    ? selected.map((x) => x.value).join('')
+    : selected.value;
+
   const extraData: SelectPickerItemExtraData<TData, TValue> = {
     selected,
     onChange: (
@@ -83,24 +87,22 @@ export const SelectPicker = <
       {error && <Text className="mt-1">{error}</Text>}
 
       <Modal
+        key={itemKey}
         isVisible={isVisible}
         header={getAccessebilityLabelNode(label)}
         onClose={close}
       >
         <FlashList
-          style={{ height: 100, width: 200, backgroundColor: 'red', flex: 1 }}
-          estimatedItemSize={200}
+          estimatedItemSize={60}
           extraData={extraData}
           data={options}
           renderItem={SelectPickerItem<TData, TValue>}
           ItemSeparatorComponent={SelectPickerItemSeparator}
         />
         <View style={{ paddingBottom: bottom }}>
-          <Button variant="primary">
-            <Text>Apply</Text>
-          </Button>
-          <Button variant="secondary" className="mt-2">
-            <Text>Cancel</Text>
+          <Button variant="primary">Apply</Button>
+          <Button variant="secondary" className="mt-2" onPress={close}>
+            Cancel
           </Button>
         </View>
       </Modal>

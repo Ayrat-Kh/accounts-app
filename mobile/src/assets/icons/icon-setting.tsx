@@ -1,13 +1,16 @@
 import type { FC } from 'react';
 import { G, Path, Svg } from 'react-native-svg';
 
-import { type BaseSettingProps, getIconFillColor } from './utils';
+import { useGetIconFillColor } from '~/ui/hooks';
+
+import type { BaseSettingProps } from './types';
 
 export const IconSetting: FC<BaseSettingProps> = ({
   size = 50,
   color = 'primary',
   ...rest
 }: BaseSettingProps) => {
+  const getIconFillColor = useGetIconFillColor();
   return (
     <Svg width={size} height={size} viewBox="0 0 122.881 122.88" {...rest}>
       <G>

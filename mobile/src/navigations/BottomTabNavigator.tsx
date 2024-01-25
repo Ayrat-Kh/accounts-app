@@ -2,17 +2,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { type StyleProp, type TextStyle, View } from 'react-native';
 
 import { IconBook, IconSetting } from '~/assets/icons';
-import { appColors } from '~/components/ui/colors';
 import { AddExpenseModalButton, Expenses } from '~/screens/Expenses';
 import { Profile } from '~/screens/Profile';
+import { appBgColors } from '~/ui';
 
 const tabBarLabelStyle: StyleProp<TextStyle> = {
   position: 'absolute',
 };
-const color = appColors['app-primary'][200];
 
 const tabBarStyle = {
-  backgroundColor: color,
+  backgroundColor: appBgColors.primary,
   height: 40,
 };
 

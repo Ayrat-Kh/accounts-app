@@ -1,11 +1,14 @@
 import { Path, Svg } from 'react-native-svg';
 
-import { type BaseSettingProps, getIconFillColor } from './utils';
+import { useGetIconFillColor } from '~/ui/hooks';
+
+import type { BaseSettingProps } from './types';
 
 export const IconBook: React.FC<BaseSettingProps> = ({
   size = 50,
   color = 'primary',
 }: BaseSettingProps) => {
+  const getIconFillColor = useGetIconFillColor();
   return (
     <Svg width={size} height={size} viewBox="0 0 103.12 122.88">
       <Path
