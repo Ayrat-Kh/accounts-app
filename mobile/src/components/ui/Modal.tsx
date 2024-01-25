@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren, ReactNode } from 'react';
 import { Modal as ModalRN, View } from 'react-native';
 
 import { IconCloseOutlinedNoBorder } from '~/assets/icons';
@@ -6,13 +6,13 @@ import { Button } from '~/components/ui/Button';
 import { Text } from '~/components/ui/Text';
 
 type ModalProps = PropsWithChildren<{
-  header: string | React.ReactNode;
+  header: string | ReactNode;
   isVisible: boolean;
   shouldCloseWindow?: () => boolean;
   onClose: VoidFunction;
 }>;
 
-export const Modal: React.FC<ModalProps> = ({
+export const Modal: FC<ModalProps> = ({
   children,
   header,
   isVisible,

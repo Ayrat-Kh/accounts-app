@@ -1,6 +1,7 @@
+import type { FC, PropsWithChildren } from 'react';
 import { Text as TextRN, type TextProps as TextRNProps } from 'react-native';
 
-type TextProps = React.PropsWithChildren<
+type TextProps = PropsWithChildren<
   TextRNProps & {
     variant?:
       | 'h1'
@@ -16,7 +17,7 @@ type TextProps = React.PropsWithChildren<
   }
 >;
 
-export const Text: React.FC<TextProps> = ({
+export const Text: FC<TextProps> = ({
   variant = 'base1',
   color = 'primary',
   kind = 'normal',

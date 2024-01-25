@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import {
   type TextInputProps as TextInputPropsRN,
   TextInput as TextInputRN,
@@ -11,7 +11,7 @@ import { type AccessebilityLabel, isLabelAccessebilityLabel } from './utils';
 
 export type InputProps = Omit<TextInputPropsRN, 'onChange' | 'onChangeText'> & {
   label: AccessebilityLabel;
-  error?: string | React.ReactNode;
+  error?: string | ReactNode;
   isNumeric?: boolean;
   isDecimal?: boolean;
   onChange: (val: string | number) => void;

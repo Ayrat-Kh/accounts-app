@@ -1,5 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
-import React from 'react';
+import type { ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { Button } from './Button';
@@ -35,7 +35,7 @@ export type SelectPickerProps<
     }) & {
   options: SelectPickerItemOption<TData, TValue>[];
   label: AccessebilityLabel;
-  error?: string | React.ReactNode;
+  error?: string | ReactNode;
 };
 
 export const SelectPicker = <

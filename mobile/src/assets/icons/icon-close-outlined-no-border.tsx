@@ -1,8 +1,9 @@
+import type { FC } from 'react';
 import { Line, Svg } from 'react-native-svg';
 
 import { type BaseSettingProps, getIconStrokeColor } from './utils';
 
-export const IconCloseOutlinedNoBorder: React.FC<BaseSettingProps> = ({
+export const IconCloseOutlinedNoBorder: FC<BaseSettingProps> = ({
   size = 50,
   color = 'primary',
 }: BaseSettingProps) => {

@@ -1,8 +1,9 @@
+import type { FC } from 'react';
 import { G, Path, Svg } from 'react-native-svg';
 
 import { type BaseSettingProps, getIconFillColor } from './utils';
 
-export const IconSetting: React.FC<BaseSettingProps> = ({
+export const IconSetting: FC<BaseSettingProps> = ({
   size = 50,
   color = 'primary',
   ...rest

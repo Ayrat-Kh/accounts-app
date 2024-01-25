@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactElement } from 'react';
 import {
   Control,
   Controller,
@@ -40,12 +40,7 @@ export const FormSelect = <
   label,
   control,
   ...restInputProps
-}: FormSelectProps<
-  TValue,
-  TMultiple,
-  TFieldValues,
-  TName
->): React.ReactElement => {
+}: FormSelectProps<TValue, TMultiple, TFieldValues, TName>): ReactElement => {
   return (
     <Controller
       control={control}
