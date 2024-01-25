@@ -41,6 +41,7 @@ export const SelectPickerItem = <TData, TValue extends string | number>({
     <Checkbox
       label={item.label}
       isChecked={isSelected}
+      className="my-2"
       onChange={handleChange}
     />
   );

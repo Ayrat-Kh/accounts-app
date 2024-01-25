@@ -40,7 +40,9 @@ export const Button: FC<ButtonProps> = ({
     );
   }
   if (variant === 'secondary') {
-    classNames.push('font-bold py-2 px-4');
+    classNames.push(
+      'bg-app-secondary-300 border-2 border-app-secondary-700 font-bold py-2 px-2',
+    );
   }
 
   if (rounded) {

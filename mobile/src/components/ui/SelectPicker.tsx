@@ -1,6 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from './Button';
 import { InputLabel } from './InputLabel';
@@ -50,6 +51,7 @@ export const SelectPicker = <
   selected,
   onChange,
 }: SelectPickerProps<TData, TValue, TMultiple>) => {
+  const { bottom } = useSafeAreaInsets();
   const { isVisible, show, close } = useModal();
 
   const extraData: SelectPickerItemExtraData<TData, TValue> = {
@@ -86,11 +88,21 @@ export const SelectPicker = <
         onClose={close}
       >
         <FlashList
+          style={{ height: 100, width: 200, backgroundColor: 'red', flex: 1 }}
+          estimatedItemSize={200}
           extraData={extraData}
           data={options}
           renderItem={SelectPickerItem<TData, TValue>}
           ItemSeparatorComponent={SelectPickerItemSeparator}
         />
+        <View style={{ paddingBottom: bottom }}>
+          <Button variant="primary">
+            <Text>Apply</Text>
+          </Button>
+          <Button variant="secondary" className="mt-2">
+            <Text>Cancel</Text>
+          </Button>
+        </View>
       </Modal>
     </View>
   );
