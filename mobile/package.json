@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.18.2",
-    "@react-native-picker/picker": "2.6.1",
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/drawer": "^6.6.6",
     "@react-navigation/native": "^6.1.9",
@@ -26,7 +25,7 @@
     "expo-checkbox": "~2.7.0",
     "expo-constants": "~15.4.2",
     "expo-crypto": "~12.4.1",
-    "expo-dev-client": "~3.3.7",
+    "expo-dev-launcher": "^3.6.4",
     "expo-image-picker": "~14.3.2",
     "expo-linking": "~6.2.1",
     "expo-router": "~3.4.1",

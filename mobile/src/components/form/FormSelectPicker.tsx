@@ -15,27 +15,37 @@ import {
 } from '../ui';
 
 type FormSelectProps<
+  TValue extends string | number,
+  TMultiple extends boolean,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TFieldValues extends Record<string, any> = Record<string, any>,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
-  TLabel extends AccessebilityLabel = string,
 > = {
   name: TName;
-  label: TLabel;
+  label: AccessebilityLabel;
   control: Control<TFieldValues>;
-} & SelectPickerProps<TLabel>;
+} & Omit<
+  SelectPickerProps<unknown, TValue, TMultiple>,
+  'onChange' | 'selected'
+>;
 
 export const FormSelect = <
+  TValue extends string | number,
+  TMultiple extends boolean,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TFieldValues extends Record<string, any> = Record<string, any>,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
-  TLabel extends AccessebilityLabel = string,
 >({
   name,
   label,
   control,
   ...restInputProps
-}: FormSelectProps<TFieldValues, TName, TLabel>): React.ReactElement => {
+}: FormSelectProps<
+  TValue,
+  TMultiple,
+  TFieldValues,
+  TName
+>): React.ReactElement => {
   return (
     <Controller
       control={control}
@@ -48,12 +58,14 @@ export const FormSelect = <
         fieldState: ControllerFieldState;
         formState: UseFormStateReturn<TFieldValues>;
       }) => (
-        <SelectPicker<TFieldValues[TName]>
+        <SelectPicker
           {...restInputProps}
+          isMultiple={false}
           label={label}
           error={fieldState.error?.message}
-          onChange={(text) => {
-            field.onChange(text);
+          selected={field.value}
+          onChange={() => {
+            // field.onChange(text);
           }}
         />
       )}

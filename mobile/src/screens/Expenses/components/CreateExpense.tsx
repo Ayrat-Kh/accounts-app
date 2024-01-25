@@ -1,3 +1,5 @@
+import { UpsertExpense } from './UpsertExpense';
+
 export const CreateExpense = () => {
-  return null;
+  return <UpsertExpense />;
 };
