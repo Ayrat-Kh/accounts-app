@@ -8,30 +8,26 @@ import {
 export type FillColor = 'primary' | 'secondary';
 
 // later will add dark mode
-export const useGetIconFillColor = () => {
-  return (color: FillColor) => {
-    switch (color) {
-      case 'secondary': {
-        return appFillColors.secondary;
-      }
-      case 'primary':
-      default:
-        return appFillColors.primary;
+export const useFillColor = (color: FillColor) => {
+  switch (color) {
+    case 'secondary': {
+      return appFillColors.secondary;
     }
-  };
+    case 'primary':
+    default:
+      return appFillColors.primary;
+  }
 };
 
-export const useGetIconStrokeColor = () => {
-  return (color: FillColor) => {
-    switch (color) {
-      case 'secondary': {
-        return appStrokeColors.secondary;
-      }
-      case 'primary':
-      default:
-        return appStrokeColors.primary;
+export const useStrokeColor = (color: FillColor) => {
+  switch (color) {
+    case 'secondary': {
+      return appStrokeColors.secondary;
     }
-  };
+    case 'primary':
+    default:
+      return appStrokeColors.primary;
+  }
 };
 
 // later will be useb for the dark theme

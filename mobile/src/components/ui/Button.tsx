@@ -37,9 +37,7 @@ export const Button: FC<ButtonProps> = ({
     classNames.push('border-transparent py-2 px-2');
   }
   if (variant === 'primary') {
-    classNames.push(
-      'bg-primary border-2 border-app-primary-700 font-bold py-2 px-2',
-    );
+    classNames.push('bg-primary border-2 border-primary font-bold py-2 px-2');
   }
   if (variant === 'secondary') {
     classNames.push(

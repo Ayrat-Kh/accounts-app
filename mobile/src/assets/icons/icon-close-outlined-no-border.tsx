@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { Line, Svg } from 'react-native-svg';
 
-import { useGetIconStrokeColor } from '~/ui/hooks';
+import { useStrokeColor } from '~/ui/hooks';
 
 import type { BaseSettingProps } from './types';
 
@@ -9,13 +9,13 @@ export const IconCloseOutlinedNoBorder: FC<BaseSettingProps> = ({
   size = 50,
   color = 'primary',
 }: BaseSettingProps) => {
-  const getIconStrokeColor = useGetIconStrokeColor();
+  const strokeColor = useStrokeColor(color);
 
   return (
     <Svg width={size} height={size} viewBox="0 0 256 256">
       <Line
         fill="none"
-        stroke={getIconStrokeColor(color)}
+        stroke={strokeColor}
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="50"
@@ -26,7 +26,7 @@ export const IconCloseOutlinedNoBorder: FC<BaseSettingProps> = ({
       />
       <Line
         fill="none"
-        stroke={getIconStrokeColor(color)}
+        stroke={strokeColor}
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="50"
