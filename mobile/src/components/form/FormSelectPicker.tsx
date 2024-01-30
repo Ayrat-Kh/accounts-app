@@ -9,7 +9,7 @@ import {
 } from 'react-hook-form';
 
 import {
-  type AccessebilityLabel,
+  type AccessabilityLabel,
   SelectPicker,
   type SelectPickerProps,
 } from '../ui';
@@ -22,7 +22,7 @@ type FormSelectProps<
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
   name: TName;
-  label: AccessebilityLabel;
+  label: AccessabilityLabel;
   control: Control<TFieldValues>;
 } & Omit<
   SelectPickerProps<unknown, TValue, TMultiple>,

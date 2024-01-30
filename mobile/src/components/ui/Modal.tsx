@@ -6,8 +6,7 @@ import {
 } from 'react-native';
 
 import { IconCloseOutlinedNoBorder } from '~/assets/icons';
-import { Button } from '~/components/ui/Button';
-import { Text } from '~/components/ui/Text';
+import { Button, Text } from '~/components/ui';
 
 type ModalProps = PropsWithChildren<{
   header: string | ReactNode;
@@ -42,7 +41,7 @@ export const Modal: FC<ModalProps> = ({
     >
       <View className="flex-row justify-between items-center border-b-4 px-4 pt-4 pb-3 border-primary bg-primary">
         {typeof header === 'string' ? (
-          <Text variant="h3" kind="bold" color="secondary">
+          <Text variant="h3" kind="bold" color="primary">
             {header}
           </Text>
         ) : (

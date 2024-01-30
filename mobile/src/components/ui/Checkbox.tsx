@@ -12,7 +12,6 @@ type CheckboxProps = {
   label: string | ReactNode;
   isChecked: boolean;
   className?: string;
-
   onChange?: (isChecked: boolean) => void;
 } & Omit<CheckboxRNProps, 'onChange' | 'onValueChange'>;
 

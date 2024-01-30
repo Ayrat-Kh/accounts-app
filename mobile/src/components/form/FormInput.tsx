@@ -8,7 +8,11 @@ import {
   type UseFormStateReturn,
 } from 'react-hook-form';
 
-import { type AccessebilityLabel, Input, type InputProps } from '../ui';
+import {
+  type AccessabilityLabel,
+  Input,
+  type InputProps,
+} from '~/components/ui';
 
 type FormInputProps<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,7 +20,7 @@ type FormInputProps<
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
   name: TName;
-  label: AccessebilityLabel;
+  label: AccessabilityLabel;
   control: Control<TFieldValues>;
 } & Omit<InputProps, 'onChange'>;
 

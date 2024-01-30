@@ -37,10 +37,10 @@ export type TextColor =
   | 'secondary-low';
 
 export const textColors: Record<TextColor, string> = {
-  primary: 'font-normal',
-  'primary-low': 'font-bold',
-  secondary: 'font-semibold',
-  'secondary-low': 'font-semibold',
+  primary: 'text-primary',
+  'primary-low': 'text-primaryLow',
+  secondary: 'text-secondary',
+  'secondary-low': 'text-secondaryLow',
 };
 
 type TextProps = PropsWithChildren<
