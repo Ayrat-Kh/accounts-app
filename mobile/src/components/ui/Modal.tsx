@@ -1,7 +1,7 @@
 import type { FC, PropsWithChildren, ReactNode } from 'react';
 import {
   Modal as ModalRN,
-  ModalProps as ModalRNProps,
+  type ModalProps as ModalRNProps,
   View,
 } from 'react-native';
 
