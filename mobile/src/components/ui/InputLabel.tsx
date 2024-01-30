@@ -1,13 +1,13 @@
 import { Text } from './Text';
-import { type AccessebilityLabel, isLabelAccessebilityLabel } from './utils';
+import { type AccessabilityLabel, isLabelAccessabilityLabel } from './utils';
 
 type InputLabelProps = {
-  label: AccessebilityLabel;
+  label: AccessabilityLabel;
   className?: string;
 };
 
 export const InputLabel = ({ label, className }: InputLabelProps) => {
-  return isLabelAccessebilityLabel(label) ? (
+  return isLabelAccessabilityLabel(label) ? (
     label.component
   ) : (
     <Text variant="base1" color="primary-low" className={className}>

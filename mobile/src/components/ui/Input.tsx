@@ -7,10 +7,10 @@ import {
 
 import { InputLabel } from './InputLabel';
 import { Text } from './Text';
-import { type AccessebilityLabel, isLabelAccessebilityLabel } from './utils';
+import { type AccessabilityLabel, isLabelAccessabilityLabel } from './utils';
 
 export type InputProps = Omit<TextInputPropsRN, 'onChange' | 'onChangeText'> & {
-  label: AccessebilityLabel;
+  label: AccessabilityLabel;
   error?: string | ReactNode;
   isNumeric?: boolean;
   isDecimal?: boolean;
@@ -43,9 +43,9 @@ export const Input = ({
       <InputLabel label={label} className="mb-1" />
 
       <TextInputRN
-        className="border px-4 py-2 rounded bg-app-primary-300 border-app-primary-600"
+        className="border px-4 py-2 rounded bg-primary border-primary"
         accessibilityLabel={
-          isLabelAccessebilityLabel(label) ? label.accessebilityLabel : label
+          isLabelAccessabilityLabel(label) ? label.accessabilityLabel : label
         }
         {...rest}
         keyboardType={

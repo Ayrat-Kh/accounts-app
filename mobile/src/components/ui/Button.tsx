@@ -5,13 +5,42 @@ import {
   View,
 } from 'react-native';
 
-import { Text } from './Text';
+import { Text, TextColor, type TextKind } from './Text';
+
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'input';
+const buttonVariants: Record<ButtonVariant, string> = {
+  primary: 'bg-primary border-2 border-primary font-bold py-2 px-2',
+  secondary: 'bg-secondary border-2 border-secondary font-bold py-2 px-2',
+  ghost: 'border-transparent py-2 px-2',
+  input: 'border px-4 py-2 rounded bg-primary border-primary',
+};
+
+type ContentAlignment = 'left' | 'center';
+const contentAlignment: Record<ContentAlignment, string> = {
+  left: 'justify-start',
+  center: 'justify-center',
+};
+
+const textKinds: Record<ButtonVariant, TextKind> = {
+  primary: 'bold',
+  secondary: 'bold',
+  input: 'normal',
+  ghost: 'bold',
+};
+
+const textColors: Record<ButtonVariant, TextColor> = {
+  primary: 'primary',
+  secondary: 'secondary',
+  input: 'primary',
+  ghost: 'primary',
+};
 
 type ButtonProps = PropsWithChildren<TouchableOpacityProps> & {
   leftIcon?: React.ReactNode;
-  variant: 'primary' | 'secondary' | 'ghost';
+  variant: ButtonVariant;
   maxWidth?: boolean;
   rounded?: boolean;
+  align?: 'left' | 'center';
 };
 
 export const Button: FC<ButtonProps> = ({
@@ -21,28 +50,18 @@ export const Button: FC<ButtonProps> = ({
   maxWidth = false,
   rounded = false,
   className,
+  align = 'center',
   ...rest
 }) => {
   const classNames: (string | undefined)[] = [
     'flex-row',
-    'justify-center',
     'items-center',
+    buttonVariants[variant],
+    contentAlignment[align],
   ];
 
   if (maxWidth) {
     classNames.push('w-full');
-  }
-
-  if (variant === 'ghost') {
-    classNames.push('border-transparent py-2 px-2');
-  }
-  if (variant === 'primary') {
-    classNames.push('bg-primary border-2 border-primary font-bold py-2 px-2');
-  }
-  if (variant === 'secondary') {
-    classNames.push(
-      'bg-secondary border-2 border-secondary font-bold py-2 px-2',
-    );
   }
 
   if (rounded) {
@@ -61,12 +80,9 @@ export const Button: FC<ButtonProps> = ({
 
       {typeof children === 'string' ? (
         <Text
-          className=""
           variant="base1"
-          kind="semibold"
-          color={
-            ['ghost', 'primary'].includes(variant) ? 'primary' : 'secondary'
-          }
+          kind={textKinds[variant]}
+          color={textColors[variant]}
         >
           {children}
         </Text>

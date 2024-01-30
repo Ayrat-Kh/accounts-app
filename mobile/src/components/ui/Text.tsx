@@ -1,19 +1,53 @@
 import type { FC, PropsWithChildren } from 'react';
 import { Text as TextRN, type TextProps as TextRNProps } from 'react-native';
 
+export type TextVariant =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'body1'
+  | 'body2'
+  | 'base1'
+  | 'base2'
+  | 'base3';
+
+const textVariants: Record<TextVariant, string> = {
+  h1: 'text-5xl', // 48
+  h2: 'text-4xl', // 36
+  h3: 'text-3xl', // 30
+  body1: 'text-xl', // 20
+  body2: 'text-lg', // 18
+  base1: 'text-base', // 16
+  base2: 'text-sm', // 14
+  base3: 'text-xs', // 12
+};
+
+export type TextKind = 'normal' | 'semibold' | 'bold';
+
+const textKinds: Record<TextKind, string> = {
+  normal: 'font-normal',
+  bold: 'font-bold',
+  semibold: 'font-semibold',
+};
+
+export type TextColor =
+  | 'primary'
+  | 'primary-low'
+  | 'secondary'
+  | 'secondary-low';
+
+export const textColors: Record<TextColor, string> = {
+  primary: 'font-normal',
+  'primary-low': 'font-bold',
+  secondary: 'font-semibold',
+  'secondary-low': 'font-semibold',
+};
+
 type TextProps = PropsWithChildren<
   TextRNProps & {
-    variant?:
-      | 'h1'
-      | 'h2'
-      | 'h3'
-      | 'body1'
-      | 'body2'
-      | 'base1'
-      | 'base2'
-      | 'base3';
-    color?: 'primary' | 'primary-low' | 'secondary' | 'secondary-low';
-    kind?: 'normal' | 'semibold' | 'bold';
+    variant?: TextVariant;
+    color?: TextColor;
+    kind?: TextKind;
   }
 >;
 
@@ -25,78 +59,12 @@ export const Text: FC<TextProps> = ({
   children,
   ...rest
 }: TextProps) => {
-  const classNames = [];
-
-  switch (variant) {
-    case 'h1': {
-      classNames.push('text-5xl'); // 48
-      break;
-    }
-    case 'h2': {
-      classNames.push('text-4xl'); // 36
-      break;
-    }
-    case 'h3': {
-      classNames.push('text-3xl'); // 30
-      break;
-    }
-    case 'body1': {
-      classNames.push('text-xl'); // 20
-      break;
-    }
-    case 'body2': {
-      classNames.push('text-lg'); // 18
-      break;
-    }
-    case 'base1': {
-      classNames.push('text-base'); // 16
-      break;
-    }
-    case 'base2': {
-      classNames.push('text-sm'); // 14
-      break;
-    }
-    case 'base3': {
-      classNames.push('text-xs'); // 12
-      break;
-    }
-  }
-
-  switch (kind) {
-    case 'normal': {
-      classNames.push('font-normal'); // 26
-      break;
-    }
-    case 'bold': {
-      classNames.push('font-bold'); // 24
-      break;
-    }
-    case 'semibold': {
-      classNames.push('font-semibold'); // 24
-      break;
-    }
-  }
-
-  switch (color) {
-    case 'primary': {
-      classNames.push('text-primary'); // 26
-      break;
-    }
-    case 'primary-low': {
-      classNames.push('text-primaryLow'); // 26
-      break;
-    }
-    case 'secondary': {
-      classNames.push('text-secondary'); // 24
-      break;
-    }
-    case 'secondary-low': {
-      classNames.push('text-secondaryLow'); // 24
-      break;
-    }
-  }
-
-  classNames.push(className);
+  const classNames: (string | undefined)[] = [
+    textKinds[kind],
+    textVariants[variant],
+    textColors[color],
+    className,
+  ];
 
   return (
     <TextRN {...rest} className={classNames.join(' ')}>

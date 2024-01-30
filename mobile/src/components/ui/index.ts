@@ -4,5 +4,5 @@ export { Input, type InputProps } from './Input';
 export { Modal } from './Modal';
 export { Checkbox } from './Checkbox';
 export { useModal } from './Modal.hooks';
-export { type AccessebilityLabel } from './utils';
+export { type AccessabilityLabel } from './utils';
 export { SelectPicker, type SelectPickerProps } from './SelectPicker';

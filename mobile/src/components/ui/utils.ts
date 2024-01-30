@@ -1,18 +1,18 @@
-type AccessebilityLabelObject = {
+type AccessabilityLabelObject = {
   component: React.ReactNode;
-  accessebilityLabel: string;
+  accessabilityLabel: string;
 };
 
-export type AccessebilityLabel = AccessebilityLabelObject | string;
+export type AccessabilityLabel = AccessabilityLabelObject | string;
 
-export const isLabelAccessebilityLabel = (
-  obj: AccessebilityLabel,
-): obj is AccessebilityLabelObject => {
+export const isLabelAccessabilityLabel = (
+  obj: AccessabilityLabel,
+): obj is AccessabilityLabelObject => {
   return typeof obj === 'object';
 };
 
-export const getAccessebilityLabelNode = (
-  obj: AccessebilityLabel,
+export const getAccessabilityLabelNode = (
+  obj: AccessabilityLabel,
 ): React.ReactNode => {
-  return isLabelAccessebilityLabel(obj) ? obj.component : obj;
+  return isLabelAccessabilityLabel(obj) ? obj.component : obj;
 };

@@ -1,5 +1,6 @@
 import { ListRenderItemInfo } from '@shopify/flash-list';
 
+import { Button } from './Button';
 import { Checkbox } from './Checkbox';
 
 export type SelectPickerItemOption<TData, TValue extends string | number> = {
@@ -12,10 +13,7 @@ export type SelectPickerItemExtraData<TData, TValue extends string | number> = {
   selected?:
     | SelectPickerItemOption<TData, TValue>[]
     | SelectPickerItemOption<TData, TValue>;
-  onChange: (
-    isChecked: boolean,
-    value: SelectPickerItemOption<TData, TValue>,
-  ) => void;
+  onChange: (value: SelectPickerItemOption<TData, TValue>) => void;
 };
 
 export type SelectPickerItemProps<TData, TValue extends string | number> = {
@@ -33,16 +31,18 @@ export const SelectPickerItem = <TData, TValue extends string | number>({
     ? extraData.selected.some((x) => x.value === item.value)
     : extraData?.selected?.value === item.value;
 
-  const handleChange = (isChecked: boolean) => {
-    extraData?.onChange(isChecked, item);
+  const handlePress = () => {
+    extraData?.onChange(item);
   };
 
   return (
-    <Checkbox
-      label={item.label}
-      isChecked={isSelected}
-      className="my-2"
-      onChange={handleChange}
-    />
+    <Button align="left" variant="ghost" onPress={handlePress}>
+      <Checkbox
+        label={item.label}
+        isChecked={isSelected}
+        className="my-2"
+        onChange={handlePress}
+      />
+    </Button>
   );
 };
