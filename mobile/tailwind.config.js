@@ -1,4 +1,10 @@
-import { appColors } from './src/components/ui/colors';
+import {
+  appBgColors,
+  appBorderColors,
+  appFillColors,
+  appStrokeColors,
+  appTextColors,
+} from './src/ui';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -6,9 +12,11 @@ module.exports = {
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
-      colors: appColors,
-      fill: appColors,
-      stroke: appColors,
+      textColor: appTextColors,
+      borderColor: appBorderColors,
+      backgroundColor: appBgColors,
+      fill: appFillColors,
+      stroke: appStrokeColors,
     },
   },
   future: {

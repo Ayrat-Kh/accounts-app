@@ -5,34 +5,34 @@ import { useStrokeColor } from '~/ui/hooks';
 
 import type { BaseSettingProps } from './types';
 
-export const IconAddOutlinedNoBorder: FC<BaseSettingProps> = ({
+export const IconCloseOutlinedNoBorder: FC<BaseSettingProps> = ({
   size = 50,
   color = 'primary',
 }: BaseSettingProps) => {
-  const styledColor = useStrokeColor(color);
+  const strokeColor = useStrokeColor(color);
 
   return (
     <Svg width={size} height={size} viewBox="0 0 256 256">
       <Line
         fill="none"
-        stroke={styledColor}
+        stroke={strokeColor}
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="24"
+        strokeWidth="50"
         x1="40"
+        y1="40"
         x2="216"
-        y1="128"
-        y2="128"
+        y2="216"
       />
       <Line
         fill="none"
-        stroke={styledColor}
+        stroke={strokeColor}
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="24"
-        x1="128"
-        x2="128"
+        strokeWidth="50"
+        x1="216"
         y1="40"
+        x2="40"
         y2="216"
       />
     </Svg>

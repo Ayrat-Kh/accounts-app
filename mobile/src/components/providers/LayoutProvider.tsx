@@ -1,16 +1,16 @@
-import React from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-type LayoutProviderProps = React.PropsWithChildren;
+type LayoutProviderProps = PropsWithChildren;
 
-export const LayoutProvider: React.FC<LayoutProviderProps> = ({
+export const LayoutProvider: FC<LayoutProviderProps> = ({
   children,
 }: LayoutProviderProps) => {
   const { bottom, left, right, top } = useSafeAreaInsets();
   return (
     <View
-      className="flex-1 bg-app-primary-200"
+      className="flex-1 bg-primary"
       style={{
         paddingTop: top,
         paddingLeft: left,

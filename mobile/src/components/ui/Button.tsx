@@ -1,41 +1,67 @@
-import React from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import {
   TouchableOpacity,
   type TouchableOpacityProps,
   View,
 } from 'react-native';
 
-type ButtonProps = React.PropsWithChildren<TouchableOpacityProps> & {
-  leftIcon?: React.ReactNode;
-  variant: 'primary' | 'secondary' | 'ghost';
-  maxWidth?: boolean;
-  rounded?: boolean;
+import { Text, TextColor, type TextKind } from './Text';
+
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'input';
+const buttonVariants: Record<ButtonVariant, string> = {
+  primary: 'bg-primary border-2 border-primary font-bold py-2 px-2',
+  secondary: 'bg-secondary border-2 border-secondary font-bold py-2 px-2',
+  ghost: 'border-transparent py-2 px-2',
+  input: 'border px-4 py-2 rounded bg-primary border-primary',
 };
 
-export const Button: React.FC<ButtonProps> = ({
+type ContentAlignment = 'left' | 'center';
+const contentAlignment: Record<ContentAlignment, string> = {
+  left: 'justify-start',
+  center: 'justify-center',
+};
+
+const textKinds: Record<ButtonVariant, TextKind> = {
+  primary: 'bold',
+  secondary: 'bold',
+  input: 'normal',
+  ghost: 'bold',
+};
+
+const textColors: Record<ButtonVariant, TextColor> = {
+  primary: 'primary',
+  secondary: 'secondary',
+  input: 'primary',
+  ghost: 'primary',
+};
+
+type ButtonProps = PropsWithChildren<TouchableOpacityProps> & {
+  leftIcon?: React.ReactNode;
+  variant: ButtonVariant;
+  maxWidth?: boolean;
+  rounded?: boolean;
+  align?: 'left' | 'center';
+};
+
+export const Button: FC<ButtonProps> = ({
   children,
   leftIcon,
   variant,
   maxWidth = false,
   rounded = false,
+  className,
+  align = 'center',
   ...rest
 }) => {
-  const classNames = ['flex-1', 'flex-row', 'justify-center', 'items-center'];
+  const classNames: (string | undefined)[] = [
+    'flex-row',
+    'items-center',
+    buttonVariants[variant],
+    contentAlignment[align],
+  ];
 
   if (maxWidth) {
     classNames.push('w-full');
-  }
-
-  if (variant === 'ghost') {
-    classNames.push('border-transparent py-2 px-2');
-  }
-  if (variant === 'primary') {
-    classNames.push(
-      'bg-app-primary-300 border-2 border-app-primary-700 font-bold py-2 px-2',
-    );
-  }
-  if (variant === 'secondary') {
-    classNames.push('font-bold py-2 px-4');
   }
 
   if (rounded) {
@@ -44,13 +70,25 @@ export const Button: React.FC<ButtonProps> = ({
     classNames.push('rounded-md');
   }
 
+  classNames.push(className);
+
   return (
-    <TouchableOpacity className={classNames.join(' ')} {...rest}>
+    <TouchableOpacity {...rest} className={classNames.join(' ')}>
       {leftIcon}
 
       {Boolean(leftIcon && children) && <View className="mr-2" />}
 
-      {children}
+      {typeof children === 'string' ? (
+        <Text
+          variant="base1"
+          kind={textKinds[variant]}
+          color={textColors[variant]}
+        >
+          {children}
+        </Text>
+      ) : (
+        children
+      )}
     </TouchableOpacity>
   );
 };
