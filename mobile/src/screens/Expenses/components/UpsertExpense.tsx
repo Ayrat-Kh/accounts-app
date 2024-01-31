@@ -29,6 +29,7 @@ export const UpsertExpense = () => {
           control={control}
           name="currencyCode"
           label="Currency"
+          placeholder="Select currency"
           isMultiple={false}
           options={[
             {
@@ -49,6 +50,7 @@ export const UpsertExpense = () => {
         name="date"
         label="Date"
         className="mt-2"
+        placeholder="Select date"
       />
     </View>
   );

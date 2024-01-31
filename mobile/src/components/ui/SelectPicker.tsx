@@ -125,6 +125,7 @@ export type SelectPickerProps<
   label: AccessabilityLabel;
   error?: string | ReactNode;
   className?: string;
+  placeholder?: string;
 };
 
 export const SelectPicker = <
@@ -138,6 +139,7 @@ export const SelectPicker = <
   options,
   selected,
   className,
+  placeholder,
   onChange,
 }: SelectPickerProps<TData, TValue, TMultiple>) => {
   const { isVisible, show, close } = useModal();
@@ -148,7 +150,7 @@ export const SelectPicker = <
 
   const itemText =
     (isMultiple ? selected?.map((x) => x.label).join(', ') : selected?.label) ||
-    'Select items...';
+    (placeholder ?? 'Select items...');
 
   return (
     <View className={className}>

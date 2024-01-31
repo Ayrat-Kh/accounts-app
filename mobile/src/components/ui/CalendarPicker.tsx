@@ -106,6 +106,7 @@ export type CalendarPickerProps = Omit<
 > & {
   error?: string | ReactNode;
   className?: string;
+  placeholder?: string;
 };
 
 export const CalendarPicker = ({
@@ -113,11 +114,13 @@ export const CalendarPicker = ({
   label,
   selected,
   className,
+  placeholder,
   onChange,
 }: CalendarPickerProps) => {
   const { isVisible, show, close } = useModal();
 
-  const itemText = selected?.toLocaleDateString() || 'Select date...';
+  const itemText =
+    selected?.toLocaleDateString() || (placeholder ?? 'Select date...');
 
   return (
     <View className={className}>
