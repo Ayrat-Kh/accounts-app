@@ -7,3 +7,4 @@ export { useModal } from './Modal.hooks';
 export { type AccessabilityLabel } from './utils';
 export { SelectPicker, type SelectPickerProps } from './SelectPicker';
 export { CalendarPicker, type CalendarPickerProps } from './CalendarPicker';
+export { Map } from './Map';
