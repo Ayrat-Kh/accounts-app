@@ -1,10 +1,17 @@
 package expenses
 
 import (
+	"time"
+
 	"github.com/Ayrat-Kh/expenso-app/backend/helpers"
 	guuid "github.com/google/uuid"
 	_ "github.com/lib/pq"
 )
+
+type GeoCoord struct {
+	Lat float64 `json:"lat"`
+	Lng float64 `json:"lng"`
+}
 
 type ExpenseItemDto struct {
 	Name         string  `json:"name" validate:"required"`
@@ -32,6 +39,8 @@ type ExpenseDto struct {
 	CurrencyCode string          `json:"currencyCode" validate:"required"`
 	Category     string          `json:"category" validate:"required"`
 	Name         string          `json:"name" validate:"required"`
+	Date         time.Time       `json:"date"`
+	Coord        GeoCoord        `json:"coord"`
 }
 
 type ExpensesResult struct {

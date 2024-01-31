@@ -16,6 +16,9 @@
 // May contain unused imports in some cases
 // @ts-ignore
 import { ExpensesExpenseItemDto } from './expenses-expense-item-dto';
+// May contain unused imports in some cases
+// @ts-ignore
+import { ExpensesGeoCoord } from './expenses-geo-coord';
 
 /**
  * 
@@ -31,6 +34,12 @@ export interface ExpensesExpenseDto {
     'category': string;
     /**
      * 
+     * @type {ExpensesGeoCoord}
+     * @memberof ExpensesExpenseDto
+     */
+    'coord'?: ExpensesGeoCoord;
+    /**
+     * 
      * @type {number}
      * @memberof ExpensesExpenseDto
      */
@@ -41,6 +50,12 @@ export interface ExpensesExpenseDto {
      * @memberof ExpensesExpenseDto
      */
     'currencyCode': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExpensesExpenseDto
+     */
+    'date'?: string;
     /**
      * 
      * @type {Array<ExpensesExpenseItemDto>}
