@@ -10,13 +10,11 @@ import {
 
 import {
   type AccessabilityLabel,
-  SelectPicker,
-  type SelectPickerProps,
+  CalendarPicker,
+  type CalendarPickerProps,
 } from '../ui';
 
-type FormSelectPickerProps<
-  TValue extends string | number,
-  TMultiple extends boolean,
+type FormCalendarPickerProps<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TFieldValues extends Record<string, any> = Record<string, any>,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -24,14 +22,9 @@ type FormSelectPickerProps<
   name: TName;
   label: AccessabilityLabel;
   control: Control<TFieldValues>;
-} & Omit<
-  SelectPickerProps<unknown, TValue, TMultiple>,
-  'onChange' | 'selected'
->;
+} & Omit<CalendarPickerProps, 'onChange' | 'selected' | 'close'>;
 
-export const FormSelectPicker = <
-  TValue extends string | number,
-  TMultiple extends boolean,
+export const FormCalendarPicker = <
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TFieldValues extends Record<string, any> = Record<string, any>,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -40,12 +33,7 @@ export const FormSelectPicker = <
   label,
   control,
   ...restInputProps
-}: FormSelectPickerProps<
-  TValue,
-  TMultiple,
-  TFieldValues,
-  TName
->): ReactElement => {
+}: FormCalendarPickerProps<TFieldValues, TName>): ReactElement => {
   return (
     <Controller
       control={control}
@@ -58,9 +46,8 @@ export const FormSelectPicker = <
         fieldState: ControllerFieldState;
         formState: UseFormStateReturn<TFieldValues>;
       }) => (
-        <SelectPicker
+        <CalendarPicker
           {...restInputProps}
-          isMultiple={false}
           label={label}
           error={fieldState.error?.message}
           selected={field.value}

@@ -6,7 +6,9 @@ import {
 } from 'react-native';
 
 import { IconCloseOutlinedNoBorder } from '~/assets/icons';
-import { Button, Text } from '~/components/ui';
+// prevent cycles so import directly
+import { Button } from '~/components/ui/Button';
+import { Text } from '~/components/ui/Text';
 
 type ModalProps = PropsWithChildren<{
   header: string | ReactNode;

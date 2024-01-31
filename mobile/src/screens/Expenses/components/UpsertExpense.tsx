@@ -1,8 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { FormInput } from '~/components/form/FormInput';
-import { FormSelect } from '~/components/form/FormSelectPicker';
+import {
+  FormCalendarPicker,
+  FormInput,
+  FormSelectPicker,
+} from '~/components/form';
 import type { ExpensesExpenseDto } from '~/lib/api/open-api';
 
 export const UpsertExpense = () => {
@@ -19,7 +22,7 @@ export const UpsertExpense = () => {
         isDecimal
         control={control}
       />
-      <FormSelect
+      <FormSelectPicker
         control={control}
         name="currencyCode"
         label="Currency"
@@ -37,6 +40,7 @@ export const UpsertExpense = () => {
           },
         ]}
       />
+      <FormCalendarPicker control={control} name="date" label="Date" />
       {/* </View> */}
     </View>
   );

@@ -146,7 +146,7 @@ export const SelectPicker = <
 
   const itemText =
     (isMultiple ? selected?.map((x) => x.label).join(', ') : selected?.label) ||
-    'Select items';
+    'Select items...';
 
   return (
     <View>
