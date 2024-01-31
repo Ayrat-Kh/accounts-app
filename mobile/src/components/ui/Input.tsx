@@ -23,6 +23,7 @@ export const Input = ({
   error,
   isDecimal,
   isNumeric,
+  className,
   onChange,
   ...rest
 }: InputProps) => {
@@ -39,11 +40,11 @@ export const Input = ({
   };
 
   return (
-    <View>
+    <View className={className}>
       <InputLabel label={label} className="mb-1" />
 
       <TextInputRN
-        className="border px-4 py-2 rounded bg-primary border-primary"
+        className="border px-4 py-2 rounded  bg-primary border-primary h-[46]"
         accessibilityLabel={
           isLabelAccessabilityLabel(label) ? label.accessabilityLabel : label
         }

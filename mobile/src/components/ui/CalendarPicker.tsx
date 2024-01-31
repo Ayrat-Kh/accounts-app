@@ -102,15 +102,17 @@ const CalendarPickerModal = ({
 
 export type CalendarPickerProps = Omit<
   CalendarPickerModalProps,
-  'isVisible' | 'onClose'
+  'isVisible' | 'close'
 > & {
   error?: string | ReactNode;
+  className?: string;
 };
 
 export const CalendarPicker = ({
   error,
   label,
   selected,
+  className,
   onChange,
 }: CalendarPickerProps) => {
   const { isVisible, show, close } = useModal();
@@ -118,7 +120,7 @@ export const CalendarPicker = ({
   const itemText = selected?.toLocaleDateString() || 'Select date...';
 
   return (
-    <View>
+    <View className={className}>
       <InputLabel label={label} className="mb-1" />
       <Button variant="input" align="left" onPress={show}>
         {itemText}
@@ -126,7 +128,7 @@ export const CalendarPicker = ({
       {error && <Text className="mt-1">{error}</Text>}
 
       <CalendarPickerModal
-        key={selected?.toDateString()}
+        key={formatISODate(selected)}
         isVisible={isVisible}
         selected={selected}
         label={label}

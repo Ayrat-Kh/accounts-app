@@ -124,6 +124,7 @@ export type SelectPickerProps<
   options: SelectPickerItemOption<TData, TValue>[];
   label: AccessabilityLabel;
   error?: string | ReactNode;
+  className?: string;
 };
 
 export const SelectPicker = <
@@ -136,6 +137,7 @@ export const SelectPicker = <
   label,
   options,
   selected,
+  className,
   onChange,
 }: SelectPickerProps<TData, TValue, TMultiple>) => {
   const { isVisible, show, close } = useModal();
@@ -149,7 +151,7 @@ export const SelectPicker = <
     'Select items...';
 
   return (
-    <View>
+    <View className={className}>
       <InputLabel label={label} className="mb-1" />
       <Button variant="input" align="left" onPress={show}>
         {itemText}

@@ -54,6 +54,7 @@ export const Button: FC<ButtonProps> = ({
   ...rest
 }) => {
   const classNames: (string | undefined)[] = [
+    'h-[46]',
     'flex-row',
     'items-center',
     buttonVariants[variant],
