@@ -6,7 +6,7 @@ import {
   FormInput,
   FormSelectPicker,
 } from '~/components/form';
-import { Map } from '~/components/ui';
+import { InputLabel, Map } from '~/components/ui';
 import type { ExpensesExpenseDto } from '~/lib/api/open-api';
 
 export const UpsertExpense = () => {
@@ -53,7 +53,11 @@ export const UpsertExpense = () => {
         className="mt-2"
         placeholder="Select date"
       />
-      <Map />
+
+      <View>
+        <InputLabel label="Paid location" className="mb-1 mt-2" />
+        <Map className="h-[300]" />
+      </View>
     </View>
   );
 };
