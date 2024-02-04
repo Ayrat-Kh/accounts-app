@@ -1,6 +1,0 @@
-[submodule "backend-old/lib/uWebSockets"]
-	path = backend-old/lib/uWebSockets
-	url = git@github.com:uNetworking/uWebSockets.git
-[submodule "backend-old/lib/poco"]
-	path = backend-old/lib/poco
-	url = git@github.com:pocoproject/poco.git
