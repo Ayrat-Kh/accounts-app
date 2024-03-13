@@ -77,6 +77,7 @@ const SelectPickerModal = <
       onChange(selectedState as SelectPickerItemOption<TData, TValue>[]);
     } else {
       onChange(selectedState as SelectPickerItemOption<TData, TValue>);
+      close();
     }
     close();
   };

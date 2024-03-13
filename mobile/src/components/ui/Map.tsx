@@ -1,17 +1,18 @@
-import type { FC } from 'react';
+import { type FC, type LegacyRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import MapView, { type MapViewProps } from 'react-native-maps';
 
 type MapProps = MapViewProps & {
   className?: string;
+  mapRef?: LegacyRef<MapView> | undefined;
 };
 
-export const Map: FC<MapProps> = ({ className }) => {
+export const Map: FC<MapProps> = ({ className, mapRef }) => {
   const totalClassNames: (string | unknown)[] = ['rounded', className];
 
   return (
     <View className={totalClassNames.join(' ')}>
-      <MapView style={mapStyles.map} />
+      <MapView ref={mapRef} style={mapStyles.map} />
     </View>
   );
 };
