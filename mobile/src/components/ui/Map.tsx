@@ -7,12 +7,12 @@ type MapProps = MapViewProps & {
   mapRef?: LegacyRef<MapView> | undefined;
 };
 
-export const Map: FC<MapProps> = ({ className, mapRef }) => {
+export const Map: FC<MapProps> = ({ className, mapRef, ...rest }) => {
   const totalClassNames: (string | unknown)[] = ['rounded', className];
 
   return (
     <View className={totalClassNames.join(' ')}>
-      <MapView ref={mapRef} style={mapStyles.map} />
+      <MapView ref={mapRef} style={mapStyles.map} {...rest} />
     </View>
   );
 };

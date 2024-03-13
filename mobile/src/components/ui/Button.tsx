@@ -1,9 +1,11 @@
 import type { FC, PropsWithChildren } from 'react';
 import {
-  TouchableOpacity,
-  type TouchableOpacityProps,
+  TouchableHighlight,
+  type TouchableHighlightProps,
   View,
 } from 'react-native';
+
+import { useBgColor } from '~/ui';
 
 import { Text, TextColor, type TextKind } from './Text';
 
@@ -35,7 +37,7 @@ const textColors: Record<ButtonVariant, TextColor> = {
   ghost: 'primary',
 };
 
-type ButtonProps = PropsWithChildren<TouchableOpacityProps> & {
+type ButtonProps = PropsWithChildren<TouchableHighlightProps> & {
   leftIcon?: React.ReactNode;
   variant: ButtonVariant;
   maxWidth?: boolean;
@@ -73,23 +75,31 @@ export const Button: FC<ButtonProps> = ({
 
   classNames.push(className);
 
+  const primaryBackColor = useBgColor('compPrimary');
+
   return (
-    <TouchableOpacity {...rest} className={classNames.join(' ')}>
-      {leftIcon}
+    <TouchableHighlight
+      underlayColor={primaryBackColor}
+      {...rest}
+      className={classNames.join(' ')}
+    >
+      <View>
+        {leftIcon}
 
-      {Boolean(leftIcon && children) && <View className="mr-2" />}
+        {Boolean(leftIcon && children) && <View className="mr-2" />}
 
-      {typeof children === 'string' ? (
-        <Text
-          variant="base1"
-          kind={textKinds[variant]}
-          color={textColors[variant]}
-        >
-          {children}
-        </Text>
-      ) : (
-        children
-      )}
-    </TouchableOpacity>
+        {typeof children === 'string' ? (
+          <Text
+            variant="base1"
+            kind={textKinds[variant]}
+            color={textColors[variant]}
+          >
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+      </View>
+    </TouchableHighlight>
   );
 };
