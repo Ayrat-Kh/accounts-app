@@ -39,6 +39,7 @@ export const FormSelectPicker = <
   name,
   label,
   control,
+  isMultiple,
   ...restInputProps
 }: FormSelectPickerProps<
   TValue,
@@ -60,11 +61,11 @@ export const FormSelectPicker = <
       }) => (
         <SelectPicker
           {...restInputProps}
-          isMultiple={false}
+          isMultiple={isMultiple}
           label={label}
           error={fieldState.error?.message}
           selected={field.value}
-          onChange={(value) => {
+          onChange={(value: unknown) => {
             field.onChange(value);
           }}
         />
