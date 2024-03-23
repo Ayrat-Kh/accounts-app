@@ -1,4 +1,5 @@
-import { FormProvider, useForm } from 'react-hook-form';
+import { FC } from 'react';
+import { FormProvider, type UseFormReturn } from 'react-hook-form';
 import { ScrollView, View } from 'react-native';
 
 import {
@@ -10,8 +11,9 @@ import type { ExpensesExpenseDto } from '~/lib/api/open-api';
 
 import { MapInput } from './MapInput';
 
-export const UpsertExpense = () => {
-  const form = useForm<ExpensesExpenseDto>();
+type UpsertExpenseProps = UseFormReturn<ExpensesExpenseDto>;
+
+export const UpsertExpense: FC<UpsertExpenseProps> = ({ ...form }) => {
   const { control } = form;
 
   return (

@@ -145,6 +145,8 @@ export const SelectPicker = <
 }: SelectPickerProps<TData, TValue, TMultiple>) => {
   const { isVisible, show, close } = useModal();
 
+  console.log('selected', selected);
+
   const itemKey = isMultiple
     ? selected?.map((x) => x.value).join('')
     : selected?.value;

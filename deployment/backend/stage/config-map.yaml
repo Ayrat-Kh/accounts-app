@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: expenso-stage
+  namespace: default
+type: Opaque
+data:
+  ENVIRONMENT: c3RhZ2U=
+  PG_DATABASE: ZXhwZW5zb19zdGFnZQ==
+  PG_PASSWORD: YlhsemNXd0s=
+  PG_ROOT_PASSWORD: YzNWd1pYSnpaV055WlhRSw==
