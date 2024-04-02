@@ -1,4 +1,3 @@
-# $ROOT/external/uSockets/CMakeLists.txt
 cmake_minimum_required(VERSION VERSION 3.5)
 set(CMAKE_C_STANDARD 11)
 

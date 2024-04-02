@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION VERSION 3.26...3.28 FATAL_ERROR)
+cmake_minimum_required(VERSION VERSION 3.5 FATAL_ERROR)
 include(FetchContent)
 FetchContent_Declare(
   uWebSockets_content
