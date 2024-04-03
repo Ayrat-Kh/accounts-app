@@ -3,20 +3,19 @@
 #include <boost/beast.hpp>
 #include <boost/beast/ssl.hpp>
 #include <boost/asio.hpp>
-#include <boost/json/src.hpp>
-
-#include <iostream>
-#include <string>
+#include <boost/json.hpp>
 
 using namespace app::services;
 
-std::variant<GoogleTokenInfo, std::exception> GoogleLoginImpl::GetGoogleUser(std::string_view idToken)
+std::variant<GoogleTokenInfo, std::exception_ptr> GoogleLoginImpl::GetGoogleUser(std::string_view idToken)
 {
     namespace beast = boost::beast;
     namespace http = beast::http;
     namespace net = boost::asio;
     namespace ssl = net::ssl;
     using tcp = net::ip::tcp;
+
+    boost::json::value json_response;
 
     try
     {
@@ -51,30 +50,34 @@ std::variant<GoogleTokenInfo, std::exception> GoogleLoginImpl::GetGoogleUser(std
 
         // Parse the JSON response
         boost::json::error_code ec;
-        auto json_body = boost::json::parse(res.body(), ec);
+        json_response = boost::json::parse(res.body(), ec);
+
+        if (const auto error_string = json_response.at("error_description").if_string())
+        {
+            throw std::domain_error(error_string->c_str());
+        }
 
         return GoogleTokenInfo{
-            .alg = json_body.at("alg").as_string().c_str(),
-            .at_hash = json_body.at("at_hash").as_string().c_str(),
-            .aud = json_body.at("aud").as_string().c_str(),
-            .azp = json_body.at("azp").as_string().c_str(),
-            .email = json_body.at("email").as_string().c_str(),
-            .email_verified = json_body.at("email_verified").as_string().c_str(),
-            .exp = json_body.at("exp").as_string().c_str(),
-            .family_name = json_body.at("family_name").as_string().c_str(),
-            .given_name = json_body.at("given_name").as_string().c_str(),
-            .iat = json_body.at("iat").as_string().c_str(),
-            .iss = json_body.at("iss").as_string().c_str(),
-            .kid = json_body.at("kid").as_string().c_str(),
-            .name = json_body.at("name").as_string().c_str(),
-            .picture = json_body.at("picture").as_string().c_str(),
-            .sub = json_body.at("sub").as_string().c_str(),
-            .typ = json_body.at("typ").as_string().c_str(),
+            .alg = json_response.at("alg").as_string().c_str(),
+            .at_hash = json_response.at("at_hash").as_string().c_str(),
+            .aud = json_response.at("aud").as_string().c_str(),
+            .azp = json_response.at("azp").as_string().c_str(),
+            .email = json_response.at("email").as_string().c_str(),
+            .email_verified = json_response.at("email_verified").as_string().c_str(),
+            .exp = json_response.at("exp").as_string().c_str(),
+            .family_name = json_response.at("family_name").as_string().c_str(),
+            .given_name = json_response.at("given_name").as_string().c_str(),
+            .iat = json_response.at("iat").as_string().c_str(),
+            .iss = json_response.at("iss").as_string().c_str(),
+            .kid = json_response.at("kid").as_string().c_str(),
+            .name = json_response.at("name").as_string().c_str(),
+            .picture = json_response.at("picture").as_string().c_str(),
+            .sub = json_response.at("sub").as_string().c_str(),
+            .typ = json_response.at("typ").as_string().c_str(),
         };
     }
-    catch (const std::exception e)
+    catch (const std::exception &e)
     {
-        std::cout << "Err" << e.what();
-        return e;
+        return std::current_exception();
     }
 }
