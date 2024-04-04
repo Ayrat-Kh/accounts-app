@@ -4,18 +4,14 @@
 #include <mongocxx/stdx.hpp>
 #include <bsoncxx/stdx/make_unique.hpp>
 
-// mongocxx::instance instance = {}; // This should be done only once.
-// mongocxx::uri uri("mongodb://localhost:27017");
-// mongocxx::client client(uri);
-
-void app::service::MongoAccess::Configure(std::unique_ptr<mongocxx::instance> instance,
-                                          std::unique_ptr<mongocxx::pool> pool)
+void app::services::MongoAccess::Configure(std::unique_ptr<mongocxx::instance> instance,
+                                           std::unique_ptr<mongocxx::pool> pool)
 {
     _instance = std::move(instance);
     _pool = std::move(pool);
 }
 
-void app::service::ConfigureMongoInstance(mongocxx::uri uri)
+void app::services::ConfigureMongoInstance(mongocxx::uri uri)
 {
     class noop_logger : public mongocxx::logger
     {

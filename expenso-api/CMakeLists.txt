@@ -15,9 +15,8 @@ find_package(OpenSSL REQUIRED)
 add_subdirectory(external)
 
 # boost
-
-set(BOOST_JSON_DECL ON)
-set(BOOST_JSON_CLASS_DECL ON)
+# set(BOOST_JSON_DECL ON)
+# set(BOOST_JSON_CLASS_DECL ON)
 set(BOOST_INCLUDE_LIBRARIES beast asio json)
 set(BOOST_ENABLE_CMAKE ON)
 FetchContent_Declare(
@@ -27,7 +26,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Boost)
 
-
+# jwt
+FetchContent_Declare(
+  cppjwt_content
+  GIT_REPOSITORY https://github.com/Thalhammer/jwt-cpp
+  GIT_TAG v0.7.0
+)
+FetchContent_MakeAvailable(cppjwt_content)
 
 # app
 file(GLOB_RECURSE SOURCES src/**/*.cpp)
@@ -39,6 +44,8 @@ target_include_directories(ExpensoApp
   PRIVATE
   ${MONGO}/include/bsoncxx/v_noabi
   ${MONGO}/include/mongocxx/v_noabi
+  ${cppjwt_content_SOURCE_DIR}/include
+  ${CMAKE_CURRENT_BINARY_DIR}/src
 )
 target_link_libraries(ExpensoApp
   PRIVATE 

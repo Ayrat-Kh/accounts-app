@@ -65,6 +65,8 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
       };
 
       exchangeTokenResult = await exchangeToken(exchangeTokenRequest);
+
+      console.log('id token = ', exchangeTokenResult.idToken);
     } catch (error) {
       console.error(`[${GOOGLE_AUTH_LOG_PREFIX}] error google login`, error);
       return {

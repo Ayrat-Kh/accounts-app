@@ -3,8 +3,7 @@
 #include <variant>
 #include <string>
 #include <string_view>
-#include <exception>
-#include <stdexcept>
+#include "utils/error.hpp"
 
 namespace app
 {
@@ -30,16 +29,16 @@ namespace app
             std::string typ;
         };
 
-        class GoogleLogin
+        class IGoogleLoginService
         {
         public:
-            virtual std::variant<GoogleTokenInfo, std::exception_ptr> GetGoogleUser(std::string_view idToken) = 0;
+            virtual std::variant<GoogleTokenInfo, app::error::AppError> getGoogleUser(std::string_view idToken) = 0;
         };
 
-        class GoogleLoginImpl : public GoogleLogin
+        class GoogleLoginServiceImpl : public IGoogleLoginService
         {
         public:
-            virtual std::variant<GoogleTokenInfo, std::exception_ptr> GetGoogleUser(std::string_view idToken) override;
+            virtual std::variant<GoogleTokenInfo, app::error::AppError> getGoogleUser(std::string_view idToken) noexcept override;
         };
     }
 }

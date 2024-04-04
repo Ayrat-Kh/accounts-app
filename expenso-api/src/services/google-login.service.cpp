@@ -7,7 +7,7 @@
 
 using namespace app::services;
 
-std::variant<GoogleTokenInfo, std::exception_ptr> GoogleLoginImpl::GetGoogleUser(std::string_view idToken)
+std::variant<GoogleTokenInfo, app::error::AppError> GoogleLoginServiceImpl::getGoogleUser(std::string_view idToken) noexcept
 {
     namespace beast = boost::beast;
     namespace http = beast::http;
@@ -54,10 +54,12 @@ std::variant<GoogleTokenInfo, std::exception_ptr> GoogleLoginImpl::GetGoogleUser
 
         if (const auto error_string = json_response.at("error_description").if_string())
         {
-            throw std::domain_error(error_string->c_str());
+            return app::error::AppError{
+                .message = error_string->c_str(),
+                .code = app::error::AppErrorCode::THIRD_PARTY_REQUEST};
         }
 
-        return GoogleTokenInfo{
+        return std::move(GoogleTokenInfo{
             .alg = json_response.at("alg").as_string().c_str(),
             .at_hash = json_response.at("at_hash").as_string().c_str(),
             .aud = json_response.at("aud").as_string().c_str(),
@@ -74,10 +76,12 @@ std::variant<GoogleTokenInfo, std::exception_ptr> GoogleLoginImpl::GetGoogleUser
             .picture = json_response.at("picture").as_string().c_str(),
             .sub = json_response.at("sub").as_string().c_str(),
             .typ = json_response.at("typ").as_string().c_str(),
-        };
+        });
     }
     catch (const std::exception &e)
     {
-        return std::current_exception();
+        return app::error::AppError{
+            .message = e.what(),
+            .code = app::error::AppErrorCode::THIRD_PARTY_REQUEST};
     }
 }

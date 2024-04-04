@@ -6,7 +6,7 @@
 
 namespace app
 {
-    namespace service
+    namespace services
     {
         class MongoAccess
         {
