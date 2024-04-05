@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <optional>
+
 #include <boost/uuid/uuid.hpp>
 #include <chrono>
 
@@ -17,13 +19,11 @@ namespace app
         {
             std::string id;
             std::chrono::system_clock::time_point createdAt;
-            std::chrono::system_clock::time_point updatedAt;
+            std::optional<std::chrono::system_clock::time_point> updatedAt;
             std::string firstName;
             std::string lastName;
-
             std::string alias;
             std::string email;
-
             std::string googleId;
             UserSettingsDb settings;
         };

@@ -1,39 +1,31 @@
 #include "read-request-json.hpp"
 
-app::utils::RequestBodyReader::RequestBodyReader(RequestHandler handler, uWS::HttpResponse<false> *response)
-    : _handler(std::move(handler)),
-      _response(response)
+void app::utils::requestBodyReader(uWS::HttpResponse<false> *response, std::string &buffer, RequestHandler handler)
 {
-    _buffer.reserve(4096);
-}
+    buffer.reserve(4096);
 
-void app::utils::RequestBodyReader::read()
-{
-    _response
-        ->onAborted(
-            []() {})
-        ->onData(
-            [this](std::string_view data, bool isLast) mutable
+    response->onAborted([]() {})->onData(
+        [buffer, handler, response](std::string_view data, bool isLast) mutable
+        {
+            buffer.append(data);
+
+            if (isLast)
             {
-                _buffer.append(data);
-
-                if (isLast)
+                try
                 {
-                    try
-                    {
-                        auto value = boost::json::parse(_buffer);
+                    auto value = boost::json::parse(buffer);
 
-                        _handler(value);
-                    }
-                    catch (std::exception &ex)
-                    {
-                        // ToDo log me later
-                        std::cerr << "Request caught error " << ex.what() << std::endl;
-
-                        boost::json::object obj({{"message", "Invalid input json object"}});
-
-                        _response->writeStatus("400")->end("unknown error");
-                    }
+                    handler(response, value);
                 }
-            });
+                catch (std::exception &ex)
+                {
+                    // ToDo log me later
+                    std::cerr << "Request caught error " << ex.what() << std::endl;
+
+                    boost::json::object obj({{"message", "Invalid input json object"}});
+
+                    response->writeStatus("400")->end("unknown error");
+                }
+            }
+        });
 }

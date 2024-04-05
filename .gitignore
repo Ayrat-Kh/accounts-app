@@ -11,3 +11,4 @@ dist_manifest.txt
 settings.json
 .DS_Store
 compile_commands.json
+*.a

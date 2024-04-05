@@ -3,43 +3,37 @@
 #include <mongocxx/instance.hpp>
 #include <mongocxx/pool.hpp>
 #include <mongocxx/uri.hpp>
+#include <mongocxx/client.hpp>
 
 namespace app
 {
     namespace services
     {
-        class MongoAccess
+        struct IMongoAccess
+        {
+            using connection = mongocxx::pool::entry;
+
+            virtual connection getConnection() = 0;
+
+            virtual bsoncxx::stdx::optional<connection> tryGetConnection() = 0;
+        };
+
+        class MongoAccessImpl : public IMongoAccess
         {
         public:
-            static MongoAccess &instance()
-            {
-                static MongoAccess instance;
-                return instance;
-            }
-
-            void Configure(
+            void configure(
                 std::unique_ptr<mongocxx::instance> instance,
                 std::unique_ptr<mongocxx::pool> pool);
 
-            using connection = mongocxx::pool::entry;
+            virtual connection getConnection() override;
 
-            connection get_connection()
-            {
-                return _pool->acquire();
-            }
-
-            bsoncxx::stdx::optional<connection> try_get_connection()
-            {
-                return _pool->try_acquire();
-            }
+            virtual bsoncxx::stdx::optional<connection> tryGetConnection() override;
 
         private:
-            MongoAccess() = default;
-
             std::unique_ptr<mongocxx::instance> _instance = nullptr;
             std::unique_ptr<mongocxx::pool> _pool = nullptr;
         };
 
-        void ConfigureMongoInstance(mongocxx::uri uri);
+        void configureMongoInstance(mongocxx::uri uri, std::shared_ptr<MongoAccessImpl>);
     }
 }
