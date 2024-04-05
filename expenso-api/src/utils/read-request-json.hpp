@@ -1,6 +1,8 @@
 #pragma once
 
 #include <functional>
+#include <string>
+#include <iostream>
 
 #include <boost/json.hpp>
 
@@ -10,8 +12,20 @@ namespace app
 {
     namespace utils
     {
-        using RequestHandler = std::function<void(boost::json::value json_response)>;
+        class RequestBodyReader
+        {
+        public:
+            // using RequestHandler = std::function<void()>;
+            using RequestHandler = uWS::MoveOnlyFunction<void(boost::json::value json_response)>;
 
-        void ReadRequestJson(uWS::HttpResponse<false> *response, RequestHandler);
+            RequestBodyReader(RequestHandler handler, uWS::HttpResponse<false> *response);
+
+            void read();
+
+        private:
+            RequestHandler _handler;
+            std::string _buffer;
+            uWS::HttpResponse<false> *_response;
+        };
     }
 }

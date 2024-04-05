@@ -1,7 +1,12 @@
 #pragma once
 
+#include <optional>
 #include <variant>
 #include <iostream>
+
+#include <boost/json.hpp>
+
+#include "App.h"
 
 namespace app
 {
@@ -27,23 +32,45 @@ namespace app
         };
 
         template <class... Args>
-        AppError *isError(std::variant<Args...> args)
+        AppError *isError(std::variant<Args...> *args)
         {
-            return std::get_if<AppError>(&args);
+            return std::get_if<AppError>(args);
         }
 
         template <class... Args>
-        AppError *logIfError(std::variant<Args...> args)
+        AppError *logIfError(std::variant<Args...> &args)
         {
             AppError *ptr = isError(args);
 
             if (ptr != nullptr)
             {
-
                 std::cerr << "Caught error: \"{ \"code\": " << static_cast<int>(ptr->code) << ", \"message\":" << ptr->message << "}\"'\n";
             }
 
             return ptr;
+        }
+
+        bool abortIfValidationFailed(uWS::HttpResponse<false> *res, std::optional<boost::json::object>);
+
+        template <class... Args>
+        bool abortIfAppError(uWS::HttpResponse<false> *res, std::variant<Args...> *args)
+        {
+            AppError *ptr = isError(args);
+
+            if (ptr != nullptr)
+            {
+                boost::json::object error;
+                error["code"] = static_cast<int>(ptr->code);
+                error["message"] = std::move(ptr->message);
+
+                res->writeHeader("Content-Type", "application/json")
+                    ->writeStatus("400")
+                    ->end(boost::json::serialize(error));
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

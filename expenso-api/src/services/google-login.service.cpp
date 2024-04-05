@@ -49,13 +49,19 @@ std::variant<GoogleTokenInfo, app::error::AppError> GoogleLoginServiceImpl::getG
         http::read(stream, buffer, res);
 
         // Parse the JSON response
-        boost::json::error_code ec;
-        json_response = boost::json::parse(res.body(), ec);
+        json_response = boost::json::parse(res.body());
 
-        if (const auto error_string = json_response.at("error_description").if_string())
+        if (!json_response.is_object())
         {
             return app::error::AppError{
-                .message = error_string->c_str(),
+                .message = "get google id token info response is not json object",
+                .code = app::error::AppErrorCode::THIRD_PARTY_REQUEST};
+        }
+
+        if (json_response.as_object().contains("error_description"))
+        {
+            return app::error::AppError{
+                .message = "get google id token info error_description: " + std::string(json_response.as_object()["error_description"].as_string()),
                 .code = app::error::AppErrorCode::THIRD_PARTY_REQUEST};
         }
 
@@ -81,7 +87,7 @@ std::variant<GoogleTokenInfo, app::error::AppError> GoogleLoginServiceImpl::getG
     catch (const std::exception &e)
     {
         return app::error::AppError{
-            .message = e.what(),
+            .message = "get google id token info " + std::string(e.what()),
             .code = app::error::AppErrorCode::THIRD_PARTY_REQUEST};
     }
 }

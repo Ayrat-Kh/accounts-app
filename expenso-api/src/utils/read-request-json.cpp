@@ -1,31 +1,39 @@
 #include "read-request-json.hpp"
 
-void app::utils::ReadRequestJson(uWS::HttpResponse<false> *response, app::utils::RequestHandler handler)
+app::utils::RequestBodyReader::RequestBodyReader(RequestHandler handler, uWS::HttpResponse<false> *response)
+    : _handler(std::move(handler)),
+      _response(response)
 {
-    std::string requestData;
-    requestData.reserve(4096);
-    response->onData(
-        [&](std::string_view data, bool isLast)
-        {
-            requestData.append(data);
-            if (isLast)
+    _buffer.reserve(4096);
+}
+
+void app::utils::RequestBodyReader::read()
+{
+    _response
+        ->onAborted(
+            []() {})
+        ->onData(
+            [this](std::string_view data, bool isLast) mutable
             {
-                try
+                _buffer.append(data);
+
+                if (isLast)
                 {
-                    auto value = boost::json::parse(requestData);
+                    try
+                    {
+                        auto value = boost::json::parse(_buffer);
 
-                    handler(std::move(value));
+                        _handler(value);
+                    }
+                    catch (std::exception &ex)
+                    {
+                        // ToDo log me later
+                        std::cerr << "Request caught error " << ex.what() << std::endl;
+
+                        boost::json::object obj({{"message", "Invalid input json object"}});
+
+                        _response->writeStatus("400")->end("unknown error");
+                    }
                 }
-                catch (std::exception &ex)
-                {
-                    // ToDo log me later
-                    std::cerr << ex.what();
-
-                    boost::json::object obj;
-                    obj["message"] = "Invalid input json object";
-
-                    response->writeStatus("400")->end(boost::json::serialize(obj));
-                }
-            }
-        });
+            });
 }

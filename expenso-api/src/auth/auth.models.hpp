@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string_view>
+#include <string>
 
 #include "users/users.models.hpp"
 
@@ -10,15 +10,15 @@ namespace app
 	{
 		struct GoogleLoginRequest
 		{
-			std::string_view idToken;
+			std::string idToken;
 		};
 
 		struct UserLoginResult
 		{
-			std::string_view accessToken;
-			std::string_view sessionToken;
+			std::string accessToken;
+			std::string sessionToken;
 
-			app::users::UserDb userDb;
+			app::users::UserDb user;
 		};
 	}
 }
