@@ -5,8 +5,9 @@
 #include <iostream>
 
 #include <boost/json.hpp>
+#include <App.h>
 
-#include "App.h"
+#include "services/models.service.hpp"
 
 namespace app
 {
@@ -50,7 +51,10 @@ namespace app
             return ptr;
         }
 
-        bool abortIfValidationFailed(uWS::HttpResponse<false> *res, std::optional<boost::json::object>);
+        bool abortIfValidationFailed(uWS::HttpResponse<false> *res, const std::optional<boost::json::object> &);
+        void abort(uWS::HttpResponse<false> *res, boost::json::object &&);
+
+        bool abortIfUnauthorized(uWS::HttpResponse<false> *res, const std::optional<app::services::AuthUser> &authUser);
 
         template <class... Args>
         bool abortIfAppError(uWS::HttpResponse<false> *res, std::variant<Args...> *args)

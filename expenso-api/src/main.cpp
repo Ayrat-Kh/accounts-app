@@ -1,19 +1,11 @@
 #include <variant>
 
 #include <boost/json.hpp>
-
-#include "auth/auth.handlers.hpp"
-#include "auth/auth.utils.hpp"
-#include "users/users.repository.hpp"
-#include "services/mongo-access.hpp"
-#include "services/google-login.service.hpp"
-#include "services/jwt.service.hpp"
-#include "utils/read-request-json.hpp"
-#include "utils/error.hpp"
-
 #include <App.h>
 
 #include "services/app-dependencies.hpp"
+#include "auth/auth.handlers.hpp"
+#include "users/users.handlers.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -36,6 +28,9 @@ int main(int argc, char *argv[])
         .post(
             "/login/google-auth",
             app::auth::handleGoogleLogin)
+        .get(
+            "/users/:userId",
+            app::users::handleGetUserById)
         .listen(
             appPort,
             [appPort](auto *listen_socket)
