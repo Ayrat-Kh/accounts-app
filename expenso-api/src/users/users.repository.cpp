@@ -36,7 +36,7 @@ std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::getUserById(std:
                 make_document(kvp("_id", userId)))));
 }
 
-std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::createUserByIdIfNotExist(const UserDb &user)
+std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::createUserByIdIfNotExist(UserDb user)
 {
     return std::move(
         createUserByQueryIfNotExist(
@@ -46,7 +46,7 @@ std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::createUserByIdIf
             user));
 }
 
-std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExist(const UserDb &user)
+std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExist(UserDb user)
 {
     return std::move(
         createUserByQueryIfNotExist(
@@ -90,8 +90,6 @@ void app::users::UsersRepositoryImpl::fillUserDb(bsoncxx::document::value &userD
 
     if (userDocument["createdAt"] && userDocument["createdAt"].type() == bsoncxx::type::k_date)
     {
-
-        // Extract the milliseconds value
         std::int64_t milliseconds = userDocument["createdAt"].get_date().to_int64();
 
         userDb.createdAt = std::chrono::system_clock::from_time_t(0) + std::chrono::milliseconds(milliseconds);

@@ -8,6 +8,7 @@ namespace app
 {
     namespace users
     {
-        boost::json::object toJsonUserDb(app::users::UserDb &&user);
+        boost::json::object toJsonUserDb(app::users::UserDb user);
+        boost::json::object toJsonUserSettingsDb(app::users::UserSettingsDb userSettings);
     }
 }

@@ -1,7 +1,7 @@
 #include "users.utils.hpp"
 #include "utils/date.hpp"
 
-boost::json::object app::users::toJsonUserDb(app::users::UserDb &&user)
+boost::json::object app::users::toJsonUserDb(app::users::UserDb user)
 {
     return boost::json::object(
         {
@@ -12,6 +12,12 @@ boost::json::object app::users::toJsonUserDb(app::users::UserDb &&user)
             {"lastName", std::move(user.lastName)},
             {"googleId", std::move(user.googleId)},
             {"createdAt", app::utils::timePointToString(user.createdAt)},
-            {"settings", std::move(boost::json::object({{"defaultCurrency", user.settings.defaultCurrency}}))},
+            {"settings",
+             std::move(toJsonUserSettingsDb(std::move(user.settings)))},
         });
+}
+
+boost::json::object app::users::toJsonUserSettingsDb(app::users::UserSettingsDb userSettings)
+{
+    return std::move(boost::json::object({{"defaultCurrency", std::move(userSettings.defaultCurrency)}}));
 }

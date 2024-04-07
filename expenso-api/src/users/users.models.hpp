@@ -15,6 +15,15 @@ namespace app
             std::string defaultCurrency;
         };
 
+        /*
+        example:
+        {
+            "id": "1",
+            createdAt: "2024/01/02T19:00:00",
+            updatedAt: "2024/01/02T19:00:00",
+        }
+
+        */
         struct UserDb
         {
             std::string id;

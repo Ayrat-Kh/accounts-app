@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
             "/login/google-auth",
             app::auth::handleGoogleLogin)
         .get(
-            "/users/:userId",
+            "/v1/users/:userId",
             app::users::handleGetUserById)
         .listen(
             appPort,

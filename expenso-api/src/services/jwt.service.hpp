@@ -23,7 +23,7 @@ namespace app
             std::string _jwtSecret;
 
         public:
-            JwtServiceImpl(std::string_view _jwtSecret);
+            JwtServiceImpl(std::string _jwtSecret);
 
             virtual std::string createUserToken(std::string_view userId) override;
 

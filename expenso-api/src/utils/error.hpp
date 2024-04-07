@@ -51,8 +51,8 @@ namespace app
             return ptr;
         }
 
-        bool abortIfValidationFailed(uWS::HttpResponse<false> *res, const std::optional<boost::json::object> &);
-        void abort(uWS::HttpResponse<false> *res, boost::json::object &&);
+        bool abortIfValidationFailed(uWS::HttpResponse<false> *res, std::optional<boost::json::object>);
+        void abort(uWS::HttpResponse<false> *res, boost::json::object);
 
         bool abortIfUnauthorized(uWS::HttpResponse<false> *res, const std::optional<app::services::AuthUser> &authUser);
 

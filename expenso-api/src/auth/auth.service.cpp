@@ -25,14 +25,15 @@ std::variant<app::auth::UserLoginResult, app::error::AppError> app::auth::AuthSe
 
     app::services::GoogleTokenInfo googleLoginResult = std::get<app::services::GoogleTokenInfo>(std::move(googleAuthResult));
 
-    auto userDbResult = _userRepository.get()->createUserByGoogleIdIfNotExist(app::users::UserDb{
+    auto userDbResult = _userRepository.get()->createUserByGoogleIdIfNotExist(std::move(app::users::UserDb{
         .id = boost::uuids::to_string(boost::uuids::random_generator()()),
         .googleId = std::move(googleLoginResult.sub),
         .email = std::move(googleLoginResult.email),
         .firstName = std::move(googleLoginResult.given_name),
         .alias = std::move(googleLoginResult.name),
         .lastName = std::move(googleLoginResult.given_name),
-    });
+        .settings = {
+            .defaultCurrency = "USD"}}));
 
     if (const app::error::AppError *error = app::error::isError(&userDbResult))
     {

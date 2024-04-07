@@ -20,8 +20,8 @@ namespace app
         public:
             virtual std::variant<UserDb, app::error::AppError> getUserByGoogleId(std::string_view googleId) = 0;
             virtual std::variant<UserDb, app::error::AppError> getUserById(std::string_view userId) = 0;
-            virtual std::variant<UserDb, app::error::AppError> createUserByIdIfNotExist(const UserDb &user) = 0;
-            virtual std::variant<UserDb, app::error::AppError> createUserByGoogleIdIfNotExist(const UserDb &user) = 0;
+            virtual std::variant<UserDb, app::error::AppError> createUserByIdIfNotExist(UserDb user) = 0;
+            virtual std::variant<UserDb, app::error::AppError> createUserByGoogleIdIfNotExist(UserDb user) = 0;
         };
 
         class UsersRepositoryImpl : public IUsersRepository
@@ -31,8 +31,8 @@ namespace app
 
             virtual std::variant<UserDb, app::error::AppError> getUserByGoogleId(std::string_view googleId) override;
             virtual std::variant<UserDb, app::error::AppError> getUserById(std::string_view userId) override;
-            virtual std::variant<UserDb, app::error::AppError> createUserByIdIfNotExist(const UserDb &user) override;
-            virtual std::variant<UserDb, app::error::AppError> createUserByGoogleIdIfNotExist(const UserDb &user) override;
+            virtual std::variant<UserDb, app::error::AppError> createUserByIdIfNotExist(UserDb user) override;
+            virtual std::variant<UserDb, app::error::AppError> createUserByGoogleIdIfNotExist(UserDb user) override;
 
         private:
             void fillUserDb(bsoncxx::document::value &v, UserDb &userDb);

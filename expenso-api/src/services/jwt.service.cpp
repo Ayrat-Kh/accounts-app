@@ -4,14 +4,13 @@
 
 #include "jwt.service.hpp"
 
-app::services::JwtServiceImpl::JwtServiceImpl(std::string_view jwtSecret)
-    : _jwtSecret(jwtSecret)
+app::services::JwtServiceImpl::JwtServiceImpl(std::string jwtSecret)
+    : _jwtSecret(std::move(jwtSecret))
 {
 }
 
 std::string app::services::JwtServiceImpl::createUserToken(std::string_view userId)
 {
-
     return std::move(
         jwt::create()
             .set_type("JWT")
