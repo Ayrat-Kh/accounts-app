@@ -6,25 +6,23 @@
 #include "services/google-login.service.hpp"
 #include "services/jwt.service.hpp"
 
-namespace app
+namespace app::services
 {
-    namespace services
+    struct AppDependencies
     {
-        struct AppDependencies
-        {
-            // dependency section
-            std::shared_ptr<app::services::IGoogleLoginService> googleLoginService = nullptr;
-            std::shared_ptr<app::services::IJwtService> jwtService = nullptr;
-            std::shared_ptr<app::users::IUsersRepository> userRepo = nullptr;
-            std::shared_ptr<app::auth::IAuthService> authService = nullptr;
-            std::shared_ptr<app::services::IMongoAccess> mongoAccess = nullptr;
+        // dependency section
+        std::shared_ptr<app::services::IGoogleLoginService> googleLoginService = nullptr;
+        std::shared_ptr<app::services::IJwtService> jwtService = nullptr;
+        std::shared_ptr<app::users::IUsersRepository> userRepo = nullptr;
+        std::shared_ptr<app::auth::IAuthService> authService = nullptr;
+        std::shared_ptr<app::services::IMongoAccess> mongoAccess = nullptr;
 
-            static AppDependencies &instance();
+        static AppDependencies &instance();
 
-            void init();
+        void init();
 
-        private:
-            AppDependencies() = default;
-        };
-    }
+    private:
+        AppDependencies() = default;
+    };
+
 }

@@ -5,12 +5,10 @@
 
 #include "auth.models.hpp"
 
-namespace app
+namespace app::auth
 {
-    namespace auth
-    {
-        GoogleLoginRequest getGoogleLoginBodyFromJson(boost::json::value json_response);
+    GoogleLoginRequest getGoogleLoginBodyFromJson(boost::json::value json_response);
 
-        std::optional<boost::json::object> validateGoogleLoginBody(const GoogleLoginRequest &body);
-    }
+    std::optional<boost::json::object> validateGoogleLoginBody(const GoogleLoginRequest &body);
+
 }

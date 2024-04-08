@@ -2,14 +2,10 @@
 
 #include <string>
 
-namespace app
+namespace app::services
 {
-    namespace services
+    struct AuthUser
     {
-        struct AuthUser
-        {
-            std::string userId;
-        };
-
-    }
+        std::string userId;
+    };
 }

@@ -1,9 +1,8 @@
 #include "auth.handlers.hpp"
-
 #include "services/app-dependencies.hpp"
 #include "utils/read-request-json.hpp"
 #include "auth/auth.utils.hpp"
-#include "users/users.utils.hpp"
+#include "utils/jsonSerialize.hpp"
 
 void app::auth::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpRequest *req)
 {
@@ -23,21 +22,14 @@ void app::auth::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpReque
 			return;
 		}
 
-		app::auth::UserLoginResult loginResult = std::get<app::auth::UserLoginResult>(result);
-
-		boost::json::object gl(
-			{
-				{"accessToken", std::move(loginResult.accessToken)},
-				{"sessionToken", std::move(loginResult.sessionToken)},
-				{"user", std::move(app::users::toJsonUserDb(std::move(loginResult.user)))},
-			});
+		app::auth::UserLoginResult &&loginResult = std::get<app::auth::UserLoginResult>(std::move(result));
 
 		res
 			->writeHeader("Content-Type", "application/json")
-			->end(boost::json::serialize(gl));
+			->end(boost::json::serialize(std::move(boost::json::value_from(
+				loginResult))));
 	};
 
 	std::string _buffer;
-
 	app::utils::requestBodyReader(_res, _buffer, handler);
 }

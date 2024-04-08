@@ -4,12 +4,7 @@
 
 #include <App.h>
 
-#include "users/users.models.hpp"
-
-namespace app
+namespace app::auth
 {
-	namespace auth
-	{
-		void handleGoogleLogin(uWS::HttpResponse<false> *res, uWS::HttpRequest *req);
-	}
+	void handleGoogleLogin(uWS::HttpResponse<false> *res, uWS::HttpRequest *req);
 }

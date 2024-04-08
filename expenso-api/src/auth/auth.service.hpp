@@ -8,28 +8,25 @@
 #include "utils/error.hpp"
 #include "services/jwt.service.hpp"
 
-namespace app
+namespace app::auth
 {
-    namespace auth
+    class IAuthService
     {
-        class IAuthService
-        {
-        public:
-            virtual std::variant<UserLoginResult, app::error::AppError> googleAuth(std::string_view accessToken) = 0;
-        };
+    public:
+        virtual std::variant<UserLoginResult, app::error::AppError> googleAuth(std::string_view accessToken) = 0;
+    };
 
-        class AuthServiceImpl : public IAuthService
-        {
-            std::shared_ptr<app::services::IGoogleLoginService> _googleLoginService;
-            std::shared_ptr<app::users::IUsersRepository> _userRepository;
-            std::shared_ptr<app::services::IJwtService> _jwtService;
+    class AuthServiceImpl : public IAuthService
+    {
+        std::shared_ptr<app::services::IGoogleLoginService> _googleLoginService;
+        std::shared_ptr<app::users::IUsersRepository> _userRepository;
+        std::shared_ptr<app::services::IJwtService> _jwtService;
 
-        public:
-            AuthServiceImpl(std::shared_ptr<app::services::IGoogleLoginService> googleLoginService,
-                            std::shared_ptr<app::users::IUsersRepository> userRepository,
-                            std::shared_ptr<app::services::IJwtService> _jwtService);
+    public:
+        AuthServiceImpl(std::shared_ptr<app::services::IGoogleLoginService> googleLoginService,
+                        std::shared_ptr<app::users::IUsersRepository> userRepository,
+                        std::shared_ptr<app::services::IJwtService> _jwtService);
 
-            virtual std::variant<UserLoginResult, app::error::AppError> googleAuth(std::string_view idToken);
-        };
-    }
+        virtual std::variant<UserLoginResult, app::error::AppError> googleAuth(std::string_view idToken);
+    };
 }

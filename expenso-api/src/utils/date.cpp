@@ -2,9 +2,7 @@
 
 #include <boost/format.hpp>
 
-#include <iostream>
-
-std::string app::utils::timePointToString(const std::chrono::system_clock::time_point &timePoint)
+std::string app::utils::timePointToString(const app::shared::Datetime &timePoint)
 {
     auto timeT = std::chrono::system_clock::to_time_t(timePoint);
 
@@ -16,7 +14,7 @@ std::string app::utils::timePointToString(const std::chrono::system_clock::time_
     return iso8601;
 }
 
-std::chrono::system_clock::time_point app::utils::msToTimePoint(std::int64_t ms)
+app::shared::Datetime app::utils::msToTimePoint(std::int64_t ms)
 {
     return std::chrono::system_clock::from_time_t(0) + std::chrono::milliseconds(ms);
 }

@@ -1,33 +1,26 @@
 #pragma once
 
-#include <functional>
-#include <string>
-#include <iostream>
-
 #include <boost/json.hpp>
 #include <App.h>
 
-namespace app
+namespace app::utils
 {
-    namespace utils
+    using RequestHandler = void(uWS::HttpResponse<false> *res, boost::json::value json_response);
+
+    struct RequestLambda
     {
-        using RequestHandler = void(uWS::HttpResponse<false> *res, boost::json::value json_response);
-
-        struct RequestLambda
+        template <class F>
+        static auto cify(F &&f)
         {
-            template <class F>
-            static auto cify(F &&f)
+            static F fn = std::forward<F>(f);
+
+            return [](uWS::HttpResponse<false> *res, boost::json::value json_response)
             {
-                static F fn = std::forward<F>(f);
+                return fn(res, json_response);
+            };
+        }
+    };
 
-                return [](uWS::HttpResponse<false> *res, boost::json::value json_response)
-                {
-                    return fn(res, json_response);
-                };
-            }
-        };
+    void requestBodyReader(uWS::HttpResponse<false> *response, std::string &buffer, RequestHandler handler);
 
-        void requestBodyReader(uWS::HttpResponse<false> *response, std::string &buffer, RequestHandler handler);
-
-    }
 }

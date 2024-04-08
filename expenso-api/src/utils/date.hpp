@@ -1,14 +1,13 @@
 #pragma once
 
-#include <chrono>
 #include <string>
 
-namespace app
-{
-    namespace utils
-    {
-        std::string timePointToString(const std::chrono::system_clock::time_point &timePoint);
+#include "shared/types.hpp"
 
-        std::chrono::system_clock::time_point msToTimePoint(std::int64_t ms);
-    }
+namespace app::utils
+{
+    std::string timePointToString(const app::shared::Datetime &timePoint);
+
+    app::shared::Datetime msToTimePoint(std::int64_t ms);
+
 }

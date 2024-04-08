@@ -5,35 +5,33 @@
 #include <mongocxx/uri.hpp>
 #include <mongocxx/client.hpp>
 
-namespace app
+namespace app::services
 {
-    namespace services
+    struct IMongoAccess
     {
-        struct IMongoAccess
-        {
-            using connection = mongocxx::pool::entry;
+        using connection = mongocxx::pool::entry;
 
-            virtual connection getConnection() = 0;
+        virtual connection getConnection() = 0;
 
-            virtual bsoncxx::stdx::optional<connection> tryGetConnection() = 0;
-        };
+        virtual bsoncxx::stdx::optional<connection> tryGetConnection() = 0;
+    };
 
-        class MongoAccessImpl : public IMongoAccess
-        {
-        public:
-            void configure(
-                std::unique_ptr<mongocxx::instance> instance,
-                std::unique_ptr<mongocxx::pool> pool);
+    class MongoAccessImpl : public IMongoAccess
+    {
+    public:
+        void configure(
+            std::unique_ptr<mongocxx::instance> instance,
+            std::unique_ptr<mongocxx::pool> pool);
 
-            virtual connection getConnection() override;
+        virtual connection getConnection() override;
 
-            virtual bsoncxx::stdx::optional<connection> tryGetConnection() override;
+        virtual bsoncxx::stdx::optional<connection> tryGetConnection() override;
 
-        private:
-            std::unique_ptr<mongocxx::instance> _instance = nullptr;
-            std::unique_ptr<mongocxx::pool> _pool = nullptr;
-        };
+    private:
+        std::unique_ptr<mongocxx::instance> _instance = nullptr;
+        std::unique_ptr<mongocxx::pool> _pool = nullptr;
+    };
 
-        void configureMongoInstance(mongocxx::uri uri, std::shared_ptr<MongoAccessImpl>);
-    }
+    void configureMongoInstance(mongocxx::uri uri, std::shared_ptr<MongoAccessImpl>);
+
 }

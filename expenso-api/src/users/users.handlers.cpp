@@ -1,8 +1,9 @@
+#include <boost/json.hpp>
+
 #include "users.handlers.hpp"
-#include "users.utils.hpp"
 #include "services/app-dependencies.hpp"
 #include "utils/error.hpp"
-#include "boost/pfr.hpp"
+#include "utils/jsonSerialize.hpp"
 
 void app::users::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
 {
@@ -33,5 +34,6 @@ void app::users::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpReque
 
     res
         ->writeHeader("Content-Type", "application/json")
-        ->end(boost::json::serialize(std::move(app::users::toJsonUserDb(userDbCasted))));
+        ->end(boost::json::serialize(std::move(boost::json::value_from(
+            userDbCasted))));
 }

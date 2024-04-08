@@ -3,38 +3,33 @@
 #include <string>
 #include <optional>
 
-#include <boost/uuid/uuid.hpp>
-#include <chrono>
+#include <boost/describe.hpp>
 
-namespace app
+#include "shared/types.hpp"
+
+namespace app::users
 {
-    namespace users
+
+    struct UserSettingsDb
     {
-        struct UserSettingsDb
-        {
-            std::string defaultCurrency;
-        };
+        std::string defaultCurrency;
+    };
+    BOOST_DESCRIBE_STRUCT(UserSettingsDb, (), (defaultCurrency))
 
-        /*
-        example:
-        {
-            "id": "1",
-            createdAt: "2024/01/02T19:00:00",
-            updatedAt: "2024/01/02T19:00:00",
-        }
+    struct UserDb
+    {
+        std::string id;
+        app::shared::Datetime createdAt;
+        // std::optional<app::shared::Datetime> updatedAt;
+        std::string firstName;
+        std::string lastName;
+        std::string alias;
+        std::string email;
+        std::string googleId;
+        UserSettingsDb settings;
+    };
+    BOOST_DESCRIBE_STRUCT(UserDb, (), (id, createdAt,
+                                       //  updatedAt,
+                                       firstName, lastName, alias, email, googleId, settings))
 
-        */
-        struct UserDb
-        {
-            std::string id;
-            std::chrono::system_clock::time_point createdAt;
-            std::optional<std::chrono::system_clock::time_point> updatedAt;
-            std::string firstName;
-            std::string lastName;
-            std::string alias;
-            std::string email;
-            std::string googleId;
-            UserSettingsDb settings;
-        };
-    }
 }
