@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <boost/json.hpp>
 #include <boost/describe.hpp>
 
 namespace app::shared
@@ -18,9 +19,9 @@ namespace app::shared
         THIRD_PARTY_REQUEST = 100,
 
         VALIDATION_ERROR = 400,
-        PARSE_ERROR
+        PARSE_BODY_ERROR
     };
-    BOOST_DESCRIBE_ENUM(AppErrorCode, APP_ERROR, INVALID_INPUT, DB_NOT_FOUND, DB_INSERT_ERROR, DB_QUERY_ERROR, THIRD_PARTY_REQUEST, VALIDATION_ERROR, PARSE_ERROR)
+    BOOST_DESCRIBE_ENUM(AppErrorCode, APP_ERROR, INVALID_INPUT, DB_NOT_FOUND, DB_INSERT_ERROR, DB_QUERY_ERROR, THIRD_PARTY_REQUEST, VALIDATION_ERROR, PARSE_BODY_ERROR)
 
     struct AppError
     {
@@ -35,7 +36,7 @@ namespace app::shared
 
     struct ValidationAppError
     {
-        std::string errors;
+        boost::json::value errors;
 
         std::string message;
 

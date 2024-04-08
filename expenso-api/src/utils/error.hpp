@@ -42,9 +42,7 @@ namespace app::error
 
         if (obj.has_value())
         {
-            auto &&modelErrors = serialize(
-                std::move(value_from(
-                    std::move(obj))));
+            auto &&modelErrors = value_from(std::move(obj));
 
             res->writeHeader("Content-Type", "application/json")
                 ->writeStatus("400")

@@ -23,7 +23,7 @@ void app::users::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpReque
             res,
             std::move(
                 app::shared::AppError{
-                    .code = app::utils::enumToString(app::shared::AppErrorCode::PARSE_ERROR),
+                    .code = app::utils::enumToString(app::shared::AppErrorCode::VALIDATION_ERROR),
                     .message = "Only can update yourself"}));
 
         return;

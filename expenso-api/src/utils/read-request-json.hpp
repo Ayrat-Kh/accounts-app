@@ -53,7 +53,7 @@ namespace app::utils
                                     response,
                                     std::move(
                                         app::shared::AppError{
-                                            .code = app::utils::enumToString(app::shared::AppErrorCode::PARSE_ERROR),
+                                            .code = app::utils::enumToString(app::shared::AppErrorCode::PARSE_BODY_ERROR),
                                             .message = std::string(reqBody.error().message())}));
                                 return;
                             }
@@ -69,7 +69,7 @@ namespace app::utils
                                 response,
                                 std::move(
                                     app::shared::AppError{
-                                        .code = app::utils::enumToString(app::shared::AppErrorCode::PARSE_ERROR),
+                                        .code = app::utils::enumToString(app::shared::AppErrorCode::PARSE_BODY_ERROR),
                                         .message = "Invalid input json object"}));
                         }
                     }
