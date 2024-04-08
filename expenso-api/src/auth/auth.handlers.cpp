@@ -7,23 +7,8 @@
 
 void app::auth::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpRequest *req)
 {
-	auto handler = [](uWS::HttpResponse<false> *res, boost::json::value requestBody) mutable
+	auto handler = [](uWS::HttpResponse<false> *res, app::auth::GoogleLoginRequest parsedBody) mutable
 	{
-		auto &&reqBody = boost::json::try_value_to<app::auth::GoogleLoginRequest>(std::move(requestBody));
-
-		if (reqBody.has_error())
-		{
-			app::error::abort(
-				res,
-				std::move(
-					app::shared::AppError{
-						.code = app::utils::enumToString(app::shared::AppErrorCode::PARSE_ERROR),
-						.message = std::string(reqBody.error().message())}));
-			return;
-		}
-
-		auto parsedBody = reqBody.value();
-
 		if (app::error::abortIfValidationFailed(res, app::auth::validateGoogleLoginBody(parsedBody)))
 		{
 			return;
@@ -43,6 +28,6 @@ void app::auth::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpReque
 				loginResult))));
 	};
 
-	std::string _buffer;
-	app::utils::requestBodyReader(_res, _buffer, handler);
+	app::utils::RequestJsonBodyReader reader;
+	reader.read<app::auth::GoogleLoginRequest>(_res, handler);
 }
