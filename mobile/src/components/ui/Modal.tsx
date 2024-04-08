@@ -6,7 +6,6 @@ import {
 } from 'react-native';
 
 import { IconCloseOutlinedNoBorder } from '~/assets/icons';
-// prevent cycles so import directly
 import { Button } from '~/components/ui/Button';
 import { Text } from '~/components/ui/Text';
 
