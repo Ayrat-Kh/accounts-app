@@ -14,7 +14,7 @@ import {
   type SelectPickerProps,
 } from '../ui';
 
-type FormSelectProps<
+type FormSelectPickerProps<
   TValue extends string | number,
   TMultiple extends boolean,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,7 +29,7 @@ type FormSelectProps<
   'onChange' | 'selected'
 >;
 
-export const FormSelect = <
+export const FormSelectPicker = <
   TValue extends string | number,
   TMultiple extends boolean,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,8 +39,14 @@ export const FormSelect = <
   name,
   label,
   control,
+  isMultiple,
   ...restInputProps
-}: FormSelectProps<TValue, TMultiple, TFieldValues, TName>): ReactElement => {
+}: FormSelectPickerProps<
+  TValue,
+  TMultiple,
+  TFieldValues,
+  TName
+>): ReactElement => {
   return (
     <Controller
       control={control}
@@ -55,11 +61,11 @@ export const FormSelect = <
       }) => (
         <SelectPicker
           {...restInputProps}
-          isMultiple={false}
+          isMultiple={isMultiple}
           label={label}
           error={fieldState.error?.message}
           selected={field.value}
-          onChange={(value) => {
+          onChange={(value: unknown) => {
             field.onChange(value);
           }}
         />

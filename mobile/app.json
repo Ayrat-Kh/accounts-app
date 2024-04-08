@@ -38,6 +38,12 @@
             "deploymentTarget": "14.0"
           }
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
       ]
     ],
     "ios": {

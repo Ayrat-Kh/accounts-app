@@ -16,6 +16,7 @@ models/expenses-expense-item-dto.ts
 models/expenses-expense-result.ts
 models/expenses-expense-upsert-dto.ts
 models/expenses-expenses-result.ts
+models/expenses-geo-coord.ts
 models/helpers-error-response.ts
 models/helpers-pagination-result.ts
 models/index.ts

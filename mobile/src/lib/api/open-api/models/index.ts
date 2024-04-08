@@ -5,6 +5,7 @@ export * from './expenses-expense-item-dto';
 export * from './expenses-expense-result';
 export * from './expenses-expense-upsert-dto';
 export * from './expenses-expenses-result';
+export * from './expenses-geo-coord';
 export * from './helpers-error-response';
 export * from './helpers-pagination-result';
 export * from './user-update-user-dto';

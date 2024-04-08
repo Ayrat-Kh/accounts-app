@@ -1,16 +1,18 @@
 import type { FC, PropsWithChildren } from 'react';
 import {
-  TouchableOpacity,
-  type TouchableOpacityProps,
+  TouchableHighlight,
+  type TouchableHighlightProps,
   View,
 } from 'react-native';
+
+import { useBgColor } from '~/ui';
 
 import { Text, TextColor, type TextKind } from './Text';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'input';
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary: 'bg-primary border-2 border-primary font-bold py-2 px-2',
-  secondary: 'bg-secondary border-2 border-secondary font-bold py-2 px-2',
+  primary: 'bg-compPrimary border-2 border-primary font-bold py-2 px-2',
+  secondary: 'bg-compSecondary border-2 border-secondary font-bold py-2 px-2',
   ghost: 'border-transparent py-2 px-2',
   input: 'border px-4 py-2 rounded bg-primary border-primary',
 };
@@ -35,7 +37,7 @@ const textColors: Record<ButtonVariant, TextColor> = {
   ghost: 'primary',
 };
 
-type ButtonProps = PropsWithChildren<TouchableOpacityProps> & {
+type ButtonProps = PropsWithChildren<TouchableHighlightProps> & {
   leftIcon?: React.ReactNode;
   variant: ButtonVariant;
   maxWidth?: boolean;
@@ -54,6 +56,7 @@ export const Button: FC<ButtonProps> = ({
   ...rest
 }) => {
   const classNames: (string | undefined)[] = [
+    'h-[46]',
     'flex-row',
     'items-center',
     buttonVariants[variant],
@@ -72,23 +75,31 @@ export const Button: FC<ButtonProps> = ({
 
   classNames.push(className);
 
+  const primaryBackColor = useBgColor('compPrimary');
+
   return (
-    <TouchableOpacity {...rest} className={classNames.join(' ')}>
-      {leftIcon}
+    <TouchableHighlight
+      underlayColor={primaryBackColor}
+      {...rest}
+      className={classNames.join(' ')}
+    >
+      <View>
+        {leftIcon}
 
-      {Boolean(leftIcon && children) && <View className="mr-2" />}
+        {Boolean(leftIcon && children) && <View className="mr-2" />}
 
-      {typeof children === 'string' ? (
-        <Text
-          variant="base1"
-          kind={textKinds[variant]}
-          color={textColors[variant]}
-        >
-          {children}
-        </Text>
-      ) : (
-        children
-      )}
-    </TouchableOpacity>
+        {typeof children === 'string' ? (
+          <Text
+            variant="base1"
+            kind={textKinds[variant]}
+            color={textColors[variant]}
+          >
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+      </View>
+    </TouchableHighlight>
   );
 };

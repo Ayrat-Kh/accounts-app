@@ -77,6 +77,7 @@ const SelectPickerModal = <
       onChange(selectedState as SelectPickerItemOption<TData, TValue>[]);
     } else {
       onChange(selectedState as SelectPickerItemOption<TData, TValue>);
+      close();
     }
     close();
   };
@@ -124,6 +125,8 @@ export type SelectPickerProps<
   options: SelectPickerItemOption<TData, TValue>[];
   label: AccessabilityLabel;
   error?: string | ReactNode;
+  className?: string;
+  placeholder?: string;
 };
 
 export const SelectPicker = <
@@ -136,9 +139,13 @@ export const SelectPicker = <
   label,
   options,
   selected,
+  className,
+  placeholder,
   onChange,
 }: SelectPickerProps<TData, TValue, TMultiple>) => {
   const { isVisible, show, close } = useModal();
+
+  console.log('selected', selected);
 
   const itemKey = isMultiple
     ? selected?.map((x) => x.value).join('')
@@ -146,10 +153,10 @@ export const SelectPicker = <
 
   const itemText =
     (isMultiple ? selected?.map((x) => x.label).join(', ') : selected?.label) ||
-    'Select items';
+    (placeholder ?? 'Select items...');
 
   return (
-    <View>
+    <View className={className}>
       <InputLabel label={label} className="mb-1" />
       <Button variant="input" align="left" onPress={show}>
         {itemText}

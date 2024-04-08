@@ -1,43 +1,66 @@
-import { useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { FC } from 'react';
+import { FormProvider, type UseFormReturn } from 'react-hook-form';
+import { ScrollView, View } from 'react-native';
 
-import { FormInput } from '~/components/form/FormInput';
-import { FormSelect } from '~/components/form/FormSelectPicker';
+import {
+  FormCalendarPicker,
+  FormInput,
+  FormSelectPicker,
+} from '~/components/form';
 import type { ExpensesExpenseDto } from '~/lib/api/open-api';
 
-export const UpsertExpense = () => {
-  const { control } = useForm<ExpensesExpenseDto>();
+import { MapInput } from './MapInput';
+
+type UpsertExpenseProps = UseFormReturn<ExpensesExpenseDto>;
+
+export const UpsertExpense: FC<UpsertExpenseProps> = ({ ...form }) => {
+  const { control } = form;
 
   return (
-    <View>
-      <FormInput name="name" label="Name" control={control} />
-      {/* <View className=" flex-row bg-red-500"> */}
-      <FormInput
-        name="total"
-        label="Price"
-        isNumeric
-        isDecimal
-        control={control}
-      />
-      <FormSelect
-        control={control}
-        name="currencyCode"
-        label="Currency"
-        isMultiple={false}
-        options={[
-          {
-            label: 'USD',
-            value: 'USD',
-            data: 'USD',
-          },
-          {
-            label: 'EUR',
-            value: 'EUR',
-            data: 'USD',
-          },
-        ]}
-      />
-      {/* </View> */}
-    </View>
+    <FormProvider {...form}>
+      <ScrollView className="py-4">
+        <FormInput name="name" label="Name" control={control} />
+
+        <View className="flex-row w-full mt-2 gap-2">
+          <FormInput
+            name="total"
+            label="Price"
+            isNumeric
+            isDecimal
+            control={control}
+            className="grow-[4]"
+          />
+          <FormSelectPicker
+            className="grow-[1]"
+            control={control}
+            name="currencyCode"
+            label="Currency"
+            placeholder="Select currency"
+            isMultiple={false}
+            options={[
+              {
+                label: 'USD',
+                value: 'USD',
+                data: 'USD',
+              },
+              {
+                label: 'EUR',
+                value: 'EUR',
+                data: 'USD',
+              },
+            ]}
+          />
+        </View>
+        <FormCalendarPicker
+          control={control}
+          name="date"
+          label="Date"
+          className="mt-2"
+          placeholder="Select date"
+        />
+
+        <MapInput />
+      </ScrollView>
+    </FormProvider>
   );
 };

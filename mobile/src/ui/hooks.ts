@@ -1,5 +1,6 @@
 import {
   appBgColors,
+  appBorderColors,
   appFillColors,
   appStrokeColors,
   appTextColors,
@@ -33,6 +34,10 @@ export const useStrokeColor = (color: FillColor) => {
 // later will be useb for the dark theme
 export const useBgColor = (color: keyof typeof appBgColors) => {
   return appBgColors[color];
+};
+
+export const useBorderColor = (color: keyof typeof appBorderColors) => {
+  return appBorderColors[color];
 };
 
 // later will be useb for the dark theme

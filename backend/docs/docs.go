@@ -387,10 +387,16 @@ const docTemplate = `{
                 "category": {
                     "type": "string"
                 },
+                "coord": {
+                    "$ref": "#/definitions/expenses.GeoCoord"
+                },
                 "createdAt": {
                     "type": "integer"
                 },
                 "currencyCode": {
+                    "type": "string"
+                },
+                "date": {
                     "type": "string"
                 },
                 "details": {
@@ -491,6 +497,17 @@ const docTemplate = `{
                 },
                 "paginationResult": {
                     "$ref": "#/definitions/helpers.PaginationResult"
+                }
+            }
+        },
+        "expenses.GeoCoord": {
+            "type": "object",
+            "properties": {
+                "lat": {
+                    "type": "number"
+                },
+                "lng": {
+                    "type": "number"
                 }
             }
         },

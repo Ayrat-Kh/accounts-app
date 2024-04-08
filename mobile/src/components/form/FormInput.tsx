@@ -49,6 +49,7 @@ export const FormInput = <
         <Input
           {...restInputProps}
           label={label}
+          value={field.value}
           error={fieldState.error?.message}
           onChange={field.onChange}
         />
