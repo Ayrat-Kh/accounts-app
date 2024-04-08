@@ -14,11 +14,11 @@ app::auth::AuthServiceImpl::AuthServiceImpl(std::shared_ptr<app::services::IGoog
 {
 }
 
-std::variant<app::auth::UserLoginResult, app::error::AppError> app::auth::AuthServiceImpl::googleAuth(std::string_view idToken)
+std::variant<app::auth::UserLoginResult, app::shared::AppError> app::auth::AuthServiceImpl::googleAuth(std::string_view idToken)
 {
     auto googleAuthResult = _googleLoginService.get()->getGoogleUser(idToken);
 
-    if (const app::error::AppError *error = app::error::isError(&googleAuthResult))
+    if (const app::shared::AppError *error = app::error::isError(&googleAuthResult))
     {
         return std::move(*error);
     }
@@ -35,7 +35,7 @@ std::variant<app::auth::UserLoginResult, app::error::AppError> app::auth::AuthSe
         .settings = {
             .defaultCurrency = "USD"}}));
 
-    if (const app::error::AppError *error = app::error::isError(&userDbResult))
+    if (const app::shared::AppError *error = app::error::isError(&userDbResult))
     {
         return std::move(*error);
     }

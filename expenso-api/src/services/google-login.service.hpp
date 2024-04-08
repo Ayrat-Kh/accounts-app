@@ -4,7 +4,7 @@
 #include <string>
 #include <string_view>
 
-#include "utils/error.hpp"
+#include "shared/models.hpp"
 
 namespace app::services
 {
@@ -32,12 +32,12 @@ namespace app::services
     class IGoogleLoginService
     {
     public:
-        virtual std::variant<GoogleTokenInfo, app::error::AppError> getGoogleUser(std::string_view idToken) = 0;
+        virtual std::variant<GoogleTokenInfo, app::shared::AppError> getGoogleUser(std::string_view idToken) = 0;
     };
 
     class GoogleLoginServiceImpl : public IGoogleLoginService
     {
     public:
-        virtual std::variant<GoogleTokenInfo, app::error::AppError> getGoogleUser(std::string_view idToken) noexcept override;
+        virtual std::variant<GoogleTokenInfo, app::shared::AppError> getGoogleUser(std::string_view idToken) noexcept override;
     };
 }

@@ -20,7 +20,7 @@ namespace app::users
     {
         std::string id;
         app::shared::Datetime createdAt;
-        // std::optional<app::shared::Datetime> updatedAt;
+        std::optional<app::shared::Datetime> updatedAt;
         std::string firstName;
         std::string lastName;
         std::string alias;
@@ -28,8 +28,11 @@ namespace app::users
         std::string googleId;
         UserSettingsDb settings;
     };
-    BOOST_DESCRIBE_STRUCT(UserDb, (), (id, createdAt,
-                                       //  updatedAt,
-                                       firstName, lastName, alias, email, googleId, settings))
+    BOOST_DESCRIBE_STRUCT(
+        UserDb,
+        (),
+        (id, createdAt,
+         updatedAt,
+         firstName, lastName, alias, email, googleId, settings))
 
 }

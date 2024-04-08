@@ -5,7 +5,7 @@
 #include "auth/auth.models.hpp"
 #include "services/google-login.service.hpp"
 #include "users/users.repository.hpp"
-#include "utils/error.hpp"
+#include "shared/models.hpp"
 #include "services/jwt.service.hpp"
 
 namespace app::auth
@@ -13,7 +13,7 @@ namespace app::auth
     class IAuthService
     {
     public:
-        virtual std::variant<UserLoginResult, app::error::AppError> googleAuth(std::string_view accessToken) = 0;
+        virtual std::variant<UserLoginResult, app::shared::AppError> googleAuth(std::string_view accessToken) = 0;
     };
 
     class AuthServiceImpl : public IAuthService
@@ -27,6 +27,6 @@ namespace app::auth
                         std::shared_ptr<app::users::IUsersRepository> userRepository,
                         std::shared_ptr<app::services::IJwtService> _jwtService);
 
-        virtual std::variant<UserLoginResult, app::error::AppError> googleAuth(std::string_view idToken);
+        virtual std::variant<UserLoginResult, app::shared::AppError> googleAuth(std::string_view idToken);
     };
 }

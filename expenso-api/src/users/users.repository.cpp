@@ -5,13 +5,13 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "users.repository.hpp"
+#include "utils/enumToString.hpp"
 
 using namespace app::users;
 using namespace app::services;
 using namespace bsoncxx::v_noabi;
 
 using bsoncxx::builder::basic::kvp;
-
 using bsoncxx::builder::basic::make_array;
 using bsoncxx::builder::basic::make_document;
 
@@ -20,7 +20,7 @@ UsersRepositoryImpl::UsersRepositoryImpl(std::shared_ptr<app::services::IMongoAc
 {
 }
 
-std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::getUserByGoogleId(std::string_view googleId)
+std::variant<UserDb, app::shared::AppError> UsersRepositoryImpl::getUserByGoogleId(std::string_view googleId)
 {
     return std::move(
         getUserByQuery(
@@ -28,7 +28,7 @@ std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::getUserByGoogleI
                 make_document(kvp("googleId", googleId)))));
 }
 
-std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::getUserById(std::string_view userId)
+std::variant<UserDb, app::shared::AppError> UsersRepositoryImpl::getUserById(std::string_view userId)
 {
     return std::move(
         getUserByQuery(
@@ -36,7 +36,7 @@ std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::getUserById(std:
                 make_document(kvp("_id", userId)))));
 }
 
-std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::createUserByIdIfNotExist(UserDb user)
+std::variant<UserDb, app::shared::AppError> UsersRepositoryImpl::createUserByIdIfNotExist(UserDb user)
 {
     return std::move(
         createUserByQueryIfNotExist(
@@ -46,7 +46,7 @@ std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::createUserByIdIf
             user));
 }
 
-std::variant<UserDb, app::error::AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExist(UserDb user)
+std::variant<UserDb, app::shared::AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExist(UserDb user)
 {
     return std::move(
         createUserByQueryIfNotExist(
@@ -103,7 +103,7 @@ void app::users::UsersRepositoryImpl::fillUserDb(bsoncxx::document::value &userD
     }
 }
 
-std::variant<UserDb, app::error::AppError> app::users::UsersRepositoryImpl::getUserByQuery(bsoncxx::document::value query)
+std::variant<UserDb, app::shared::AppError> app::users::UsersRepositoryImpl::getUserByQuery(bsoncxx::document::value query)
 {
     auto client = _mongoAccess->getConnection();
     auto db = (*client)["expenso-app"];
@@ -115,9 +115,9 @@ std::variant<UserDb, app::error::AppError> app::users::UsersRepositoryImpl::getU
         if (!result.has_value())
         {
             return std::move(
-                app::error::AppError{
+                app::shared::AppError{
                     .message = "Document not found",
-                    .code = app::error::AppErrorCode::DB_NOT_FOUND});
+                    .code = app::utils::enumToString(app::shared::AppErrorCode::DB_NOT_FOUND)});
         }
 
         UserDb userDb = {};
@@ -129,13 +129,13 @@ std::variant<UserDb, app::error::AppError> app::users::UsersRepositoryImpl::getU
     catch (std::exception &exception)
     {
         return std::move(
-            app::error::AppError{
+            app::shared::AppError{
                 .message = exception.what(),
-                .code = app::error::AppErrorCode::DB_QUERY_ERROR});
+                .code = app::utils::enumToString(app::shared::AppErrorCode::DB_QUERY_ERROR)});
     }
 }
 
-std::variant<UserDb, app::error::AppError> app::users::UsersRepositoryImpl::createUserByQueryIfNotExist(bsoncxx::document::value query, const UserDb &user)
+std::variant<UserDb, app::shared::AppError> app::users::UsersRepositoryImpl::createUserByQueryIfNotExist(bsoncxx::document::value query, const UserDb &user)
 {
     auto client = _mongoAccess->getConnection();
     auto db = (*client)["expenso-app"];
@@ -170,9 +170,9 @@ std::variant<UserDb, app::error::AppError> app::users::UsersRepositoryImpl::crea
         if (!result.has_value())
         {
             return std::move(
-                app::error::AppError{
+                app::shared::AppError{
                     .message = "Couldn't insert document",
-                    .code = app::error::AppErrorCode::DB_INSERT_ERROR});
+                    .code = app::utils::enumToString(app::shared::AppErrorCode::DB_INSERT_ERROR)});
         }
 
         UserDb userDb = {};
@@ -184,8 +184,8 @@ std::variant<UserDb, app::error::AppError> app::users::UsersRepositoryImpl::crea
     catch (std::exception &exception)
     {
         return std::move(
-            app::error::AppError{
+            app::shared::AppError{
                 .message = exception.what(),
-                .code = app::error::AppErrorCode::DB_INSERT_ERROR});
+                .code = app::utils::enumToString(app::shared::AppErrorCode::DB_INSERT_ERROR)});
     }
 }

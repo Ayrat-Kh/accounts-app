@@ -6,6 +6,7 @@
 
 #include <bsoncxx/builder/basic/document.hpp>
 
+#include "shared/models.hpp"
 #include "utils/error.hpp"
 #include "services/mongo-access.hpp"
 #include "accounts/accounts.models.hpp"
@@ -19,9 +20,9 @@ namespace app
         class IAccountsRepository
         {
         public:
-            virtual std::variant<AccountDb, app::error::AppError> getAccountById(std::string_view accountId) = 0;
-            virtual std::variant<std::vector<AccountDb>, app::error::AppError> getAccountsByUserId(std::string_view userId) = 0;
-            virtual std::variant<AccountDb, app::error::AppError> upsertAccount(AccountDb account) = 0;
+            virtual std::variant<AccountDb, app::shared::AppError> getAccountById(std::string_view accountId) = 0;
+            virtual std::variant<std::vector<AccountDb>, app::shared::AppError> getAccountsByUserId(std::string_view userId) = 0;
+            virtual std::variant<AccountDb, app::shared::AppError> upsertAccount(AccountDb account) = 0;
         };
 
         class AccountsRepositoryImpl : public IAccountsRepository
@@ -29,9 +30,9 @@ namespace app
         public:
             AccountsRepositoryImpl(std::shared_ptr<app::services::IMongoAccess> mongoAccess);
 
-            virtual std::variant<AccountDb, app::error::AppError> getAccountById(std::string_view accountId) override;
-            virtual std::variant<std::vector<AccountDb>, app::error::AppError> getAccountsByUserId(std::string_view userId) override;
-            virtual std::variant<AccountDb, app::error::AppError> upsertAccount(AccountDb account) override;
+            virtual std::variant<AccountDb, app::shared::AppError> getAccountById(std::string_view accountId) override;
+            virtual std::variant<std::vector<AccountDb>, app::shared::AppError> getAccountsByUserId(std::string_view userId) override;
+            virtual std::variant<AccountDb, app::shared::AppError> upsertAccount(AccountDb account) override;
 
         private:
             void fillAccountDb(bsoncxx::document::value &v, AccountDb &userDb);

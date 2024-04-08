@@ -5,9 +5,9 @@
 #include <boost/asio.hpp>
 #include <boost/json.hpp>
 
-using namespace app::services;
+#include "utils/enumToString.hpp"
 
-std::variant<GoogleTokenInfo, app::error::AppError> GoogleLoginServiceImpl::getGoogleUser(std::string_view idToken) noexcept
+std::variant<app::services::GoogleTokenInfo, app::shared::AppError> app::services::GoogleLoginServiceImpl::getGoogleUser(std::string_view idToken) noexcept
 {
     namespace beast = boost::beast;
     namespace http = beast::http;
@@ -53,16 +53,16 @@ std::variant<GoogleTokenInfo, app::error::AppError> GoogleLoginServiceImpl::getG
 
         if (!json_response.is_object())
         {
-            return app::error::AppError{
+            return app::shared::AppError{
                 .message = "get google id token info response is not json object",
-                .code = app::error::AppErrorCode::THIRD_PARTY_REQUEST};
+                .code = app::utils::enumToString(app::shared::AppErrorCode::THIRD_PARTY_REQUEST)};
         }
 
         if (json_response.as_object().contains("error_description"))
         {
-            return app::error::AppError{
+            return app::shared::AppError{
                 .message = "get google id token info error_description: " + std::string(json_response.as_object()["error_description"].as_string()),
-                .code = app::error::AppErrorCode::THIRD_PARTY_REQUEST};
+                .code = app::utils::enumToString(app::shared::AppErrorCode::THIRD_PARTY_REQUEST)};
         }
 
         return std::move(GoogleTokenInfo{
@@ -86,8 +86,8 @@ std::variant<GoogleTokenInfo, app::error::AppError> GoogleLoginServiceImpl::getG
     }
     catch (const std::exception &e)
     {
-        return app::error::AppError{
+        return app::shared::AppError{
             .message = "get google id token info " + std::string(e.what()),
-            .code = app::error::AppErrorCode::THIRD_PARTY_REQUEST};
+            .code = app::utils::enumToString(app::shared::AppErrorCode::THIRD_PARTY_REQUEST)};
     }
 }

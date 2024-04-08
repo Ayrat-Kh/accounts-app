@@ -3,20 +3,33 @@
 #include "utils/read-request-json.hpp"
 #include "auth/auth.utils.hpp"
 #include "utils/jsonSerialize.hpp"
+#include "utils/error.hpp"
 
 void app::auth::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpRequest *req)
 {
 	auto handler = [](uWS::HttpResponse<false> *res, boost::json::value requestBody) mutable
 	{
-		auto reqBody = app::auth::getGoogleLoginBodyFromJson(std::move(requestBody));
+		auto &&reqBody = boost::json::try_value_to<app::auth::GoogleLoginRequest>(std::move(requestBody));
 
-		auto validationResult = app::auth::validateGoogleLoginBody(reqBody);
-		if (app::error::abortIfValidationFailed(res, std::move(validationResult)))
+		if (reqBody.has_error())
+		{
+			app::error::abort(
+				res,
+				std::move(
+					app::shared::AppError{
+						.code = app::utils::enumToString(app::shared::AppErrorCode::PARSE_ERROR),
+						.message = std::string(reqBody.error().message())}));
+			return;
+		}
+
+		auto parsedBody = reqBody.value();
+
+		if (app::error::abortIfValidationFailed(res, app::auth::validateGoogleLoginBody(parsedBody)))
 		{
 			return;
 		}
 
-		auto result = app::services::AppDependencies::instance().authService->googleAuth(reqBody.idToken);
+		auto &&result = app::services::AppDependencies::instance().authService->googleAuth(parsedBody.idToken);
 		if (app::error::abortIfAppError(res, &result))
 		{
 			return;

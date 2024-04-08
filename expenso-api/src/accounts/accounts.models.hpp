@@ -5,6 +5,8 @@
 #include <optional>
 #include <vector>
 
+#include <boost/describe.hpp>
+
 namespace app
 {
     namespace accounts
@@ -15,6 +17,7 @@ namespace app
             double price;
             std::string currencyCode;
         };
+        BOOST_DESCRIBE_STRUCT(AccountDetailDb, (), (name, price, currencyCode))
 
         struct AccountAddress
         {
@@ -22,6 +25,7 @@ namespace app
             double longitude;
             double latitude;
         };
+        BOOST_DESCRIBE_STRUCT(AccountAddress, (), (address, longitude, latitude))
 
         struct AccountDb
         {
@@ -37,5 +41,6 @@ namespace app
 
             double total;
         };
+        BOOST_DESCRIBE_STRUCT(AccountDb, (), (createdAt, updatedAt, userId, currencyCode, category, name, details, address, total))
     }
 }
