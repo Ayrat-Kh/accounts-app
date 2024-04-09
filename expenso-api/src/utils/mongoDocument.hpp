@@ -74,7 +74,7 @@ namespace app::utils
         template <>
         std::optional<double> deserializeScalar(const TElement &element)
         {
-            return element.type() == bsoncxx::type::k_double ? element.get_int64().value : std::optional<double>{};
+            return element.type() == bsoncxx::type::k_double ? element.get_double().value : std::optional<double>{};
         }
         template <>
         double deserializeScalar(const TElement &element)
@@ -86,7 +86,7 @@ namespace app::utils
         template <>
         std::optional<std::int64_t> deserializeScalar(const TElement &element)
         {
-            return element.type() == bsoncxx::type::k_int64 ? element.get_int32().value : std::optional<std::int64_t>{};
+            return element.type() == bsoncxx::type::k_int64 ? element.get_int64().value : std::optional<std::int64_t>{};
         }
         template <>
         std::int64_t deserializeScalar(const TElement &element)

@@ -36,20 +36,12 @@ std::variant<std::vector<AccountDb>, app::shared::AppError> app::accounts::Accou
 
     try
     {
-
         auto accountsAll =
             db
                 .collection("accounts")
                 .find(make_document(kvp("userId", userId)));
 
         std::vector<AccountDb> result;
-
-        auto count = 1;
-        for (auto doc : accountsAll)
-        {
-            count += 1;
-        }
-        result.reserve(count);
 
         for (auto doc : accountsAll)
         {
@@ -86,7 +78,7 @@ std::variant<app::accounts::AccountDb, app::shared::AppError> app::accounts::Acc
                 .collection("accounts")
                 .find_one_and_update(
                     make_document(kvp("_id", id)),
-                    make_document(kvp("$setOnInsert", insertData.view())),
+                    insertData.view(),
                     options);
 
         if (!result.has_value())

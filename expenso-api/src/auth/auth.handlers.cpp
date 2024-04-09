@@ -1,5 +1,5 @@
 #include "auth.handlers.hpp"
-#include "services/app-dependencies.hpp"
+#include "services/appDependencies.hpp"
 #include "utils/readRequestJson.hpp"
 #include "auth/auth.utils.hpp"
 #include "utils/jsonSerialize.hpp"
@@ -25,7 +25,7 @@ void app::auth::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpReque
 		res
 			->writeHeader("Content-Type", "application/json")
 			->end(boost::json::serialize(std::move(boost::json::value_from(
-				loginResult))));
+				std::move(loginResult)))));
 	};
 
 	app::utils::RequestJsonBodyReader reader;

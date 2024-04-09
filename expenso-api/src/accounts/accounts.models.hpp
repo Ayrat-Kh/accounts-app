@@ -1,11 +1,12 @@
 #pragma once
 
 #include <string>
-#include <chrono>
 #include <optional>
 #include <vector>
 
 #include <boost/describe.hpp>
+
+#include "shared/types.hpp"
 
 namespace app::accounts
 {
@@ -28,8 +29,8 @@ namespace app::accounts
     struct AccountDb
     {
         std::string id;
-        std::chrono::system_clock::time_point createdAt;
-        std::optional<std::chrono::system_clock::time_point> updatedAt;
+        app::shared::Datetime createdAt;
+        std::optional<app::shared::Datetime> updatedAt;
         std::string userId;
         std::string currencyCode;
         std::string category;
@@ -39,5 +40,11 @@ namespace app::accounts
 
         double total;
     };
-    BOOST_DESCRIBE_STRUCT(AccountDb, (), (createdAt, updatedAt, userId, currencyCode, category, name, details, address, total))
+    BOOST_DESCRIBE_STRUCT(
+        AccountDb,
+        (),
+        (id,
+         createdAt,
+         updatedAt,
+         userId, currencyCode, category, name, details, address, total))
 }

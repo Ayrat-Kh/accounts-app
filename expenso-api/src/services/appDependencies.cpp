@@ -1,4 +1,4 @@
-#include "app-dependencies.hpp"
+#include "appDependencies.hpp"
 
 app::services::AppDependencies &app::services::AppDependencies::instance()
 {
@@ -17,5 +17,6 @@ void app::services::AppDependencies::init()
     googleLoginService = std::make_shared<app::services::GoogleLoginServiceImpl>();
     jwtService = std::make_shared<app::services::JwtServiceImpl>(secretKey);
     userRepo = std::make_shared<app::users::UsersRepositoryImpl>(mongoAccess);
+    accountsRepo = std::make_shared<app::accounts::AccountsRepositoryImpl>(mongoAccess);
     authService = std::make_shared<app::auth::AuthServiceImpl>(googleLoginService, userRepo, jwtService);
 }
