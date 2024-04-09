@@ -33,7 +33,6 @@ namespace app::users
         virtual std::variant<UserDb, app::shared::AppError> createUserByGoogleIdIfNotExist(UserDb user) override;
 
     private:
-        void fillUserDb(bsoncxx::document::value &v, UserDb &userDb);
         std::variant<UserDb, app::shared::AppError> getUserByQuery(bsoncxx::document::value query);
         std::variant<UserDb, app::shared::AppError> createUserByQueryIfNotExist(bsoncxx::document::value query, const UserDb &user);
 

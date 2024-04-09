@@ -6,6 +6,7 @@
 
 #include "users.repository.hpp"
 #include "utils/enumToString.hpp"
+#include "utils/mongoDocument.hpp"
 
 using namespace app::users;
 using namespace app::services;
@@ -56,53 +57,6 @@ std::variant<UserDb, app::shared::AppError> UsersRepositoryImpl::createUserByGoo
             user));
 }
 
-void app::users::UsersRepositoryImpl::fillUserDb(bsoncxx::document::value &userDocument, UserDb &userDb)
-{
-    if (userDocument["firstName"] && userDocument["firstName"].type() == bsoncxx::type::k_string)
-    {
-        userDb.firstName = std::string(userDocument["firstName"].get_string().value);
-    }
-
-    if (userDocument["lastName"] && userDocument["lastName"].type() == bsoncxx::type::k_string)
-    {
-        userDb.lastName = std::string(userDocument["lastName"].get_string().value);
-    }
-
-    if (userDocument["email"] && userDocument["email"].type() == bsoncxx::type::k_string)
-    {
-        userDb.email = std::string(userDocument["email"].get_string().value);
-    }
-
-    if (userDocument["googleId"] && userDocument["googleId"].type() == bsoncxx::type::k_string)
-    {
-        userDb.googleId = std::string(userDocument["googleId"].get_string().value);
-    }
-
-    if (userDocument["alias"] && userDocument["alias"].type() == bsoncxx::type::k_string)
-    {
-        userDb.alias = std::string(userDocument["alias"].get_string().value);
-    }
-
-    if (userDocument["_id"] && userDocument["_id"].type() == bsoncxx::type::k_string)
-    {
-        userDb.id = std::string(userDocument["_id"].get_string().value);
-    }
-
-    if (userDocument["createdAt"] && userDocument["createdAt"].type() == bsoncxx::type::k_date)
-    {
-        std::int64_t milliseconds = userDocument["createdAt"].get_date().to_int64();
-
-        userDb.createdAt = std::chrono::system_clock::from_time_t(0) + std::chrono::milliseconds(milliseconds);
-    }
-
-    if (userDocument["settings"] && userDocument["settings"].type() == bsoncxx::type::k_document)
-    {
-        auto doc = userDocument["settings"].get_document().value;
-
-        userDb.settings.defaultCurrency = std::string(doc["defaultCurrency"].get_string().value);
-    }
-}
-
 std::variant<UserDb, app::shared::AppError> app::users::UsersRepositoryImpl::getUserByQuery(bsoncxx::document::value query)
 {
     auto client = _mongoAccess->getConnection();
@@ -120,11 +74,7 @@ std::variant<UserDb, app::shared::AppError> app::users::UsersRepositoryImpl::get
                     .code = app::utils::enumToString(app::shared::AppErrorCode::DB_NOT_FOUND)});
         }
 
-        UserDb userDb = {};
-
-        fillUserDb(result.value(), userDb);
-
-        return std::move(userDb);
+        return std::move(app::utils::fromMongoDocument<UserDb>(result.value().view()));
     }
     catch (std::exception &exception)
     {
@@ -175,11 +125,7 @@ std::variant<UserDb, app::shared::AppError> app::users::UsersRepositoryImpl::cre
                     .code = app::utils::enumToString(app::shared::AppErrorCode::DB_INSERT_ERROR)});
         }
 
-        UserDb userDb = {};
-
-        fillUserDb(result.value(), userDb);
-
-        return std::move(userDb);
+        return std::move(app::utils::fromMongoDocument<UserDb>(result.value().view()));
     }
     catch (std::exception &exception)
     {

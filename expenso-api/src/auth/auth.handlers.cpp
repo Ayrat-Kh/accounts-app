@@ -1,6 +1,6 @@
 #include "auth.handlers.hpp"
 #include "services/app-dependencies.hpp"
-#include "utils/read-request-json.hpp"
+#include "utils/readRequestJson.hpp"
 #include "auth/auth.utils.hpp"
 #include "utils/jsonSerialize.hpp"
 #include "utils/error.hpp"
