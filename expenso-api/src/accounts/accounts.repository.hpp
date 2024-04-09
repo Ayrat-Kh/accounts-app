@@ -8,7 +8,7 @@
 
 #include "shared/models.hpp"
 #include "utils/error.hpp"
-#include "services/mongo-access.hpp"
+#include "services/mongoAccess.hpp"
 #include "accounts/accounts.models.hpp"
 
 namespace app
@@ -35,8 +35,6 @@ namespace app
             virtual std::variant<AccountDb, app::shared::AppError> upsertAccount(AccountDb account) override;
 
         private:
-            void fillAccountDb(bsoncxx::document::value &v, AccountDb &userDb);
-
             std::shared_ptr<app::services::IMongoAccess> _mongoAccess;
         };
 

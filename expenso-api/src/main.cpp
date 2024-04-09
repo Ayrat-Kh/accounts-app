@@ -1,9 +1,7 @@
-#include <variant>
-
-#include <boost/json.hpp>
 #include <App.h>
 
-#include "services/app-dependencies.hpp"
+#include "services/appDependencies.hpp"
+#include "accounts/accounts.handlers.hpp"
 #include "auth/auth.handlers.hpp"
 #include "users/users.handlers.hpp"
 
@@ -28,9 +26,15 @@ int main(int argc, char *argv[])
         .post(
             "/login/google-auth",
             app::auth::handleGoogleLogin)
+        .post(
+            "/v1/accounts",
+            app::accounts::handleAddAccount)
         .get(
             "/v1/users/:userId",
             app::users::handleGetUserById)
+        .get(
+            "/v1/users/:userId/accounts",
+            app::accounts::handleGetAccountsByUserId)
         .listen(
             appPort,
             [appPort](auto *listen_socket)

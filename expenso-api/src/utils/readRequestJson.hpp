@@ -5,24 +5,11 @@
 
 #include "utils/error.hpp"
 #include "utils/enumToString.hpp"
+#include "utils/jsonSerialize.hpp"
 
 namespace app::utils
 {
     using RequestHandler = void(uWS::HttpResponse<false> *res, boost::json::value json_response);
-
-    struct RequestLambda
-    {
-        template <class F>
-        static auto cify(F &&f)
-        {
-            static F fn = std::forward<F>(f);
-
-            return [](uWS::HttpResponse<false> *res, boost::json::value json_response)
-            {
-                return fn(res, json_response);
-            };
-        }
-    };
 
     class RequestJsonBodyReader
     {
@@ -30,12 +17,12 @@ namespace app::utils
 
     public:
         template <class TBody>
-        void read(uWS::HttpResponse<false> *response, void (*handler)(uWS::HttpResponse<false> *, TBody body))
+        void read(uWS::HttpResponse<false> *response, uWS::HttpRequest *req, void (*handler)(uWS::HttpResponse<false> *, uWS::HttpRequest *req, TBody body))
         {
             _buffer.reserve(4096);
 
             response->onAborted([]() {})->onData(
-                [this, handler, response](std::string_view data, bool isLast) mutable
+                [this, handler, response, req](std::string_view data, bool isLast) mutable
                 {
                     _buffer.append(data);
 
@@ -45,7 +32,7 @@ namespace app::utils
                         {
                             auto jsonBodyObject = boost::json::parse(_buffer);
 
-                            auto &&reqBody = boost::json::try_value_to<app::auth::GoogleLoginRequest>(std::move(jsonBodyObject));
+                            auto &&reqBody = boost::json::try_value_to<TBody>(std::move(jsonBodyObject));
 
                             if (reqBody.has_error())
                             {
@@ -58,7 +45,7 @@ namespace app::utils
                                 return;
                             }
 
-                            handler(response, std::move(reqBody.value()));
+                            handler(response, req, std::move(reqBody.value()));
                         }
                         catch (std::exception &ex)
                         {
