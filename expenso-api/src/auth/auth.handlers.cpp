@@ -5,9 +5,9 @@
 #include "utils/jsonSerialize.hpp"
 #include "utils/error.hpp"
 
-void app::auth::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpRequest *req)
+void app::auth::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpRequest *_req)
 {
-	auto handler = [](uWS::HttpResponse<false> *res, app::auth::GoogleLoginRequest parsedBody) mutable
+	auto handler = [](uWS::HttpResponse<false> *res, uWS::HttpRequest *, app::auth::GoogleLoginRequest parsedBody) mutable
 	{
 		if (app::error::abortIfValidationFailed(res, app::auth::validateGoogleLoginBody(parsedBody)))
 		{
@@ -29,5 +29,5 @@ void app::auth::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpReque
 	};
 
 	app::utils::RequestJsonBodyReader reader;
-	reader.read<app::auth::GoogleLoginRequest>(_res, handler);
+	reader.read<app::auth::GoogleLoginRequest>(_res, _req, handler);
 }

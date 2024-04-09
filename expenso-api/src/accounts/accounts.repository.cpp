@@ -31,7 +31,40 @@ std::variant<AccountDb, app::shared::AppError> app::accounts::AccountsRepository
 
 std::variant<std::vector<AccountDb>, app::shared::AppError> app::accounts::AccountsRepositoryImpl::getAccountsByUserId(std::string_view userId)
 {
-    return std::variant<std::vector<AccountDb>, app::shared::AppError>();
+    auto client = _mongoAccess->getConnection();
+    auto db = (*client)["expenso-app"];
+
+    try
+    {
+
+        auto accountsAll =
+            db
+                .collection("accounts")
+                .find(make_document(kvp("userId", userId)));
+
+        std::vector<AccountDb> result;
+
+        auto count = 1;
+        for (auto doc : accountsAll)
+        {
+            count += 1;
+        }
+        result.reserve(count);
+
+        for (auto doc : accountsAll)
+        {
+            result.push_back(app::utils::deserializeMongoDocument<AccountDb>(doc));
+        }
+
+        return result;
+    }
+    catch (std::exception &exception)
+    {
+        return std::move(
+            app::shared::AppError{
+                .message = "Couldn't fetch user accounts " + std::string(exception.what()),
+                .code = app::utils::enumToString(app::shared::AppErrorCode::DB_QUERY_ERROR)});
+    }
 }
 
 std::variant<app::accounts::AccountDb, app::shared::AppError> app::accounts::AccountsRepositoryImpl::upsertAccount(app::accounts::AccountDb account)
