@@ -35,8 +35,6 @@ namespace app
             virtual std::variant<AccountDb, app::shared::AppError> upsertAccount(AccountDb account) override;
 
         private:
-            void fillAccountDb(bsoncxx::document::value &v, AccountDb &userDb);
-
             std::shared_ptr<app::services::IMongoAccess> _mongoAccess;
         };
 

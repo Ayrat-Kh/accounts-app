@@ -74,7 +74,7 @@ std::variant<UserDb, app::shared::AppError> app::users::UsersRepositoryImpl::get
                     .code = app::utils::enumToString(app::shared::AppErrorCode::DB_NOT_FOUND)});
         }
 
-        return std::move(app::utils::fromMongoDocument<UserDb>(result.value().view()));
+        return std::move(app::utils::deserializeMongoDocument<UserDb>(result.value().view()));
     }
     catch (std::exception &exception)
     {
@@ -92,18 +92,7 @@ std::variant<UserDb, app::shared::AppError> app::users::UsersRepositoryImpl::cre
 
     try
     {
-
-        bsoncxx::document::value insertData = make_document(
-            kvp("_id", user.id),
-            kvp("firstName", user.firstName),
-            kvp("alias", user.alias),
-            kvp("email", user.email),
-            kvp("googleId", user.googleId),
-            kvp("lastName", user.lastName),
-            kvp("createdAt", bsoncxx::types::b_date{std::chrono::system_clock::now()}),
-            kvp("updatedAt", bsoncxx::types::b_null{}),
-            kvp("settings", make_document(
-                                kvp("defaultCurrency", user.settings.defaultCurrency))));
+        bsoncxx::builder::basic::document insertData = app::utils::toMongoDocument(std::move(user));
 
         mongocxx::options::find_one_and_update options;
         options.upsert(true);
@@ -125,7 +114,7 @@ std::variant<UserDb, app::shared::AppError> app::users::UsersRepositoryImpl::cre
                     .code = app::utils::enumToString(app::shared::AppErrorCode::DB_INSERT_ERROR)});
         }
 
-        return std::move(app::utils::fromMongoDocument<UserDb>(result.value().view()));
+        return std::move(app::utils::deserializeMongoDocument<UserDb>(result.value().view()));
     }
     catch (std::exception &exception)
     {
