@@ -6,7 +6,7 @@
 #include <bsoncxx/builder/basic/document.hpp>
 
 #include "shared/models.hpp"
-#include "services/mongo-access.hpp"
+#include "services/mongoAccess.hpp"
 #include "users/users.models.hpp"
 
 namespace app::users

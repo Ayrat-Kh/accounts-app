@@ -3,8 +3,8 @@
 #include "auth/auth.service.hpp"
 #include "users/users.repository.hpp"
 #include "accounts/accounts.repository.hpp"
-#include "services/mongo-access.hpp"
-#include "services/google-login.service.hpp"
+#include "services/mongoAccess.hpp"
+#include "services/googleLogin.service.hpp"
 #include "services/jwt.service.hpp"
 
 namespace app::services

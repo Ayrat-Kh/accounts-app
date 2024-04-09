@@ -8,7 +8,7 @@
 
 #include "shared/models.hpp"
 #include "utils/error.hpp"
-#include "services/mongo-access.hpp"
+#include "services/mongoAccess.hpp"
 #include "accounts/accounts.models.hpp"
 
 namespace app
