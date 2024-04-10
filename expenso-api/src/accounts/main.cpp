@@ -1,9 +1,9 @@
 #include <App.h>
 
-// #include "accounts/services/appDependencies.hpp"
-// #include "accounts/accounts/accounts.handlers.hpp"
-// #include "accounts/auth/auth.handlers.hpp"
-// #include "accounts/users/users.handlers.hpp"
+#include "accounts/services/appDependencies.hpp"
+#include "accounts/accounts/accounts.handlers.hpp"
+#include "accounts/auth/auth.handlers.hpp"
+#include "accounts/users/users.handlers.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     int32_t appPort = 3000;
 
     // dependency section
-    // ::accounts::services::AppDependencies::instance().init();
+    ::accounts::services::AppDependencies::instance().init();
 
     // server section
     /* Keep in mind that uWS::SSLApp({options}) is the same as uWS::App() when compiled without SSL support.
@@ -23,18 +23,18 @@ int main(int argc, char *argv[])
             {
                 res->end("Server is working fine");
             })
-        // .post(
-        //     "/login/google-auth",
-        //     accounts::auth::handleGoogleLogin)
-        // .post(
-        //     "/v1/accounts",
-        //     accounts::accounts::handleAddAccount)
-        // .get(
-        //     "/v1/users/:userId",
-        //     accounts::users::handleGetUserById)
-        // .get(
-        //     "/v1/users/:userId/accounts",
-        //     accounts::accounts::handleGetAccountsByUserId)
+        .post(
+            "/login/google-auth",
+            accounts::auth::handleGoogleLogin)
+        .post(
+            "/v1/accounts",
+            accounts::accounts::handleAddAccount)
+        .get(
+            "/v1/users/:userId",
+            accounts::users::handleGetUserById)
+        .get(
+            "/v1/users/:userId/accounts",
+            accounts::accounts::handleGetAccountsByUserId)
         .listen(
             appPort,
             [appPort](auto *listen_socket)
