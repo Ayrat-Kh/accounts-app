@@ -10,6 +10,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(MONGO external/mongo-cxx-driver-r3.10.1/build/install)
 
+if(WIN32)
+  set(LIB_EXT ".dll")
+elseif(APPLE)
+  set(LIB_EXT ".dylib")
+elseif(UNIX)
+  set(LIB_EXT ".so")
+endif()
+
+
 find_package(OpenSSL REQUIRED)
 
 # external
@@ -36,10 +45,15 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cppjwt_content)
 
 #mongo
-ExternalProject_Add(
+FetchContent_Declare(
   mongo_content
   GIT_REPOSITORY https://github.com/mongodb/mongo-cxx-driver
   GIT_TAG r3.10.1
+)
+FetchContent_MakeAvailable(mongo_content)
+ExternalProject_Add(
+  mongo_content
+  SOURCE_DIR ${mongo_content_SOURCE_DIR}
   BUILD_COMMAND ${CMAKE_COMMAND} . -DCMAKE_BUILD_TYPE=Release -DENABLE_BSONCXX_POLY_USE_IMPLS=1
   COMMAND ${CMAKE_COMMAND} --build .
   COMMAND ${CMAKE_COMMAND} --build . --target install
@@ -50,7 +64,7 @@ set(MONGO_INSTALL_DIR ${BINARY_DIR})
 # app
 file(GLOB_RECURSE SOURCES src/**/*.cpp)
 add_executable(ExpensoApp
-  src/main.cpp
+  src/accounts/main.cpp
   ${SOURCES}
 )
 target_include_directories(ExpensoApp
@@ -59,6 +73,7 @@ target_include_directories(ExpensoApp
   ${MONGO_INSTALL_DIR}/install/include/mongocxx/v_noabi
   ${cppjwt_content_SOURCE_DIR}/include
   ${CMAKE_CURRENT_BINARY_DIR}/src
+  src/
 )
 target_link_libraries(ExpensoApp
   PRIVATE 
@@ -68,6 +83,6 @@ target_link_libraries(ExpensoApp
   # Boost::program_options
   uWebSockets
   OpenSSL::SSL
-  ${MONGO_INSTALL_DIR}/install/lib/libmongocxx.dylib
-  ${MONGO_INSTALL_DIR}/install/lib/libbsoncxx.dylib
+  ${MONGO_INSTALL_DIR}/install/lib/libmongocxx${LIB_EXT}
+  ${MONGO_INSTALL_DIR}/install/lib/libbsoncxx${LIB_EXT}
 )
