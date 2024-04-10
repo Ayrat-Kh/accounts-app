@@ -35,16 +35,28 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cppjwt_content)
 
+#mongo
+set(CMAKE_INSTALL_LOCAL_ONLY ON)
+FetchContent_Declare(
+  mongo_content
+  GIT_REPOSITORY https://github.com/mongodb/mongo-cxx-driver
+  GIT_TAG r3.10.1
+)
+FetchContent_MakeAvailable(mongo_content)
+
 # app
 file(GLOB_RECURSE SOURCES src/**/*.cpp)
 add_executable(ExpensoApp
 src/main.cpp
 ${SOURCES}
 )
+# expenso-api/_deps/mongo_content-build/
 target_include_directories(ExpensoApp
   PRIVATE
-  ${MONGO}/include/bsoncxx/v_noabi
-  ${MONGO}/include/mongocxx/v_noabi
+  ${mongo_content_SOURCE_DIR}/src/bsoncxx/include/bsoncxx/v_noabi
+  ${mongo_content_SOURCE_DIR}/src/mongocxx/include/mongocxx/v_noabi
+  ${mongo_content_BINARY_DIR}/src/bsoncxx/lib/bsoncxx/v_noabi
+  ${mongo_content_BINARY_DIR}/src/mongocxx/lib/mongocxx/v_noabi
   ${cppjwt_content_SOURCE_DIR}/include
   ${CMAKE_CURRENT_BINARY_DIR}/src
 )
@@ -62,8 +74,11 @@ target_link_libraries(ExpensoApp
   # tabulate::tabulate
   # TinyOrm::CommonConfig
   # "/Users/airatkhisamiev/dev/expenso-app/expenso-api/external/mongo-cxx-driver-r3.10.1/build/install/lib/libmongocxx.dylib"
-  ${CMAKE_CURRENT_BINARY_DIR}/${MONGO}/lib/libmongocxx.dylib
-  ${CMAKE_CURRENT_BINARY_DIR}/${MONGO}/lib/libbsoncxx.dylib
+  ${mongo_content_SOURCE_DIR}
+  ${mongo_content_BINARY_DIR}/src/bsoncxx/libbsoncxx.dylib
+  ${mongo_content_BINARY_DIR}/src/mongocxx/libmongocxx.dylib
+  # ${CMAKE_CURRENT_BINARY_DIR}/${MONGO}/lib/
+  # ${CMAKE_CURRENT_BINARY_DIR}/${MONGO}/lib/
   
 )
 
