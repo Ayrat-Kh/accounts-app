@@ -36,27 +36,27 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cppjwt_content)
 
 #mongo
-set(CMAKE_INSTALL_LOCAL_ONLY ON)
-FetchContent_Declare(
+ExternalProject_Add(
   mongo_content
   GIT_REPOSITORY https://github.com/mongodb/mongo-cxx-driver
   GIT_TAG r3.10.1
+  BUILD_COMMAND ${CMAKE_COMMAND} . -DCMAKE_BUILD_TYPE=Release -DENABLE_BSONCXX_POLY_USE_IMPLS=1
+  COMMAND ${CMAKE_COMMAND} --build .
+  COMMAND ${CMAKE_COMMAND} --build . --target install
 )
-FetchContent_MakeAvailable(mongo_content)
+ExternalProject_Get_property(mongo_content BINARY_DIR)
+set(MONGO_INSTALL_DIR ${BINARY_DIR})
 
 # app
 file(GLOB_RECURSE SOURCES src/**/*.cpp)
 add_executable(ExpensoApp
-src/main.cpp
-${SOURCES}
+  src/main.cpp
+  ${SOURCES}
 )
-# expenso-api/_deps/mongo_content-build/
 target_include_directories(ExpensoApp
   PRIVATE
-  ${mongo_content_SOURCE_DIR}/src/bsoncxx/include/bsoncxx/v_noabi
-  ${mongo_content_SOURCE_DIR}/src/mongocxx/include/mongocxx/v_noabi
-  ${mongo_content_BINARY_DIR}/src/bsoncxx/lib/bsoncxx/v_noabi
-  ${mongo_content_BINARY_DIR}/src/mongocxx/lib/mongocxx/v_noabi
+  ${MONGO_INSTALL_DIR}/install/include/bsoncxx/v_noabi
+  ${MONGO_INSTALL_DIR}/install/include/mongocxx/v_noabi
   ${cppjwt_content_SOURCE_DIR}/include
   ${CMAKE_CURRENT_BINARY_DIR}/src
 )
@@ -65,23 +65,9 @@ target_link_libraries(ExpensoApp
   Boost::beast
   Boost::asio
   Boost::json
-  # Boost::filesystem
-  # Boost::thread
   # Boost::program_options
   uWebSockets
   OpenSSL::SSL
-  # range-v3
-  # tabulate::tabulate
-  # TinyOrm::CommonConfig
-  # "/Users/airatkhisamiev/dev/expenso-app/expenso-api/external/mongo-cxx-driver-r3.10.1/build/install/lib/libmongocxx.dylib"
-  ${mongo_content_SOURCE_DIR}
-  ${mongo_content_BINARY_DIR}/src/bsoncxx/libbsoncxx.dylib
-  ${mongo_content_BINARY_DIR}/src/mongocxx/libmongocxx.dylib
-  # ${CMAKE_CURRENT_BINARY_DIR}/${MONGO}/lib/
-  # ${CMAKE_CURRENT_BINARY_DIR}/${MONGO}/lib/
-  
+  ${MONGO_INSTALL_DIR}/install/lib/libmongocxx.dylib
+  ${MONGO_INSTALL_DIR}/install/lib/libbsoncxx.dylib
 )
-
-
-# expenso-api/external/mongo-cxx-driver-r3.10.1/build/install/lib/libmongocxx.dylib
-
