@@ -9,7 +9,6 @@
 #include <App.h>
 
 #include "accounts/shared/models.hpp"
-#include "accounts/services/models.service.hpp"
 #include "enumToString.hpp"
 
 namespace accounts::error
@@ -61,7 +60,7 @@ namespace accounts::error
 
     void abort(uWS::HttpResponse<false> *res, shared::AppError);
 
-    bool abortIfUnauthorized(uWS::HttpResponse<false> *res, const std::optional<services::AuthUser> &authUser);
+    bool abortIfUnauthorized(uWS::HttpResponse<false> *res, const std::optional<::accounts::shared::AuthUser> &authUser);
 
     template <class... Args>
     bool abortIfAppError(uWS::HttpResponse<false> *res, std::variant<Args...> *args)

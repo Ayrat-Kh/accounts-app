@@ -4,7 +4,7 @@
 
 #include <boost/describe.hpp>
 
-#include "accounts/users/users.models.hpp"
+#include "accounts/shared/models.hpp"
 
 namespace accounts::auth
 {
@@ -25,7 +25,7 @@ namespace accounts::auth
 		std::string accessToken;
 		std::string sessionToken;
 
-		users::UserDb user;
+		::accounts::shared::UserDb user;
 	};
 	BOOST_DESCRIBE_STRUCT(UserLoginResult, (), (accessToken, sessionToken, user))
 

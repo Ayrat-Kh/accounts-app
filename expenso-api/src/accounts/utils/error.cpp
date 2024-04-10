@@ -1,7 +1,6 @@
 #include "error.hpp"
 
 using namespace ::accounts::shared;
-using namespace ::accounts::services;
 
 void accounts::error::abort(uWS::HttpResponse<false> *res, AppError json)
 {

@@ -2,8 +2,10 @@
 
 #include <string>
 
-#include <boost/json.hpp>
+#include <boost/json/value.hpp>
 #include <boost/describe.hpp>
+
+#include "types.hpp"
 
 namespace accounts::shared
 {
@@ -36,7 +38,7 @@ namespace accounts::shared
 
     struct ValidationAppError
     {
-        boost::json::value errors;
+        ::boost::json::value errors;
 
         std::string message;
 
@@ -46,4 +48,38 @@ namespace accounts::shared
         ValidationAppError,
         (),
         (message, code, errors))
+
+    // below
+    // users
+    struct UserSettingsDb
+    {
+        std::string defaultCurrency;
+    };
+    BOOST_DESCRIBE_STRUCT(UserSettingsDb, (), (defaultCurrency))
+
+    struct UserDb
+    {
+        std::string id;
+        ::accounts::shared::Datetime createdAt;
+        std::optional<::accounts::shared::Datetime> updatedAt;
+        std::string firstName;
+        std::string lastName;
+        std::string alias;
+        std::string email;
+        std::string googleId;
+        UserSettingsDb settings;
+    };
+    BOOST_DESCRIBE_STRUCT(
+        UserDb,
+        (),
+        (id, createdAt,
+         updatedAt,
+         firstName, lastName, alias, email, googleId, settings))
+
+    // below
+    // auth
+    struct AuthUser
+    {
+        std::string userId;
+    };
 }

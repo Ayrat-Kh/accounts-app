@@ -4,8 +4,7 @@
 #include <string_view>
 #include <optional>
 
-#include "accounts/users/users.models.hpp"
-#include "accounts/services/models.service.hpp"
+#include "accounts/shared/models.hpp"
 
 namespace accounts::services
 {
@@ -13,7 +12,7 @@ namespace accounts::services
     {
         virtual std::string createUserToken(std::string_view userId) = 0;
 
-        virtual std::optional<AuthUser> getAuthUser(std::string_view jwtToken) = 0;
+        virtual std::optional<::accounts::shared::AuthUser> getAuthUser(std::string_view jwtToken) = 0;
     };
 
     class JwtServiceImpl : public IJwtService
@@ -25,6 +24,6 @@ namespace accounts::services
 
         virtual std::string createUserToken(std::string_view userId) override;
 
-        virtual std::optional<AuthUser> getAuthUser(std::string_view jwtToken) override;
+        virtual std::optional<::accounts::shared::AuthUser> getAuthUser(std::string_view jwtToken) override;
     };
 }

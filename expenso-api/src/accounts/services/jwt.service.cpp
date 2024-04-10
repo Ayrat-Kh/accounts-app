@@ -20,7 +20,7 @@ std::string accounts::services::JwtServiceImpl::createUserToken(std::string_view
             .sign(jwt::algorithm::hs256{_jwtSecret}));
 }
 
-std::optional<accounts::services::AuthUser> accounts::services::JwtServiceImpl::getAuthUser(std::string_view jwtToken)
+std::optional<::accounts::shared::AuthUser> accounts::services::JwtServiceImpl::getAuthUser(std::string_view jwtToken)
 {
     auto verifier =
         jwt::verify()
@@ -35,7 +35,7 @@ std::optional<accounts::services::AuthUser> accounts::services::JwtServiceImpl::
 
         verifier.verify(decodedToken);
 
-        return std::move(AuthUser{
+        return std::move(::accounts::shared::AuthUser{
             .userId = decodedToken.get_payload_claim("user_id").as_string()});
     }
     catch (std::exception &ex)
