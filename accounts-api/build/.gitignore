@@ -1,0 +1,11 @@
+.DS_Store
+_deps
+CMakeFiles
+external
+Makefile
+CMakeCache.txt
+cmake_install.cmake
+src
+mongo_content-prefix
+.cmake
+AccountsApi
