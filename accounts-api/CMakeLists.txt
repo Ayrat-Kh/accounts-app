@@ -102,19 +102,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cppjwt_content)
 
 # mongo prefetch
-# FetchContent_Declare(
-#   mongoc_content
-#   GIT_REPOSITORY https://github.com/mongodb/mongo-c-driver
-#   GIT_TAG 1.25.0
-# )
-# FetchContent_Populate(mongoc_content)
-
-# FetchContent_Declare(
-#   mongo_content
-#   GIT_REPOSITORY https://github.com/mongodb/mongo-cxx-driver
-#   GIT_TAG r3.10.1
-# )
-# FetchContent_Populate(mongo_content)
 
 ExternalProject_Add(
   mongo_content
