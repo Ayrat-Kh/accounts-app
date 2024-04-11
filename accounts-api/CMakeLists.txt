@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION VERSION 3.5 FATAL_ERROR)
 
-project(expenso-app LANGUAGES C CXX)
+project(accounts-api LANGUAGES C CXX)
 
 include(FetchContent)
 
@@ -30,7 +30,67 @@ FetchContent_Declare(
   Boost
   GIT_REPOSITORY https://github.com/boostorg/boost
   GIT_TAG boost-1.84.0
+  GIT_SUBMODULES "
+  libs/coroutine
+  libs/date_time
+  libs/endian
+  libs/exception
+  libs/integer
+  libs/logic
+  libs/pool
+  libs/smart_ptr
+  libs/optional
+  libs/type_traits
+  libs/algorithm
+  libs/tuple
+  libs/numeric/conversion
+  libs/function
+  libs/functional
+  libs/typeof
+  libs/unordered
+
+  libs/mpl
+  libs/tokenizer
+  libs/function_types
+
+  libs/fusion
+  libs/regex
+
+  libs/array
+  libs/static_string
+  libs/utility
+  libs/io
+  libs/detail
+  libs/concept_check
+  libs/preprocessor
+  libs/lexical_cast
+  libs/iterator
+  libs/range
+  libs/conversion
+  libs/context
+  libs/bind
+  libs/core
+  libs/container
+  libs/align
+  libs/assert
+  libs/config
+  libs/mp11
+  libs/json
+  libs/describe
+  libs/asio
+  libs/beast
+  libs/system
+  libs/intrusive
+  libs/throw_exception
+  libs/move
+  libs/container_hash
+  libs/static_assert
+  libs/variant2
+  libs/winapi
+  libs/predef
+  tools/cmake"
 )
+
 FetchContent_MakeAvailable(Boost)
 
 # jwt
@@ -57,12 +117,16 @@ FetchContent_Declare(
 FetchContent_Populate(mongo_content)
 
 # app
+if (${SKIP_BUILD} EQUAL "ON")
+  return("Skip build")
+endif()
+
 file(GLOB_RECURSE SOURCES src/**/*.cpp)
-add_executable(ExpensoApp
+  add_executable(AccountsApi
   src/accounts/main.cpp
   ${SOURCES}
 )
-target_include_directories(ExpensoApp
+target_include_directories(AccountsApi
   PRIVATE
   ${mongo_content_SOURCE_DIR}/build/install/include/bsoncxx/v_noabi
   ${mongo_content_SOURCE_DIR}/build/install/include/mongocxx/v_noabi
@@ -70,7 +134,7 @@ target_include_directories(ExpensoApp
   ${CMAKE_CURRENT_BINARY_DIR}/src
   src/
 )
-target_link_libraries(ExpensoApp
+target_link_libraries(AccountsApi
   PRIVATE 
   Boost::beast
   Boost::asio
