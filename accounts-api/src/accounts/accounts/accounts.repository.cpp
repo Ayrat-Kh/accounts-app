@@ -55,8 +55,9 @@ std::variant<std::vector<accounts::accounts::AccountDb>, AppError> accounts::acc
     {
         return std::move(
             AppError{
+                .code = enumToString(AppErrorCode::DB_QUERY_ERROR),
                 .message = "Couldn't fetch user accounts " + std::string(exception.what()),
-                .code = enumToString(AppErrorCode::DB_QUERY_ERROR)});
+            });
     }
 }
 
@@ -86,8 +87,8 @@ std::variant<accounts::accounts::AccountDb, AppError> accounts::accounts::Accoun
         {
             return std::move(
                 AppError{
-                    .message = "Couldn't insert account",
-                    .code = enumToString(AppErrorCode::DB_INSERT_ERROR)});
+                    .code = enumToString(AppErrorCode::DB_INSERT_ERROR),
+                    .message = "Couldn't insert account"});
         }
 
         return std::move(deserializeMongoDocument<AccountDb>(std::move(result.value())));
@@ -96,7 +97,7 @@ std::variant<accounts::accounts::AccountDb, AppError> accounts::accounts::Accoun
     {
         return std::move(
             AppError{
-                .message = "Couldn't insert account " + std::string(exception.what()),
-                .code = enumToString(AppErrorCode::DB_INSERT_ERROR)});
+                .code = enumToString(AppErrorCode::DB_INSERT_ERROR),
+                .message = "Couldn't insert account " + std::string(exception.what())});
     }
 }

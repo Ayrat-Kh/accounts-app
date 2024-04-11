@@ -51,8 +51,8 @@ namespace accounts::error
             ->end(serialize(
                 std::move(value_from(
                     std::move(ValidationAppError{
-                        .code = enumToString(AppErrorCode::VALIDATION_ERROR),
                         .errors = std::move(modelErrors),
+                        .code = enumToString(AppErrorCode::VALIDATION_ERROR),
                         .message = "Validation error"})))));
 
         return true;

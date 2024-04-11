@@ -7,4 +7,10 @@ chmod +x ./preinit
 
 # pack to docker
 
-docker run --name expenso-api -p 27017:27017 -d mongo
+```
+docker build --progress=plain -t accounts-api .
+```
+
+# run on docker
+
+docker run --name accounts-api accounts-api

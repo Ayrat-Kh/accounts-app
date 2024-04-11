@@ -32,11 +32,11 @@ std::variant<accounts::auth::UserLoginResult, AppError> accounts::auth::AuthServ
 
     auto userDbResult = _userRepository.get()->createUserByGoogleIdIfNotExist(std::move(UserDb{
         .id = boost::uuids::to_string(boost::uuids::random_generator()()),
-        .googleId = std::move(googleLoginResult.sub),
-        .email = std::move(googleLoginResult.email),
         .firstName = std::move(googleLoginResult.given_name),
-        .alias = std::move(googleLoginResult.name),
         .lastName = std::move(googleLoginResult.given_name),
+        .alias = std::move(googleLoginResult.name),
+        .email = std::move(googleLoginResult.email),
+        .googleId = std::move(googleLoginResult.sub),
         .settings = {
             .defaultCurrency = "USD"}}));
 

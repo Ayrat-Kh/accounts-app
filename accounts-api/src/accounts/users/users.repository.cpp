@@ -71,8 +71,8 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::getUserByQu
         {
             return std::move(
                 AppError{
-                    .message = "Document not found",
-                    .code = enumToString(AppErrorCode::DB_NOT_FOUND)});
+                    .code = enumToString(AppErrorCode::DB_NOT_FOUND),
+                    .message = "Document not found"});
         }
 
         return std::move(deserializeMongoDocument<UserDb>(result.value().view()));
@@ -81,8 +81,8 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::getUserByQu
     {
         return std::move(
             AppError{
-                .message = exception.what(),
-                .code = enumToString(AppErrorCode::DB_QUERY_ERROR)});
+                .code = enumToString(AppErrorCode::DB_QUERY_ERROR),
+                .message = exception.what()});
     }
 }
 
@@ -111,8 +111,8 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::createUserB
         {
             return std::move(
                 AppError{
-                    .message = "Couldn't insert document",
-                    .code = enumToString(AppErrorCode::DB_INSERT_ERROR)});
+                    .code = enumToString(AppErrorCode::DB_INSERT_ERROR),
+                    .message = "Couldn't insert document"});
         }
 
         return std::move(deserializeMongoDocument<UserDb>(result.value().view()));
@@ -121,7 +121,7 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::createUserB
     {
         return std::move(
             AppError{
-                .message = exception.what(),
-                .code = enumToString(AppErrorCode::DB_INSERT_ERROR)});
+                .code = enumToString(AppErrorCode::DB_INSERT_ERROR),
+                .message = exception.what()});
     }
 }

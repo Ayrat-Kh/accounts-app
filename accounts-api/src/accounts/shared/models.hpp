@@ -27,9 +27,9 @@ namespace accounts::shared
 
     struct AppError
     {
-        std::string message;
-
         const char *code;
+
+        std::string message;
     };
     BOOST_DESCRIBE_STRUCT(
         AppError,
@@ -40,9 +40,9 @@ namespace accounts::shared
     {
         ::boost::json::value errors;
 
-        std::string message;
-
         const char *code;
+
+        std::string message;
     };
     BOOST_DESCRIBE_STRUCT(
         ValidationAppError,

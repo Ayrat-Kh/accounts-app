@@ -57,15 +57,15 @@ std::variant<accounts::services::GoogleTokenInfo, AppError> accounts::services::
         if (!json_response.is_object())
         {
             return AppError{
-                .message = "get google id token info response is not json object",
-                .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST)};
+                .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST),
+                .message = "get google id token info response is not json object"};
         }
 
         if (json_response.as_object().contains("error_description"))
         {
             return AppError{
-                .message = "get google id token info error_description: " + std::string(json_response.as_object()["error_description"].as_string()),
-                .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST)};
+                .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST),
+                .message = "get google id token info error_description: " + std::string(json_response.as_object()["error_description"].as_string())};
         }
 
         return std::move(GoogleTokenInfo{
@@ -90,7 +90,7 @@ std::variant<accounts::services::GoogleTokenInfo, AppError> accounts::services::
     catch (const std::exception &e)
     {
         return AppError{
-            .message = "get google id token info " + std::string(e.what()),
-            .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST)};
+            .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST),
+            .message = "get google id token info " + std::string(e.what())};
     }
 }
