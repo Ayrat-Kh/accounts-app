@@ -3,9 +3,10 @@
 #include <string>
 
 #include <boost/json/value.hpp>
-#include <boost/describe.hpp>
+#include <boost/describe/class.hpp>
+#include <boost/describe/enum.hpp>
 
-#include "types.hpp"
+#include "accounts/shared/types.hpp"
 
 namespace accounts::shared
 {
@@ -23,7 +24,7 @@ namespace accounts::shared
         VALIDATION_ERROR = 400,
         PARSE_BODY_ERROR
     };
-    BOOST_DESCRIBE_ENUM(AppErrorCode, APP_ERROR, INVALID_INPUT, DB_NOT_FOUND, DB_INSERT_ERROR, DB_QUERY_ERROR, THIRD_PARTY_REQUEST, VALIDATION_ERROR, PARSE_BODY_ERROR)
+    BOOST_DESCRIBE_ENUM(AppErrorCode, APP_ERROR, INVALID_INPUT, DB_NOT_FOUND, DB_INSERT_ERROR, DB_QUERY_ERROR, THIRD_PARTY_REQUEST, VALIDATION_ERROR, PARSE_BODY_ERROR);
 
     struct AppError
     {
@@ -34,7 +35,7 @@ namespace accounts::shared
     BOOST_DESCRIBE_STRUCT(
         AppError,
         (),
-        (message, code))
+        (message, code));
 
     struct ValidationAppError
     {
@@ -55,7 +56,7 @@ namespace accounts::shared
     {
         std::string defaultCurrency;
     };
-    BOOST_DESCRIBE_STRUCT(UserSettingsDb, (), (defaultCurrency))
+    BOOST_DESCRIBE_STRUCT(UserSettingsDb, (), (defaultCurrency));
 
     struct UserDb
     {
@@ -72,9 +73,10 @@ namespace accounts::shared
     BOOST_DESCRIBE_STRUCT(
         UserDb,
         (),
-        (id, createdAt,
+        (id,
+         createdAt,
          updatedAt,
-         firstName, lastName, alias, email, googleId, settings))
+         firstName, lastName, alias, email, googleId, settings));
 
     // below
     // auth
