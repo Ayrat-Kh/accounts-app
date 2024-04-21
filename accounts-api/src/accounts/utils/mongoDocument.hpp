@@ -21,7 +21,7 @@ namespace accounts::utils
     static T deserializeMongoDocument(document::view view);
 
     template <class TElement, class T>
-    struct MongoScalarSerialize
+    struct MongoScalarDeserialize
     {
         static T deserializeScalar(const TElement &element)
         {
@@ -29,16 +29,16 @@ namespace accounts::utils
         }
     };
     template <class TElement>
-    struct MongoScalarSerialize<TElement, std::string>
+    struct MongoScalarDeserialize<TElement, std::string>
     {
         static std::string deserializeScalar(const TElement &element)
         {
-            auto res = std::move(MongoScalarSerialize<TElement, std::optional<std::string>>::deserializeScalar(element));
+            auto res = std::move(MongoScalarDeserialize<TElement, std::optional<std::string>>::deserializeScalar(element));
             return res.has_value() ? std::move(res.value()) : 0;
         }
     };
     template <class TElement>
-    struct MongoScalarSerialize<TElement, std::optional<std::string>>
+    struct MongoScalarDeserialize<TElement, std::optional<std::string>>
     {
         static std::optional<std::string> deserializeScalar(const TElement &element)
         {
@@ -46,16 +46,16 @@ namespace accounts::utils
         }
     };
     template <class TElement>
-    struct MongoScalarSerialize<TElement, double>
+    struct MongoScalarDeserialize<TElement, double>
     {
         static double deserializeScalar(const TElement &element)
         {
-            auto res = std::move(MongoScalarSerialize<TElement, std::optional<double>>::deserializeScalar(element));
+            auto res = std::move(MongoScalarDeserialize<TElement, std::optional<double>>::deserializeScalar(element));
             return res.has_value() ? std::move(res.value()) : 0;
         }
     };
     template <class TElement>
-    struct MongoScalarSerialize<TElement, std::optional<double>>
+    struct MongoScalarDeserialize<TElement, std::optional<double>>
     {
         static std::optional<double> deserializeScalar(const TElement &element)
         {
@@ -63,16 +63,16 @@ namespace accounts::utils
         }
     };
     template <class TElement>
-    struct MongoScalarSerialize<TElement, std::int64_t>
+    struct MongoScalarDeserialize<TElement, std::int64_t>
     {
         static std::int64_t deserializeScalar(const TElement &element)
         {
-            auto res = std::move(MongoScalarSerialize<TElement, std::optional<std::int64_t>>::deserializeScalar(element));
+            auto res = std::move(MongoScalarDeserialize<TElement, std::optional<std::int64_t>>::deserializeScalar(element));
             return res.has_value() ? std::move(res.value()) : 0;
         }
     };
     template <class TElement>
-    struct MongoScalarSerialize<TElement, std::optional<std::int64_t>>
+    struct MongoScalarDeserialize<TElement, std::optional<std::int64_t>>
     {
         static std::optional<std::int64_t> deserializeScalar(const TElement &element)
         {
@@ -80,16 +80,16 @@ namespace accounts::utils
         }
     };
     template <class TElement>
-    struct MongoScalarSerialize<TElement, std::int32_t>
+    struct MongoScalarDeserialize<TElement, std::int32_t>
     {
         static std::int32_t deserializeScalar(const TElement &element)
         {
-            auto res = std::move(MongoScalarSerialize<TElement, std::optional<std::int32_t>>::deserializeScalar(element));
+            auto res = std::move(MongoScalarDeserialize<TElement, std::optional<std::int32_t>>::deserializeScalar(element));
             return res.has_value() ? std::move(res.value()) : 0;
         }
     };
     template <class TElement>
-    struct MongoScalarSerialize<TElement, std::optional<std::int32_t>>
+    struct MongoScalarDeserialize<TElement, std::optional<std::int32_t>>
     {
         static std::optional<std::int32_t> deserializeScalar(const TElement &element)
         {
@@ -97,16 +97,16 @@ namespace accounts::utils
         }
     };
     template <class TElement>
-    struct MongoScalarSerialize<TElement, ::accounts::shared::Datetime>
+    struct MongoScalarDeserialize<TElement, ::accounts::shared::Datetime>
     {
         static ::accounts::shared::Datetime deserializeScalar(const TElement &element)
         {
-            auto res = std::move(MongoScalarSerialize<TElement, std::optional<::accounts::shared::Datetime>>::deserializeScalar(element));
+            auto res = std::move(MongoScalarDeserialize<TElement, std::optional<::accounts::shared::Datetime>>::deserializeScalar(element));
             return res.has_value() ? std::move(res.value()) : ::accounts::shared::Datetime{};
         }
     };
     template <class TElement>
-    struct MongoScalarSerialize<TElement, std::optional<::accounts::shared::Datetime>>
+    struct MongoScalarDeserialize<TElement, std::optional<::accounts::shared::Datetime>>
     {
         static std::optional<::accounts::shared::Datetime> deserializeScalar(const TElement &element)
         {
@@ -118,16 +118,16 @@ namespace accounts::utils
     };
 
     template <class TElement>
-    struct MongoSerializeHelpers
+    struct MongoDeserializeHelpers
     {
-        template <class T>
-        static T deserializeEnum(const TElement &element)
+        template <class TEnum>
+        static TEnum deserializeEnum(const TElement &element)
         {
-            T result = {};
+            TEnum result = {};
 
             if (element.type() != bsoncxx::type::k_string)
             {
-                return utils::cStrToEnum(element.getString().value);
+                return utils::cStrToEnum<TEnum>(element.get_string().value.data());
             }
 
             return std::move(result);
@@ -145,7 +145,7 @@ namespace accounts::utils
 
             for (auto &elem : element.get_array().value)
             {
-                result.push_back(std::move(MongoSerializeHelpers<bsoncxx::array::element>::handleTypeDeserialization<typename T::value_type>(elem)));
+                result.push_back(std::move(MongoDeserializeHelpers<bsoncxx::array::element>::handleTypeDeserialization<typename T::value_type>(elem)));
             }
 
             return std::move(result);
@@ -169,19 +169,19 @@ namespace accounts::utils
 
             if constexpr (boost::describe::has_describe_enumerators<real_t>::value)
             {
-                return std::move(MongoScalarSerialize<TElement, TReturn>::deserializeEnum(element));
+                return std::move(MongoDeserializeHelpers<TElement>::deserializeEnum<TReturn>(element));
             }
             else if constexpr (is_primitive<real_t>::value)
             {
-                return std::move(MongoScalarSerialize<TElement, TReturn>::deserializeScalar(element));
+                return std::move(MongoScalarDeserialize<TElement, TReturn>::deserializeScalar(element));
             }
             else if constexpr (is_vector<TReturn>::value)
             {
-                return std::move(MongoSerializeHelpers<TElement>::deserializeVector<TReturn>(element));
+                return std::move(MongoDeserializeHelpers<TElement>::deserializeVector<TReturn>(element));
             }
             else if constexpr (std::is_class<TReturn>::value)
             {
-                return std::move(MongoSerializeHelpers<TElement>::deserializeObject<TReturn>(element));
+                return std::move(MongoDeserializeHelpers<TElement>::deserializeObject<TReturn>(element));
             }
 
             assert((void("Uncovered type"), 0));
@@ -201,7 +201,7 @@ namespace accounts::utils
 
                 document::element element = view[D.name == "id" ? "_id" : D.name];
 
-                result.*D.pointer = std::move(MongoSerializeHelpers<document::element>::handleTypeDeserialization<return_t>(element));
+                result.*D.pointer = std::move(MongoDeserializeHelpers<document::element>::handleTypeDeserialization<return_t>(element));
             });
 
         return std::move(result);

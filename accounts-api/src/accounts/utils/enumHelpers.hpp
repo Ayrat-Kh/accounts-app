@@ -21,17 +21,17 @@ namespace accounts::utils
         return r;
     }
 
-    template <class E>
-    E cStrToEnum(char const *str)
+    template <class TEnum>
+    TEnum cStrToEnum(const char *str)
     {
-        E result;
+        TEnum result;
 
-        boost::mp11::mp_for_each<boost::describe::describe_enumerators<E>>(
+        boost::mp11::mp_for_each<boost::describe::describe_enumerators<TEnum>>(
             [&str, &result](auto D)
             {
-                if (strcmp(str, D.value) == 0)
+                if (strcmp(str, D.name) == 0)
                 {
-                    result = D.name;
+                    result = D.value;
                 }
             });
 
