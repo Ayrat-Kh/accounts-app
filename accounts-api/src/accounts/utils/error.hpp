@@ -9,7 +9,7 @@
 #include <App.h>
 
 #include "accounts/shared/models.hpp"
-#include "enumToString.hpp"
+#include "enumHelpers.hpp"
 
 namespace accounts::error
 {
@@ -52,7 +52,7 @@ namespace accounts::error
                 std::move(value_from(
                     std::move(ValidationAppError{
                         .errors = std::move(modelErrors),
-                        .code = enumToString(AppErrorCode::VALIDATION_ERROR),
+                        .code = enumToString(EAppErrorCode::VALIDATION_ERROR),
                         .message = "Validation error"})))));
 
         return true;

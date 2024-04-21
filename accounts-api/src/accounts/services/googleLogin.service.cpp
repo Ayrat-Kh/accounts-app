@@ -5,7 +5,7 @@
 #include <boost/asio.hpp>
 #include <boost/json.hpp>
 
-#include "accounts/utils/enumToString.hpp"
+#include "accounts/utils/enumHelpers.hpp"
 
 using namespace ::accounts::shared;
 using namespace ::accounts::utils;
@@ -57,14 +57,14 @@ std::variant<accounts::services::GoogleTokenInfo, AppError> accounts::services::
         if (!json_response.is_object())
         {
             return AppError{
-                .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST),
+                .code = enumToString(EAppErrorCode::THIRD_PARTY_REQUEST),
                 .message = "get google id token info response is not json object"};
         }
 
         if (json_response.as_object().contains("error_description"))
         {
             return AppError{
-                .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST),
+                .code = enumToString(EAppErrorCode::THIRD_PARTY_REQUEST),
                 .message = "get google id token info error_description: " + std::string(json_response.as_object()["error_description"].as_string())};
         }
 
@@ -90,7 +90,7 @@ std::variant<accounts::services::GoogleTokenInfo, AppError> accounts::services::
     catch (const std::exception &e)
     {
         return AppError{
-            .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST),
+            .code = enumToString(EAppErrorCode::THIRD_PARTY_REQUEST),
             .message = "get google id token info " + std::string(e.what())};
     }
 }

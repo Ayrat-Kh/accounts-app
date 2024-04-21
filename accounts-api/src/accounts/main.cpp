@@ -5,14 +5,87 @@
 #include "accounts/auth/auth.handlers.hpp"
 #include "accounts/users/users.handlers.hpp"
 
+// #include <boost/describe.hpp>
+// #include "accounts/utils/objectMapper.hpp"
+// #include <string>
+// #include <vector>
+// #include <iostream>
+
+// void *operator new(size_t size)
+// {
+//     std::cout << "New operator overloading " << size << std::endl;
+//     void *p = malloc(size);
+//     return p;
+// }
+
+// struct Type1Nested
+// {
+// public:
+//     std::optional<std::string> name;
+
+//     std::vector<int> nesInt;
+// };
+// BOOST_DESCRIBE_STRUCT(Type1Nested, (), (name, nesInt));
+
+// struct Type1
+// {
+// public:
+//     std::optional<std::string> name;
+
+//     std::vector<Type1Nested> nesNes;
+
+//     Type1Nested nested;
+// };
+// BOOST_DESCRIBE_STRUCT(Type1, (), (name, nested, nesNes));
+
+// struct Type2Nested
+// {
+// public:
+//     std::optional<std::string> name;
+
+//     std::vector<int> nesInt;
+// };
+// BOOST_DESCRIBE_STRUCT(Type2Nested, (), (name, nesInt));
+
+// struct Type2
+// {
+// public:
+//     std::optional<std::string> name;
+
+//     std::vector<Type2Nested> nesNes;
+
+//     Type2Nested nested;
+// };
+// BOOST_DESCRIBE_STRUCT(Type2, (), (name, nesNes, nested));
+
 int main(int argc, char *argv[])
 {
+    // std::vector<int>().
+    // Type1 derived;
+    // derived.name = "name 1";
+    // derived.nested.name = "name 2";
+    // derived.nesNes.push_back(
+    //     Type1Nested{
+    //         .name = "hello"});
+    // derived.nested.nesInt.push_back(1432);
+
+    //     std::cout << "start parser" << std::endl;
+
+    // Type2 base = accounts::utils::remapObject<Type2>(std::move(derived));
+
+    // std::cout << "end parser" << std::endl;
+
+    // std::cout << "int " << base.nested.nesInt[0] << std::endl;
+    // std::cout << "nes " << base.nesNes[0].name.value() << std::endl;
+
+    // return 0;
+
     // ToDo config section - hardcoded for now. later read from env
     int32_t appPort = 3000;
 
     // dependency section
     ::accounts::services::AppDependencies::instance().init();
-
+    // uWS::App::getLoop()->
     // server section
     /* Keep in mind that uWS::SSLApp({options}) is the same as uWS::App() when compiled without SSL support.
      * You may swap to using uWS:App() if you don't need SSL */

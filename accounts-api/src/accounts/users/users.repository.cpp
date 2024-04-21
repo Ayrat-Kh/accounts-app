@@ -5,7 +5,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "users.repository.hpp"
-#include "accounts/utils/enumToString.hpp"
+#include "accounts/utils/enumHelpers.hpp"
 #include "accounts/utils/mongoDocument.hpp"
 
 using namespace ::accounts::services;
@@ -71,7 +71,7 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::getUserByQu
         {
             return std::move(
                 AppError{
-                    .code = enumToString(AppErrorCode::DB_NOT_FOUND),
+                    .code = enumToString(EAppErrorCode::DB_NOT_FOUND),
                     .message = "Document not found"});
         }
 
@@ -81,7 +81,7 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::getUserByQu
     {
         return std::move(
             AppError{
-                .code = enumToString(AppErrorCode::DB_QUERY_ERROR),
+                .code = enumToString(EAppErrorCode::DB_QUERY_ERROR),
                 .message = exception.what()});
     }
 }
@@ -111,7 +111,7 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::createUserB
         {
             return std::move(
                 AppError{
-                    .code = enumToString(AppErrorCode::DB_INSERT_ERROR),
+                    .code = enumToString(EAppErrorCode::DB_INSERT_ERROR),
                     .message = "Couldn't insert document"});
         }
 
@@ -121,7 +121,7 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::createUserB
     {
         return std::move(
             AppError{
-                .code = enumToString(AppErrorCode::DB_INSERT_ERROR),
+                .code = enumToString(EAppErrorCode::DB_INSERT_ERROR),
                 .message = exception.what()});
     }
 }

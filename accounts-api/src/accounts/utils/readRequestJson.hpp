@@ -4,7 +4,7 @@
 #include <App.h>
 
 #include "accounts/utils/error.hpp"
-#include "accounts/utils/enumToString.hpp"
+#include "accounts/utils/enumHelpers.hpp"
 #include "accounts/utils/jsonSerialize.hpp"
 
 namespace accounts::utils
@@ -13,7 +13,7 @@ namespace accounts::utils
 
     class RequestJsonBodyReader
     {
-        std::string _buffer;
+        std::string _json;
 
     public:
         template <class TBody>
@@ -22,46 +22,54 @@ namespace accounts::utils
             using namespace ::accounts::shared;
             using namespace ::accounts::error;
 
-            _buffer.reserve(4096);
+            _json.reserve(4096);
 
             response->onAborted([]() {})->onData(
                 [this, handler, response, req](std::string_view data, bool isLast) mutable
                 {
-                    _buffer.append(data);
+                    _json.append(data);
 
-                    if (isLast)
+                    if (!isLast)
                     {
-                        try
+                        return;
+                    }
+
+                    try
+                    {
+                        TBody reqBody;
+
+                        boost::system::error_code ec;
+
+                        boost::json::parse_into(reqBody, _json, ec);
+
+                        if (ec.failed())
                         {
-                            auto jsonBodyObject = boost::json::parse(_buffer);
+                            auto message = std::move(ec.what());
 
-                            auto &&reqBody = boost::json::try_value_to<TBody>(std::move(jsonBodyObject));
-
-                            if (reqBody.has_error())
-                            {
-                                abort(
-                                    response,
-                                    std::move(
-                                        AppError{
-                                            .code = enumToString(AppErrorCode::PARSE_BODY_ERROR),
-                                            .message = std::string(reqBody.error().message())}));
-                                return;
-                            }
-
-                            handler(response, req, std::move(reqBody.value()));
-                        }
-                        catch (std::exception &ex)
-                        {
-                            // ToDo log me later
-                            std::cerr << "Request caught error " << ex.what() << std::endl;
+                            std::cerr << message << std::endl;
 
                             abort(
                                 response,
                                 std::move(
                                     AppError{
-                                        .code = enumToString(AppErrorCode::PARSE_BODY_ERROR),
-                                        .message = "Invalid input json object"}));
+                                        .code = enumToString(EAppErrorCode::PARSE_BODY_ERROR),
+                                        .message = std::move(message)}));
+                            return;
                         }
+
+                        handler(response, req, std::move(reqBody));
+                    }
+                    catch (std::exception &ex)
+                    {
+                        // ToDo log me later
+                        std::cerr << "Request caught error " << ex.what() << std::endl;
+
+                        abort(
+                            response,
+                            std::move(
+                                AppError{
+                                    .code = enumToString(EAppErrorCode::PARSE_BODY_ERROR),
+                                    .message = "Invalid input json object"}));
                     }
                 });
         }

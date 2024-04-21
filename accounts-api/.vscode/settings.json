@@ -52,6 +52,12 @@
     "strstream": "cpp",
     "unordered_map": "cpp",
     "vector": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "*.ipp": "cpp",
+    "list": "cpp",
+    "set": "cpp",
+    "shared_mutex": "cpp",
+    "typeindex": "cpp",
+    "unordered_set": "cpp"
   }
 }

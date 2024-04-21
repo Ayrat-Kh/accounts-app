@@ -2,65 +2,20 @@
 
 #include <string>
 #include <vector>
-#include <type_traits>
 #include <optional>
 
 #include <bsoncxx/builder/basic/array.hpp>
 #include <bsoncxx/builder/basic/document.hpp>
 #include <bsoncxx/types.hpp>
 #include <boost/mp11.hpp>
-#include <boost/callable_traits/return_type.hpp>
 
 #include "accounts/utils/date.hpp"
+#include "accounts/utils/enumHelpers.hpp"
 #include "accounts/shared/types.hpp"
 
 namespace accounts::utils
 {
     using namespace bsoncxx::v_noabi;
-
-    template <typename T>
-    struct is_vector : std::false_type
-    {
-    };
-
-    template <typename... Args>
-    struct is_vector<std::vector<Args...>> : std::true_type
-    {
-    };
-
-    template <typename T>
-    struct is_optional : std::false_type
-    {
-    };
-
-    template <typename... Args>
-    struct is_optional<std::optional<Args...>> : std::true_type
-    {
-    };
-
-    template <typename TArg>
-    struct unwrap_optional : std::false_type
-    {
-        using type = TArg;
-    };
-
-    template <typename TArg>
-    struct unwrap_optional<std::optional<TArg>>
-    {
-        using type = TArg;
-    };
-
-    template <class TItem>
-    struct is_primitive
-    {
-        static constexpr bool value =
-            std::is_same<TItem, std::string>::value ||
-            std::is_same<TItem, std::int32_t>::value ||
-            std::is_same<TItem, std::int64_t>::value ||
-            std::is_same<TItem, int>::value ||
-            std::is_same<TItem, double>::value ||
-            std::is_same<TItem, ::accounts::shared::Datetime>::value;
-    };
 
     template <class T>
     static T deserializeMongoDocument(document::view view);
@@ -166,6 +121,19 @@ namespace accounts::utils
     struct MongoSerializeHelpers
     {
         template <class T>
+        static T deserializeEnum(const TElement &element)
+        {
+            T result = {};
+
+            if (element.type() != bsoncxx::type::k_string)
+            {
+                return utils::cStrToEnum(element.getString().value);
+            }
+
+            return std::move(result);
+        }
+
+        template <class T>
         static T deserializeVector(const TElement &element)
         {
             T result = {};
@@ -196,10 +164,14 @@ namespace accounts::utils
         template <class TReturn>
         static constexpr TReturn handleTypeDeserialization(const TElement &element)
         {
+            using namespace ::accounts::shared;
             using real_t = typename unwrap_optional<TReturn>::type;
 
-            if constexpr (is_primitive<real_t>::value)
-
+            if constexpr (boost::describe::has_describe_enumerators<real_t>::value)
+            {
+                return std::move(MongoScalarSerialize<TElement, TReturn>::deserializeEnum(element));
+            }
+            else if constexpr (is_primitive<real_t>::value)
             {
                 return std::move(MongoScalarSerialize<TElement, TReturn>::deserializeScalar(element));
             }
@@ -219,7 +191,7 @@ namespace accounts::utils
     template <class T>
     static T deserializeMongoDocument(document::view view)
     {
-        using D1 = boost::describe::describe_members<T, boost::describe::mod_public>;
+        using D1 = boost::describe::describe_members<T, boost::describe::mod_public | boost::describe::mod_inherited>;
         T result;
 
         boost::mp11::mp_for_each<D1>(
@@ -240,11 +212,35 @@ namespace accounts::utils
     bsoncxx::builder::basic::document toMongoDocument(T object);
 
     template <class T>
+    inline void serializeEnum(bsoncxx::builder::basic::document &document, const std::string &name, T value)
+    {
+        using namespace ::accounts::shared;
+
+        if constexpr (is_optional<T>::value)
+        {
+            if (value.has_value())
+            {
+                document.append(bsoncxx::builder::basic::kvp(name, std::move(::accounts::utils::enumToString(value.value()))));
+            }
+            else
+            {
+                document.append(bsoncxx::builder::basic::kvp(name, bsoncxx::types::b_null{}));
+            }
+        }
+        else
+        {
+            document.append(bsoncxx::builder::basic::kvp(name, std::move(::accounts::utils::enumToString(value))));
+        }
+    }
+
+    template <class T>
     inline void serializeScalar(bsoncxx::builder::basic::document &document, const std::string &name, T value);
 
     template <class T>
     inline void serializeScalar(bsoncxx::builder::basic::document &document, const std::string &name, T value)
     {
+        using namespace ::accounts::shared;
+
         if constexpr (is_optional<T>::value)
         {
             if (value.has_value())
@@ -283,6 +279,8 @@ namespace accounts::utils
     template <class T>
     static void serializeVector(bsoncxx::builder::basic::document &document, const std::string &name, T value)
     {
+        using namespace ::accounts::shared;
+
         bsoncxx::builder::basic::array ar;
 
         for (auto &elem : value)
@@ -309,9 +307,15 @@ namespace accounts::utils
     template <class TItem>
     static constexpr void handleTypesToMongoDocument(bsoncxx::builder::basic::document &document, const std::string &name, TItem item)
     {
+        using namespace ::accounts::shared;
         using real_t = typename unwrap_optional<TItem>::type;
 
-        if constexpr (is_primitive<real_t>::value)
+        if constexpr (boost::describe::has_describe_enumerators<real_t>::value)
+        {
+            serializeEnum(document, name, std::move(item));
+            return;
+        }
+        else if constexpr (is_primitive<real_t>::value)
         {
             serializeScalar(document, name, std::move(item));
             return;
@@ -331,14 +335,14 @@ namespace accounts::utils
     template <class T>
     bsoncxx::builder::basic::document toMongoDocument(T object)
     {
-        using D1 = boost::describe::describe_members<T, boost::describe::mod_public>;
+        using D1 = boost::describe::describe_members<T, boost::describe::mod_public | boost::describe::mod_inherited>;
 
         bsoncxx::builder::basic::document document;
 
         boost::mp11::mp_for_each<D1>(
             [&document, &object](auto D)
             {
-                using return_t = std::remove_reference<boost::callable_traits::return_type_t<decltype(D.pointer)>>::type;
+                using return_t = shared::pointer_return_type<decltype(D.pointer)>::type;
 
                 handleTypesToMongoDocument<return_t>(
                     document,

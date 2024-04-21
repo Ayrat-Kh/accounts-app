@@ -9,3 +9,4 @@ src
 mongo_content-prefix
 .cmake
 AccountsApi
+@rpath

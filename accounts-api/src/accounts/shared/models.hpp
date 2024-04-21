@@ -10,7 +10,15 @@
 
 namespace accounts::shared
 {
-    enum class AppErrorCode
+    struct BaseDb
+    {
+        std::string id;
+        ::accounts::shared::Datetime createdAt;
+        std::optional<::accounts::shared::Datetime> updatedAt;
+    };
+    BOOST_DESCRIBE_STRUCT(BaseDb, (), (id, createdAt, updatedAt));
+
+    enum class EAppErrorCode
     {
         APP_ERROR,
         INVALID_INPUT,
@@ -24,7 +32,7 @@ namespace accounts::shared
         VALIDATION_ERROR = 400,
         PARSE_BODY_ERROR
     };
-    BOOST_DESCRIBE_ENUM(AppErrorCode, APP_ERROR, INVALID_INPUT, DB_NOT_FOUND, DB_INSERT_ERROR, DB_QUERY_ERROR, THIRD_PARTY_REQUEST, VALIDATION_ERROR, PARSE_BODY_ERROR);
+    BOOST_DESCRIBE_ENUM(EAppErrorCode, APP_ERROR, INVALID_INPUT, DB_NOT_FOUND, DB_INSERT_ERROR, DB_QUERY_ERROR, THIRD_PARTY_REQUEST, VALIDATION_ERROR, PARSE_BODY_ERROR);
 
     struct AppError
     {
@@ -58,25 +66,27 @@ namespace accounts::shared
     };
     BOOST_DESCRIBE_STRUCT(UserSettingsDb, (), (defaultCurrency));
 
-    struct UserDb
+    enum class EUserStatus
     {
-        std::string id;
-        ::accounts::shared::Datetime createdAt;
-        std::optional<::accounts::shared::Datetime> updatedAt;
+        CREATED,
+        BLOCKED,
+    };
+    BOOST_DESCRIBE_ENUM(EUserStatus, CREATED, BLOCKED)
+
+    struct UserDb : public BaseDb
+    {
         std::string firstName;
         std::string lastName;
         std::string alias;
         std::string email;
         std::string googleId;
+        EUserStatus status;
         UserSettingsDb settings;
     };
     BOOST_DESCRIBE_STRUCT(
         UserDb,
-        (),
-        (id,
-         createdAt,
-         updatedAt,
-         firstName, lastName, alias, email, googleId, settings));
+        (BaseDb),
+        (firstName, lastName, alias, email, googleId, status, settings));
 
     // below
     // auth
@@ -84,4 +94,5 @@ namespace accounts::shared
     {
         std::string userId;
     };
+    BOOST_DESCRIBE_STRUCT(AuthUser, (), (userId));
 }

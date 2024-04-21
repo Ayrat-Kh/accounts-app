@@ -4,7 +4,7 @@
 #include "accounts/services/appDependencies.hpp"
 #include "accounts/utils/error.hpp"
 #include "accounts/utils/jsonSerialize.hpp"
-#include "accounts/utils/enumToString.hpp"
+#include "accounts/utils/enumHelpers.hpp"
 
 using namespace ::accounts::shared;
 using namespace ::accounts::services;
@@ -29,7 +29,7 @@ void accounts::users::handleGetUserById(uWS::HttpResponse<false> *res, uWS::Http
             res,
             std::move(
                 AppError{
-                    .code = enumToString(AppErrorCode::VALIDATION_ERROR),
+                    .code = enumToString(EAppErrorCode::VALIDATION_ERROR),
                     .message = "Only can update yourself"}));
 
         return;
