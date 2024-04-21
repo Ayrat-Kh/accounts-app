@@ -8,21 +8,19 @@
 #include "accounts/utils/enumHelpers.hpp"
 #include "accounts/utils/mongoDocument.hpp"
 
-using namespace ::accounts::services;
-using namespace ::accounts::shared;
-using namespace ::accounts::utils;
+using namespace accounts;
 
 using namespace bsoncxx::v_noabi;
 using bsoncxx::builder::basic::kvp;
 using bsoncxx::builder::basic::make_array;
 using bsoncxx::builder::basic::make_document;
 
-accounts::users::UsersRepositoryImpl::UsersRepositoryImpl(std::shared_ptr<IMongoAccess> mongoAccess)
+UsersRepositoryImpl::UsersRepositoryImpl(std::shared_ptr<IMongoAccess> mongoAccess)
     : _mongoAccess(mongoAccess)
 {
 }
 
-std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::getUserByGoogleId(std::string_view googleId)
+std::variant<UserDb, AppError> UsersRepositoryImpl::getUserByGoogleId(std::string_view googleId)
 {
     return std::move(
         getUserByQuery(
@@ -30,7 +28,7 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::getUserByGo
                 make_document(kvp("googleId", googleId)))));
 }
 
-std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::getUserById(std::string_view userId)
+std::variant<UserDb, AppError> UsersRepositoryImpl::getUserById(std::string_view userId)
 {
     return std::move(
         getUserByQuery(
@@ -38,7 +36,7 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::getUserById
                 make_document(kvp("_id", userId)))));
 }
 
-std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::createUserByIdIfNotExist(UserDb user)
+std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByIdIfNotExist(UserDb user)
 {
     return std::move(
         createUserByQueryIfNotExist(
@@ -48,7 +46,7 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::createUserB
             user));
 }
 
-std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::createUserByGoogleIdIfNotExist(UserDb user)
+std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExist(UserDb user)
 {
     return std::move(
         createUserByQueryIfNotExist(
@@ -58,7 +56,7 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::createUserB
             user));
 }
 
-std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::getUserByQuery(bsoncxx::document::value query)
+std::variant<UserDb, AppError> UsersRepositoryImpl::getUserByQuery(bsoncxx::document::value query)
 {
     auto client = _mongoAccess->getConnection();
     auto db = (*client)["expenso-app"];
@@ -86,7 +84,7 @@ std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::getUserByQu
     }
 }
 
-std::variant<UserDb, AppError> accounts::users::UsersRepositoryImpl::createUserByQueryIfNotExist(bsoncxx::document::value query, const UserDb &user)
+std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByQueryIfNotExist(bsoncxx::document::value query, const UserDb &user)
 {
     auto client = _mongoAccess->getConnection();
     auto db = (*client)["expenso-app"];

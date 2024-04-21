@@ -5,7 +5,7 @@
 #include <mongocxx/uri.hpp>
 #include <mongocxx/client.hpp>
 
-namespace accounts::services
+namespace accounts
 {
     struct IMongoAccess
     {

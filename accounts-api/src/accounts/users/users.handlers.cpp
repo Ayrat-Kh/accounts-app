@@ -6,12 +6,7 @@
 #include "accounts/utils/jsonSerialize.hpp"
 #include "accounts/utils/enumHelpers.hpp"
 
-using namespace ::accounts::shared;
-using namespace ::accounts::services;
-using namespace ::accounts::error;
-using namespace ::accounts::utils;
-
-void accounts::users::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
+void accounts::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
 {
     auto authToken = req->getHeader("authorization");
     auto userId = req->getParameter("userId");

@@ -5,7 +5,7 @@
 #include <boost/callable_traits/return_type.hpp>
 #include <type_traits>
 
-namespace accounts::shared
+namespace accounts
 {
     using Datetime = std::chrono::time_point<std::chrono::system_clock>;
 

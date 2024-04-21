@@ -7,8 +7,9 @@
 #include <boost/describe.hpp>
 
 #include "accounts/shared/types.hpp"
+#include "accounts/shared/models.hpp"
 
-namespace accounts::accounts
+namespace accounts
 {
     struct AccountDetailDb
     {
@@ -26,25 +27,23 @@ namespace accounts::accounts
     };
     BOOST_DESCRIBE_STRUCT(AccountAddress, (), (address, longitude, latitude))
 
-    struct AccountDb
+    struct UpsertAccountDto
     {
-        std::string id;
-        shared::Datetime createdAt;
-        std::optional<shared::Datetime> updatedAt;
         std::string userId;
         std::string currencyCode;
         std::string category;
         std::string name;
         std::vector<AccountDetailDb> details;
         AccountAddress address;
-
         double total;
     };
     BOOST_DESCRIBE_STRUCT(
-        AccountDb,
+        UpsertAccountDto,
         (),
-        (id,
-         createdAt,
-         updatedAt,
-         userId, currencyCode, category, name, details, address, total))
+        (userId, currencyCode, category, name, details, address, total))
+
+    struct AccountDb : public UpsertAccountDto, public BaseDb
+    {
+    };
+    BOOST_DESCRIBE_STRUCT(AccountDb, (UpsertAccountDto, BaseDb), ())
 }

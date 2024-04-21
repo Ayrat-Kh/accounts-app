@@ -6,11 +6,11 @@
 
 #include "accounts/shared/types.hpp"
 
-namespace accounts::utils
+namespace accounts
 {
-    std::string timePointToString(const ::accounts::shared::Datetime &timePoint);
+    std::string timePointToString(const Datetime &timePoint);
 
-    ::accounts::shared::Datetime msToTimePoint(std::int64_t ms);
+    Datetime msToTimePoint(std::int64_t ms);
 
-    ::accounts::shared::Datetime convertToTimePoint(const std::string &timeStr);
+    Datetime convertToTimePoint(const std::string &timeStr);
 }

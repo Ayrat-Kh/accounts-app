@@ -1,16 +1,12 @@
 #include "appDependencies.hpp"
 
-using namespace ::accounts::users;
-using namespace ::accounts::accounts;
-using namespace ::accounts::auth;
-
-accounts::services::AppDependencies &accounts::services::AppDependencies::instance()
+accounts::AppDependencies &accounts::AppDependencies::instance()
 {
     static AppDependencies instance = {};
     return instance;
 }
 
-void accounts::services::AppDependencies::init()
+void accounts::AppDependencies::init()
 {
     std::string secretKey = "secret super duper key";
 

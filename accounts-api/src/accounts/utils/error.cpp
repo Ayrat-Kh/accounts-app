@@ -1,8 +1,6 @@
 #include "error.hpp"
 
-using namespace ::accounts::shared;
-
-void accounts::error::abort(uWS::HttpResponse<false> *res, AppError json)
+void accounts::abort(uWS::HttpResponse<false> *res, AppError json)
 {
     res->writeHeader("Content-Type", "application/json")
         ->writeStatus("400")
@@ -10,7 +8,7 @@ void accounts::error::abort(uWS::HttpResponse<false> *res, AppError json)
             std::move(json)))));
 }
 
-bool accounts::error::abortIfUnauthorized(uWS::HttpResponse<false> *res, const std::optional<AuthUser> &authUser)
+bool accounts::abortIfUnauthorized(uWS::HttpResponse<false> *res, const std::optional<AuthUser> &authUser)
 {
     if (!authUser.has_value())
     {

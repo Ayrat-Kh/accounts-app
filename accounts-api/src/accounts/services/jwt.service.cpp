@@ -4,12 +4,14 @@
 
 #include "jwt.service.hpp"
 
-accounts::services::JwtServiceImpl::JwtServiceImpl(std::string jwtSecret)
+using namespace accounts;
+
+JwtServiceImpl::JwtServiceImpl(std::string jwtSecret)
     : _jwtSecret(std::move(jwtSecret))
 {
 }
 
-std::string accounts::services::JwtServiceImpl::createUserToken(std::string_view userId)
+std::string JwtServiceImpl::createUserToken(std::string_view userId)
 {
     return std::move(
         jwt::create()
@@ -20,7 +22,7 @@ std::string accounts::services::JwtServiceImpl::createUserToken(std::string_view
             .sign(jwt::algorithm::hs256{_jwtSecret}));
 }
 
-std::optional<::accounts::shared::AuthUser> accounts::services::JwtServiceImpl::getAuthUser(std::string_view jwtToken)
+std::optional<AuthUser> JwtServiceImpl::getAuthUser(std::string_view jwtToken)
 {
     auto verifier =
         jwt::verify()
@@ -35,7 +37,7 @@ std::optional<::accounts::shared::AuthUser> accounts::services::JwtServiceImpl::
 
         verifier.verify(decodedToken);
 
-        return std::move(::accounts::shared::AuthUser{
+        return std::move(AuthUser{
             .userId = decodedToken.get_payload_claim("user_id").as_string()});
     }
     catch (std::exception &ex)

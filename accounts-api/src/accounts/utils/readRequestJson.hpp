@@ -7,7 +7,7 @@
 #include "accounts/utils/enumHelpers.hpp"
 #include "accounts/utils/jsonSerialize.hpp"
 
-namespace accounts::utils
+namespace accounts
 {
     using RequestHandler = void(uWS::HttpResponse<false> *res, boost::json::value json_response);
 
@@ -19,9 +19,6 @@ namespace accounts::utils
         template <class TBody>
         void read(uWS::HttpResponse<false> *response, uWS::HttpRequest *req, void (*handler)(uWS::HttpResponse<false> *, uWS::HttpRequest *req, TBody body))
         {
-            using namespace ::accounts::shared;
-            using namespace ::accounts::error;
-
             _json.reserve(4096);
 
             response->onAborted([]() {})->onData(

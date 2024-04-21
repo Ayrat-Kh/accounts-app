@@ -6,7 +6,7 @@
 
 #include "accounts/shared/types.hpp"
 
-namespace accounts::utils
+namespace accounts
 {
     template <
         class TTo, class TFrom,
@@ -22,8 +22,6 @@ namespace accounts::utils
         class TTo, class TFrom>
     static constexpr TTo handleTypeMap(TFrom object, const char *fieldName)
     {
-        using namespace shared;
-
         using real_from_t = typename unwrap_optional<TFrom>::type;
         using real_to_t = typename unwrap_optional<TTo>::type;
 
@@ -90,8 +88,6 @@ namespace accounts::utils
         class TFromMembers>
     TTo remapObject(TFrom object)
     {
-        using namespace shared;
-
         TTo result;
 
         boost::mp11::mp_for_each<TFromMembers>(

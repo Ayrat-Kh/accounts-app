@@ -4,7 +4,7 @@
 
 #include <App.h>
 
-namespace accounts::auth
+namespace accounts
 {
 	void handleGoogleLogin(uWS::HttpResponse<false> *res, uWS::HttpRequest *req);
 }

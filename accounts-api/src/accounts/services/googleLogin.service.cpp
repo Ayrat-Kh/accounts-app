@@ -7,10 +7,9 @@
 
 #include "accounts/utils/enumHelpers.hpp"
 
-using namespace ::accounts::shared;
-using namespace ::accounts::utils;
+using namespace accounts;
 
-std::variant<accounts::services::GoogleTokenInfo, AppError> accounts::services::GoogleLoginServiceImpl::getGoogleUser(std::string_view idToken) noexcept
+std::variant<GoogleTokenInfo, AppError> GoogleLoginServiceImpl::getGoogleUser(std::string_view idToken) noexcept
 {
     namespace beast = boost::beast;
     namespace http = beast::http;

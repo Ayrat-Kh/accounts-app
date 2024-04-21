@@ -7,7 +7,7 @@
 #include "accounts/services/googleLogin.service.hpp"
 #include "accounts/services/jwt.service.hpp"
 
-namespace accounts::services
+namespace accounts
 {
     struct AppDependencies
     {
@@ -15,10 +15,10 @@ namespace accounts::services
         std::shared_ptr<IGoogleLoginService>
             googleLoginService = nullptr;
         std::shared_ptr<IJwtService> jwtService = nullptr;
-        std::shared_ptr<users::IUsersRepository> userRepo = nullptr;
-        std::shared_ptr<accounts::IAccountsRepository> accountsRepo = nullptr;
-        std::shared_ptr<auth::IAuthService> authService = nullptr;
-        std::shared_ptr<services::IMongoAccess> mongoAccess = nullptr;
+        std::shared_ptr<IUsersRepository> userRepo = nullptr;
+        std::shared_ptr<IAccountsRepository> accountsRepo = nullptr;
+        std::shared_ptr<IAuthService> authService = nullptr;
+        std::shared_ptr<IMongoAccess> mongoAccess = nullptr;
 
         static AppDependencies &instance();
 

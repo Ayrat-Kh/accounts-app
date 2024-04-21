@@ -8,13 +8,13 @@
 
 #include "accounts/shared/types.hpp"
 
-namespace accounts::shared
+namespace accounts
 {
     struct BaseDb
     {
         std::string id;
-        ::accounts::shared::Datetime createdAt;
-        std::optional<::accounts::shared::Datetime> updatedAt;
+        Datetime createdAt;
+        std::optional<Datetime> updatedAt;
     };
     BOOST_DESCRIBE_STRUCT(BaseDb, (), (id, createdAt, updatedAt));
 

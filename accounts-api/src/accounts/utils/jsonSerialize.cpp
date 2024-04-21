@@ -1,8 +1,7 @@
 #include "jsonSerialize.hpp"
 #include "date.hpp"
 
-using namespace ::accounts::shared;
-using namespace ::accounts::utils;
+using namespace ::accounts;
 
 namespace std::chrono
 {

@@ -11,28 +11,28 @@
 #include "accounts/services/mongoAccess.hpp"
 #include "accounts/accounts/accounts.models.hpp"
 
-namespace accounts::accounts
+namespace accounts
 {
     using namespace bsoncxx::v_noabi;
 
     class IAccountsRepository
     {
     public:
-        virtual std::variant<AccountDb, shared::AppError> getAccountById(std::string_view accountId) = 0;
-        virtual std::variant<std::vector<AccountDb>, shared::AppError> getAccountsByUserId(std::string_view userId) = 0;
-        virtual std::variant<AccountDb, shared::AppError> upsertAccount(AccountDb account) = 0;
+        virtual std::variant<AccountDb, AppError> getAccountById(std::string_view accountId) = 0;
+        virtual std::variant<std::vector<AccountDb>, AppError> getAccountsByUserId(std::string_view userId) = 0;
+        virtual std::variant<AccountDb, AppError> upsertAccount(AccountDb account) = 0;
     };
 
     class AccountsRepositoryImpl : public IAccountsRepository
     {
     public:
-        AccountsRepositoryImpl(std::shared_ptr<services::IMongoAccess> mongoAccess);
+        AccountsRepositoryImpl(std::shared_ptr<IMongoAccess> mongoAccess);
 
-        virtual std::variant<AccountDb, shared::AppError> getAccountById(std::string_view accountId) override;
-        virtual std::variant<std::vector<AccountDb>, shared::AppError> getAccountsByUserId(std::string_view userId) override;
-        virtual std::variant<AccountDb, shared::AppError> upsertAccount(AccountDb account) override;
+        virtual std::variant<AccountDb, AppError> getAccountById(std::string_view accountId) override;
+        virtual std::variant<std::vector<AccountDb>, AppError> getAccountsByUserId(std::string_view userId) override;
+        virtual std::variant<AccountDb, AppError> upsertAccount(AccountDb account) override;
 
     private:
-        std::shared_ptr<services::IMongoAccess> _mongoAccess;
+        std::shared_ptr<IMongoAccess> _mongoAccess;
     };
 }

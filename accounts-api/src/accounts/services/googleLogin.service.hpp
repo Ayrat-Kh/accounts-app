@@ -6,7 +6,7 @@
 
 #include "accounts/shared/models.hpp"
 
-namespace accounts::services
+namespace accounts
 {
     struct GoogleTokenInfo
     {
@@ -31,12 +31,12 @@ namespace accounts::services
     class IGoogleLoginService
     {
     public:
-        virtual std::variant<GoogleTokenInfo, shared::AppError> getGoogleUser(std::string_view idToken) = 0;
+        virtual std::variant<GoogleTokenInfo, AppError> getGoogleUser(std::string_view idToken) = 0;
     };
 
     class GoogleLoginServiceImpl : public IGoogleLoginService
     {
     public:
-        virtual std::variant<GoogleTokenInfo, shared::AppError> getGoogleUser(std::string_view idToken) noexcept override;
+        virtual std::variant<GoogleTokenInfo, AppError> getGoogleUser(std::string_view idToken) noexcept override;
     };
 }

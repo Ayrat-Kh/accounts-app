@@ -1,14 +1,11 @@
 #include "accounts.handlers.hpp"
 #include "accounts/services/appDependencies.hpp"
 #include "accounts/utils/error.hpp"
+#include "accounts/utils/objectMapper.hpp"
 #include "accounts/utils/readRequestJson.hpp"
 #include "accounts/accounts/accounts.models.hpp"
 
-using namespace ::accounts::error;
-using namespace ::accounts::services;
-using namespace ::accounts::utils;
-
-void accounts::accounts::handleGetAccountsByUserId(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
+void accounts::handleGetAccountsByUserId(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
 {
     auto authToken = req->getHeader("authorization");
     auto &&authUser = AppDependencies::instance().jwtService->getAuthUser(authToken);
@@ -33,9 +30,9 @@ void accounts::accounts::handleGetAccountsByUserId(uWS::HttpResponse<false> *res
             std::move(accountsDbCasted)))));
 }
 
-void accounts::accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequest *_req)
+void accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequest *_req)
 {
-    auto handler = [](uWS::HttpResponse<false> *res, uWS::HttpRequest *req, AccountDb parsedBody) mutable
+    auto handler = [](uWS::HttpResponse<false> *res, uWS::HttpRequest *req, UpsertAccountDto parsedBody) mutable
     {
         auto authToken = req->getHeader("authorization");
 
@@ -46,7 +43,10 @@ void accounts::accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::H
             return;
         }
 
-        auto &&accountDb = AppDependencies::instance().accountsRepo->upsertAccount(std::move(parsedBody));
+        AccountDb &&saveAccountDb = remapObject<AccountDb, UpsertAccountDto>(std::move(parsedBody));
+        saveAccountDb.createdAt = std::chrono::system_clock::now();
+
+        auto &&accountDb = AppDependencies::instance().accountsRepo->upsertAccount(std::move(saveAccountDb));
 
         if (abortIfAppError(res, &accountDb))
         {
@@ -62,5 +62,5 @@ void accounts::accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::H
     };
 
     RequestJsonBodyReader reader;
-    reader.read<AccountDb>(_res, _req, handler);
+    reader.read<UpsertAccountDto>(_res, _req, handler);
 }

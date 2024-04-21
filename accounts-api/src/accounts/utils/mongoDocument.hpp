@@ -13,7 +13,7 @@
 #include "accounts/utils/enumHelpers.hpp"
 #include "accounts/shared/types.hpp"
 
-namespace accounts::utils
+namespace accounts
 {
     using namespace bsoncxx::v_noabi;
 
@@ -97,23 +97,23 @@ namespace accounts::utils
         }
     };
     template <class TElement>
-    struct MongoScalarDeserialize<TElement, ::accounts::shared::Datetime>
+    struct MongoScalarDeserialize<TElement, Datetime>
     {
-        static ::accounts::shared::Datetime deserializeScalar(const TElement &element)
+        static Datetime deserializeScalar(const TElement &element)
         {
-            auto res = std::move(MongoScalarDeserialize<TElement, std::optional<::accounts::shared::Datetime>>::deserializeScalar(element));
-            return res.has_value() ? std::move(res.value()) : ::accounts::shared::Datetime{};
+            auto res = std::move(MongoScalarDeserialize<TElement, std::optional<Datetime>>::deserializeScalar(element));
+            return res.has_value() ? std::move(res.value()) : Datetime{};
         }
     };
     template <class TElement>
-    struct MongoScalarDeserialize<TElement, std::optional<::accounts::shared::Datetime>>
+    struct MongoScalarDeserialize<TElement, std::optional<Datetime>>
     {
-        static std::optional<::accounts::shared::Datetime> deserializeScalar(const TElement &element)
+        static std::optional<Datetime> deserializeScalar(const TElement &element)
         {
-            return std::optional<::accounts::shared::Datetime>{};
+            return std::optional<Datetime>{};
             return element.type() == bsoncxx::type::k_date
                        ? std::chrono::system_clock::from_time_t(0) + std::chrono::milliseconds(element.get_date().to_int64())
-                       : std::optional<::accounts::shared::Datetime>{};
+                       : std::optional<Datetime>{};
         }
     };
 
@@ -127,7 +127,7 @@ namespace accounts::utils
 
             if (element.type() != bsoncxx::type::k_string)
             {
-                return utils::cStrToEnum<TEnum>(element.get_string().value.data());
+                return cStrToEnum<TEnum>(element.get_string().value.data());
             }
 
             return std::move(result);
@@ -164,7 +164,6 @@ namespace accounts::utils
         template <class TReturn>
         static constexpr TReturn handleTypeDeserialization(const TElement &element)
         {
-            using namespace ::accounts::shared;
             using real_t = typename unwrap_optional<TReturn>::type;
 
             if constexpr (boost::describe::has_describe_enumerators<real_t>::value)
@@ -214,13 +213,11 @@ namespace accounts::utils
     template <class T>
     inline void serializeEnum(bsoncxx::builder::basic::document &document, const std::string &name, T value)
     {
-        using namespace ::accounts::shared;
-
         if constexpr (is_optional<T>::value)
         {
             if (value.has_value())
             {
-                document.append(bsoncxx::builder::basic::kvp(name, std::move(::accounts::utils::enumToString(value.value()))));
+                document.append(bsoncxx::builder::basic::kvp(name, std::move(::accounts::enumToString(value.value()))));
             }
             else
             {
@@ -229,7 +226,7 @@ namespace accounts::utils
         }
         else
         {
-            document.append(bsoncxx::builder::basic::kvp(name, std::move(::accounts::utils::enumToString(value))));
+            document.append(bsoncxx::builder::basic::kvp(name, std::move(::accounts::enumToString(value))));
         }
     }
 
@@ -239,8 +236,6 @@ namespace accounts::utils
     template <class T>
     inline void serializeScalar(bsoncxx::builder::basic::document &document, const std::string &name, T value)
     {
-        using namespace ::accounts::shared;
-
         if constexpr (is_optional<T>::value)
         {
             if (value.has_value())
@@ -259,12 +254,12 @@ namespace accounts::utils
     }
 
     template <>
-    inline void serializeScalar<shared::Datetime>(bsoncxx::builder::basic::document &document, const std::string &name, shared::Datetime value)
+    inline void serializeScalar<Datetime>(bsoncxx::builder::basic::document &document, const std::string &name, Datetime value)
     {
         document.append(bsoncxx::builder::basic::kvp(name, bsoncxx::types::b_date(value)));
     }
     template <>
-    inline void serializeScalar<std::optional<shared::Datetime>>(bsoncxx::builder::basic::document &document, const std::string &name, std::optional<shared::Datetime> value)
+    inline void serializeScalar<std::optional<Datetime>>(bsoncxx::builder::basic::document &document, const std::string &name, std::optional<Datetime> value)
     {
         if (value.has_value())
         {
@@ -279,8 +274,6 @@ namespace accounts::utils
     template <class T>
     static void serializeVector(bsoncxx::builder::basic::document &document, const std::string &name, T value)
     {
-        using namespace ::accounts::shared;
-
         bsoncxx::builder::basic::array ar;
 
         for (auto &elem : value)
@@ -307,7 +300,6 @@ namespace accounts::utils
     template <class TItem>
     static constexpr void handleTypesToMongoDocument(bsoncxx::builder::basic::document &document, const std::string &name, TItem item)
     {
-        using namespace ::accounts::shared;
         using real_t = typename unwrap_optional<TItem>::type;
 
         if constexpr (boost::describe::has_describe_enumerators<real_t>::value)
@@ -342,7 +334,7 @@ namespace accounts::utils
         boost::mp11::mp_for_each<D1>(
             [&document, &object](auto D)
             {
-                using return_t = shared::pointer_return_type<decltype(D.pointer)>::type;
+                using return_t = pointer_return_type<decltype(D.pointer)>::type;
 
                 handleTypesToMongoDocument<return_t>(
                     document,

@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     int32_t appPort = 3000;
 
     // dependency section
-    ::accounts::services::AppDependencies::instance().init();
+    ::accounts::AppDependencies::instance().init();
     // uWS::App::getLoop()->
     // server section
     /* Keep in mind that uWS::SSLApp({options}) is the same as uWS::App() when compiled without SSL support.
@@ -98,16 +98,16 @@ int main(int argc, char *argv[])
             })
         .post(
             "/login/google-auth",
-            accounts::auth::handleGoogleLogin)
+            accounts::handleGoogleLogin)
         .post(
             "/v1/accounts",
-            accounts::accounts::handleAddAccount)
+            accounts::handleAddAccount)
         .get(
             "/v1/users/:userId",
-            accounts::users::handleGetUserById)
+            accounts::handleGetUserById)
         .get(
             "/v1/users/:userId/accounts",
-            accounts::accounts::handleGetAccountsByUserId)
+            accounts::handleGetAccountsByUserId)
         .listen(
             appPort,
             [appPort](auto *listen_socket)

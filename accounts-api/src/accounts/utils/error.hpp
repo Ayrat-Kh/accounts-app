@@ -11,18 +11,18 @@
 #include "accounts/shared/models.hpp"
 #include "enumHelpers.hpp"
 
-namespace accounts::error
+namespace accounts
 {
     template <class... Args>
-    shared::AppError *isError(std::variant<Args...> *args)
+    AppError *isError(std::variant<Args...> *args)
     {
-        return std::get_if<shared::AppError>(args);
+        return std::get_if<AppError>(args);
     }
 
     template <class... Args>
-    shared::AppError *logIfError(std::variant<Args...> &args)
+    AppError *logIfError(std::variant<Args...> &args)
     {
-        shared::AppError *ptr = isError(args);
+        AppError *ptr = isError(args);
 
         if (ptr != nullptr)
         {
@@ -36,8 +36,6 @@ namespace accounts::error
     bool abortIfValidationFailed(uWS::HttpResponse<false> *res, std::optional<TValidationResult> obj)
     {
         using namespace ::boost::json;
-        using namespace ::accounts::shared;
-        using namespace ::accounts::utils;
 
         if (!obj.has_value())
         {
@@ -58,15 +56,13 @@ namespace accounts::error
         return true;
     }
 
-    void abort(uWS::HttpResponse<false> *res, shared::AppError);
+    void abort(uWS::HttpResponse<false> *res, AppError);
 
-    bool abortIfUnauthorized(uWS::HttpResponse<false> *res, const std::optional<::accounts::shared::AuthUser> &authUser);
+    bool abortIfUnauthorized(uWS::HttpResponse<false> *res, const std::optional<AuthUser> &authUser);
 
     template <class... Args>
     bool abortIfAppError(uWS::HttpResponse<false> *res, std::variant<Args...> *args)
     {
-        using namespace ::accounts::shared;
-
         AppError *ptr = isError(args);
 
         if (ptr == nullptr)

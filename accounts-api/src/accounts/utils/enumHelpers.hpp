@@ -2,7 +2,7 @@
 
 #include <boost/describe.hpp>
 
-namespace accounts::utils
+namespace accounts
 {
     template <class E>
     char const *enumToString(E e)
