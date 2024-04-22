@@ -179,7 +179,9 @@
             "in": "path",
             "description": "uuid or me - to get info for the logged in user",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "$ref": "#/components/schemas/UserIdOrMe"
+            }
           }
         ],
         "responses": {
@@ -236,7 +238,9 @@
             "in": "path",
             "description": "user id",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "$ref": "#/components/schemas/UserIdOrMe"
+            }
           }
         ],
         "responses": {
@@ -463,6 +467,18 @@
           "itemsPerPage": { "type": "integer" },
           "totalPages": { "type": "integer" }
         }
+      },
+      "UserIdOrMe": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "string",
+            "enum": ["me"]
+          }
+        ],
+        "example": "me"
       }
     }
   },

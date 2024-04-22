@@ -5,6 +5,7 @@
 #include "accounts/utils/error.hpp"
 #include "accounts/utils/jsonSerialize.hpp"
 #include "accounts/utils/enumHelpers.hpp"
+#include "accounts/utils/userId.hpp"
 
 void accounts::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
 {
@@ -16,6 +17,11 @@ void accounts::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest
     if (abortIfUnauthorized(res, authUser))
     {
         return;
+    }
+
+    if (isMe(userId))
+    {
+        userId = authUser.value().userId;
     }
 
     if (userId != authUser.value().userId)

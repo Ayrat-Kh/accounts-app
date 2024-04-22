@@ -8,21 +8,21 @@ import type { AxiosError } from 'axios';
 import { APP_BASE_URL, axiosInstance } from './axios';
 import {
   AuthApi,
-  type AuthGoogleLoginRequest,
-  type AuthUserLoginResult,
-  type HelpersErrorResponse,
-  UserApi,
-  type UserUserResult,
+  type ErrorResponse,
+  type GoogleLoginRequest,
+  type UserLoginResult,
+  type UserResult,
+  UsersApi,
 } from './open-api';
 
 const authApi = new AuthApi(undefined, APP_BASE_URL, axiosInstance);
-const userApi = new UserApi(undefined, APP_BASE_URL, axiosInstance);
+const userApi = new UsersApi(undefined, APP_BASE_URL, axiosInstance);
 
 const googleAppLoginMutation = async (
-  request: AuthGoogleLoginRequest,
-): Promise<AuthUserLoginResult> => {
+  request: GoogleLoginRequest,
+): Promise<UserLoginResult> => {
   try {
-    const { data } = await authApi.loginGoogleAuthPost(request);
+    const { data } = await authApi.loginGoogleAuthCallbackPost(request);
     return data;
   } catch (error) {
     const axiosError = error as AxiosError;
@@ -35,7 +35,7 @@ export const useGoogleAppLoginMutation = () =>
     mutationFn: googleAppLoginMutation,
   });
 
-const getMe = async (): Promise<UserUserResult> => {
+const getMe = async (): Promise<UserResult> => {
   try {
     // authorization should be empty token will be passed in interceptor
     const { data } = await userApi.v1UsersUserIdGet('', 'me');
@@ -50,7 +50,7 @@ const getMe = async (): Promise<UserUserResult> => {
 export const UseGetMeKey = ['me'];
 
 type UseGetMeParams = Omit<
-  UseQueryOptions<UserUserResult, HelpersErrorResponse>,
+  UseQueryOptions<UserResult, ErrorResponse>,
   'queryFn' | 'queryKey'
 >;
 

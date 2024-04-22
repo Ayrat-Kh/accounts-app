@@ -20,7 +20,7 @@ namespace accounts
     public:
         virtual std::variant<AccountDb, AppError> getAccountById(std::string_view accountId) = 0;
         virtual std::variant<std::vector<AccountDb>, AppError> getAccountsByUserId(std::string_view userId) = 0;
-        virtual std::variant<AccountDb, AppError> upsertAccount(AccountDb account) = 0;
+        virtual std::variant<AccountDb, AppError> upsertAccount(std::string_view accountId, UpsertAccountDb account) = 0;
     };
 
     class AccountsRepositoryImpl : public IAccountsRepository
@@ -30,7 +30,7 @@ namespace accounts
 
         virtual std::variant<AccountDb, AppError> getAccountById(std::string_view accountId) override;
         virtual std::variant<std::vector<AccountDb>, AppError> getAccountsByUserId(std::string_view userId) override;
-        virtual std::variant<AccountDb, AppError> upsertAccount(AccountDb account) override;
+        virtual std::variant<AccountDb, AppError> upsertAccount(std::string_view accountId, UpsertAccountDb account) override;
 
     private:
         std::shared_ptr<IMongoAccess> _mongoAccess;

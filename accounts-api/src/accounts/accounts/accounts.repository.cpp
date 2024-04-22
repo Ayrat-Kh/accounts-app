@@ -58,27 +58,29 @@ std::variant<std::vector<AccountDb>, AppError> accounts::AccountsRepositoryImpl:
     }
 }
 
-std::variant<AccountDb, AppError> accounts::AccountsRepositoryImpl::upsertAccount(AccountDb account)
+std::variant<AccountDb, AppError> accounts::AccountsRepositoryImpl::upsertAccount(std::string_view accountId, UpsertAccountDb account)
 {
     auto client = _mongoAccess->getConnection();
     auto db = (*client)["expenso-app"];
 
     try
     {
-        std::string id = account.id;
+        // std::string id = account.id;
         bsoncxx::builder::basic::document insertData = toMongoDocument(std::move(account));
 
         mongocxx::options::find_one_and_update options;
         options.upsert(true);
         options.return_document(mongocxx::options::return_document::k_after);
+        insertData.append(kvp("$setOnInsert", make_document(kvp("createdAt", bsoncxx::types::b_date(std::chrono::system_clock::now())))));
 
-        stdx::optional<bsoncxx::document::value> result =
-            db
-                .collection("accounts")
-                .find_one_and_update(
-                    make_document(kvp("_id", id)),
-                    insertData.view(),
-                    options);
+        stdx::optional<bsoncxx::document::value>
+            result =
+                db
+                    .collection("accounts")
+                    .find_one_and_update(
+                        make_document(kvp("_id", accountId)),
+                        insertData.view(),
+                        options);
 
         if (!result.has_value())
         {

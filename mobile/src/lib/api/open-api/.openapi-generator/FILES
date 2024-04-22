@@ -1,6 +1,5 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 api.ts
 api/accounts-api.ts
 api/auth-api.ts
@@ -23,6 +22,7 @@ models/index.ts
 models/pagination-result.ts
 models/upsert-account.ts
 models/user-accounts-result.ts
+models/user-id-or-me.ts
 models/user-login-result.ts
 models/user-result.ts
 models/user-settings.ts

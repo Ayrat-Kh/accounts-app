@@ -29,6 +29,8 @@ import { ErrorResponse } from '../models';
 import { UpsertAccount } from '../models';
 // @ts-ignore
 import { UserAccountsResult } from '../models';
+// @ts-ignore
+import { UserIdOrMe } from '../models';
 /**
  * AccountsApi - axios parameter creator
  * @export
@@ -131,11 +133,11 @@ export const AccountsApiAxiosParamCreator = function (configuration?: Configurat
          * @param {string} authorization Bearer
          * @param {number} page page or 1 by default
          * @param {number} pageSize pageSize or 300 by default
-         * @param {string} userId user id
+         * @param {UserIdOrMe} userId user id
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UsersUserIdAccountsGet: async (authorization: string, page: number, pageSize: number, userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UsersUserIdAccountsGet: async (authorization: string, page: number, pageSize: number, userId: UserIdOrMe, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'authorization' is not null or undefined
             assertParamExists('v1UsersUserIdAccountsGet', 'authorization', authorization)
             // verify required parameter 'page' is not null or undefined
@@ -225,11 +227,11 @@ export const AccountsApiFp = function(configuration?: Configuration) {
          * @param {string} authorization Bearer
          * @param {number} page page or 1 by default
          * @param {number} pageSize pageSize or 300 by default
-         * @param {string} userId user id
+         * @param {UserIdOrMe} userId user id
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UsersUserIdAccountsGet(authorization: string, page: number, pageSize: number, userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserAccountsResult>> {
+        async v1UsersUserIdAccountsGet(authorization: string, page: number, pageSize: number, userId: UserIdOrMe, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserAccountsResult>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UsersUserIdAccountsGet(authorization, page, pageSize, userId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AccountsApi.v1UsersUserIdAccountsGet']?.[localVarOperationServerIndex]?.url;
@@ -274,11 +276,11 @@ export const AccountsApiFactory = function (configuration?: Configuration, baseP
          * @param {string} authorization Bearer
          * @param {number} page page or 1 by default
          * @param {number} pageSize pageSize or 300 by default
-         * @param {string} userId user id
+         * @param {UserIdOrMe} userId user id
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UsersUserIdAccountsGet(authorization: string, page: number, pageSize: number, userId: string, options?: any): AxiosPromise<UserAccountsResult> {
+        v1UsersUserIdAccountsGet(authorization: string, page: number, pageSize: number, userId: UserIdOrMe, options?: any): AxiosPromise<UserAccountsResult> {
             return localVarFp.v1UsersUserIdAccountsGet(authorization, page, pageSize, userId, options).then((request) => request(axios, basePath));
         },
     };
@@ -324,12 +326,12 @@ export class AccountsApi extends BaseAPI {
      * @param {string} authorization Bearer
      * @param {number} page page or 1 by default
      * @param {number} pageSize pageSize or 300 by default
-     * @param {string} userId user id
+     * @param {UserIdOrMe} userId user id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AccountsApi
      */
-    public v1UsersUserIdAccountsGet(authorization: string, page: number, pageSize: number, userId: string, options?: RawAxiosRequestConfig) {
+    public v1UsersUserIdAccountsGet(authorization: string, page: number, pageSize: number, userId: UserIdOrMe, options?: RawAxiosRequestConfig) {
         return AccountsApiFp(this.configuration).v1UsersUserIdAccountsGet(authorization, page, pageSize, userId, options).then((request) => request(this.axios, this.basePath));
     }
 }

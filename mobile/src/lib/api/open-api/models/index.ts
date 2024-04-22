@@ -11,6 +11,7 @@ export * from './pagination-result';
 export * from './upsert-account';
 export * from './user';
 export * from './user-accounts-result';
+export * from './user-id-or-me';
 export * from './user-login-result';
 export * from './user-result';
 export * from './user-settings';

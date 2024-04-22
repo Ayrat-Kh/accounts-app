@@ -26,13 +26,13 @@ namespace accounts
     };
     BOOST_DESCRIBE_ENUM(EAccountStatus, DRAFT, CREATED)
 
-    struct AccountDetailDb
+    struct AccountDetail
     {
         std::string name;
         double value;
         ECurrency currencyCode;
     };
-    BOOST_DESCRIBE_STRUCT(AccountDetailDb, (), (name, value, currencyCode))
+    BOOST_DESCRIBE_STRUCT(AccountDetail, (), (name, value, currencyCode))
 
     struct AccountAddress
     {
@@ -49,7 +49,7 @@ namespace accounts
         ECurrency currencyCode;
         EAccountCategory category;
         std::string name;
-        std::vector<AccountDetailDb> details;
+        std::vector<AccountDetail> details;
         AccountAddress address;
         EAccountStatus status;
         double value;
@@ -58,6 +58,15 @@ namespace accounts
         UpsertAccountDto,
         (),
         (userId, currencyCode, category, name, details, address, value))
+
+    struct UpsertAccountDb : public UpsertAccountDto
+    {
+        std::optional<Datetime> updatedAt;
+    };
+    BOOST_DESCRIBE_STRUCT(
+        UpsertAccountDb,
+        (UpsertAccountDto),
+        (updatedAt, userId, currencyCode, category, name, details, address, value))
 
     struct AccountDb : public UpsertAccountDto, public BaseDb
     {

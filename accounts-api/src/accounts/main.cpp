@@ -102,6 +102,9 @@ int main(int argc, char *argv[])
         .post(
             "/v1/accounts",
             accounts::handleAddAccount)
+        .put(
+            "/v1/accounts",
+            accounts::handleUpdateAccount)
         .get(
             "/v1/users/:userId",
             accounts::handleGetUserById)

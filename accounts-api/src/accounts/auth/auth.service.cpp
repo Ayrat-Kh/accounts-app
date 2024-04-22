@@ -34,7 +34,7 @@ std::variant<UserLoginResult, AppError> AuthServiceImpl::googleAuth(std::string_
         .email = std::move(googleLoginResult.email),
         .googleId = std::move(googleLoginResult.sub),
         .settings = {
-            .defaultCurrency = "USD"}};
+            .defaultCurrency = ECurrency::USD}};
 
     saveUserDb.id = "user_" + boost::uuids::to_string(boost::uuids::random_generator()());
 
