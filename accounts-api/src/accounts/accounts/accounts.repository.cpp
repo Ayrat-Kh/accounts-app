@@ -65,13 +65,15 @@ std::variant<AccountDb, AppError> accounts::AccountsRepositoryImpl::upsertAccoun
 
     try
     {
-        // std::string id = account.id;
-        bsoncxx::builder::basic::document insertData = toMongoDocument(std::move(account));
+        bsoncxx::builder::basic::document upsertData = toMongoDocument(std::move(account));
+
+        auto root = make_document(
+            kvp("$set", std::move(upsertData)),
+            kvp("$setOnInsert", make_document(kvp("createdAt", bsoncxx::types::b_date(std::chrono::system_clock::now())))));
 
         mongocxx::options::find_one_and_update options;
         options.upsert(true);
         options.return_document(mongocxx::options::return_document::k_after);
-        insertData.append(kvp("$setOnInsert", make_document(kvp("createdAt", bsoncxx::types::b_date(std::chrono::system_clock::now())))));
 
         stdx::optional<bsoncxx::document::value>
             result =
@@ -79,7 +81,7 @@ std::variant<AccountDb, AppError> accounts::AccountsRepositoryImpl::upsertAccoun
                     .collection("accounts")
                     .find_one_and_update(
                         make_document(kvp("_id", accountId)),
-                        insertData.view(),
+                        std::move(root),
                         options);
 
         if (!result.has_value())

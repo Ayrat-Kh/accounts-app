@@ -110,7 +110,6 @@ namespace accounts
     {
         static std::optional<Datetime> deserializeScalar(const TElement &element)
         {
-            return std::optional<Datetime>{};
             return element.type() == bsoncxx::type::k_date
                        ? std::chrono::system_clock::from_time_t(0) + std::chrono::milliseconds(element.get_date().to_int64())
                        : std::optional<Datetime>{};
@@ -125,7 +124,7 @@ namespace accounts
         {
             TEnum result = {};
 
-            if (element.type() != bsoncxx::type::k_string)
+            if (element.type() == bsoncxx::type::k_string)
             {
                 return cStrToEnum<TEnum>(element.get_string().value.data());
             }
@@ -312,7 +311,7 @@ namespace accounts
             serializeScalar(document, name, std::move(item));
             return;
         }
-        else if constexpr (!std::is_class<TItem>::value && is_vector<TItem>::value)
+        else if constexpr (is_vector<TItem>::value)
         {
             serializeVector(document, name, std::move(item));
             return;

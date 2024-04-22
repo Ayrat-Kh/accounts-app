@@ -33,28 +33,21 @@ namespace accounts
 
                     try
                     {
-                        TBody reqBody;
+                        auto jsonBodyObject = boost::json::parse(_json);
+                        auto &&reqBody = boost::json::try_value_to<TBody>(std::move(jsonBodyObject));
 
-                        boost::system::error_code ec;
-
-                        boost::json::parse_into(reqBody, _json, ec);
-
-                        if (ec.failed())
+                        if (reqBody.has_error())
                         {
-                            auto message = std::move(ec.what());
-
-                            std::cerr << message << std::endl;
-
                             abort(
                                 response,
                                 std::move(
                                     AppError{
                                         .code = enumToString(EAppErrorCode::PARSE_BODY_ERROR),
-                                        .message = std::move(message)}));
+                                        .message = std::string(reqBody.error().message())}));
                             return;
                         }
 
-                        handler(response, req, std::move(reqBody));
+                        handler(response, req, std::move(reqBody.value()));
                     }
                     catch (std::exception &ex)
                     {

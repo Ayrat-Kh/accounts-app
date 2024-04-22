@@ -37,10 +37,10 @@ namespace accounts
     struct AccountAddress
     {
         std::string address;
-        double longitude;
-        double latitude;
+        double lng;
+        double lat;
     };
-    BOOST_DESCRIBE_STRUCT(AccountAddress, (), (address, longitude, latitude))
+    BOOST_DESCRIBE_STRUCT(AccountAddress, (), (address, lng, lat))
 
     struct UpsertAccountDto
     {
@@ -57,7 +57,7 @@ namespace accounts
     BOOST_DESCRIBE_STRUCT(
         UpsertAccountDto,
         (),
-        (userId, currencyCode, category, name, details, address, value))
+        (date, userId, currencyCode, category, name, details, address, value, status))
 
     struct UpsertAccountDb : public UpsertAccountDto
     {
@@ -71,5 +71,5 @@ namespace accounts
     struct AccountDb : public UpsertAccountDto, public BaseDb
     {
     };
-    BOOST_DESCRIBE_STRUCT(AccountDb, (UpsertAccountDto, BaseDb), ())
+    BOOST_DESCRIBE_STRUCT(AccountDb, (UpsertAccountDto, BaseDb), (id, createdAt, updatedAt, userId, currencyCode, category, name, details, address, value))
 }

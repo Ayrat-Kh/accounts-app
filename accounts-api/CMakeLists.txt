@@ -109,7 +109,6 @@ ExternalProject_Add(
   GIT_TAG r3.10.1
   BUILD_COMMAND ${CMAKE_COMMAND} . -DCMAKE_BUILD_TYPE=Release -DENABLE_BSONCXX_POLY_USE_IMPLS=1 -DENABLE_TESTS=OFF
   COMMAND ${CMAKE_COMMAND} --build .
-  COMMAND ${CMAKE_COMMAND} --install . --prefix install
 )
 ExternalProject_Get_property(mongo_content BINARY_DIR)
 set(MONGO_INSTALL_DIR ${BINARY_DIR})

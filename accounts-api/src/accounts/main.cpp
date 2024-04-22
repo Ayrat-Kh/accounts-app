@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
             "/v1/accounts",
             accounts::handleAddAccount)
         .put(
-            "/v1/accounts",
+            "/v1/accounts/:accountId",
             accounts::handleUpdateAccount)
         .get(
             "/v1/users/:userId",
