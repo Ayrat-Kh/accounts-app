@@ -211,55 +211,55 @@ namespace accounts
     bsoncxx::builder::basic::document toMongoDocument(T object);
 
     template <class T>
-    inline void serializeEnum(bsoncxx::builder::basic::document &document, const std::string &name, T value)
+    inline void serializeEnum(bsoncxx::builder::basic::document &document, const char *name, T value)
     {
         if constexpr (is_optional<T>::value)
         {
             if (value.has_value())
             {
-                document.append(bsoncxx::builder::basic::kvp(name, std::move(::accounts::enumToString(value.value()))));
+                document.append(bsoncxx::builder::basic::kvp(std::string(name), std::move(::accounts::enumToString(value.value()))));
             }
             else
             {
-                document.append(bsoncxx::builder::basic::kvp(name, bsoncxx::types::b_null{}));
+                document.append(bsoncxx::builder::basic::kvp(std::string(name), bsoncxx::types::b_null{}));
             }
         }
         else
         {
-            document.append(bsoncxx::builder::basic::kvp(name, std::move(::accounts::enumToString(value))));
+            document.append(bsoncxx::builder::basic::kvp(std::string(name), std::move(::accounts::enumToString(value))));
         }
     }
 
     template <class T>
-    inline void serializeScalar(bsoncxx::builder::basic::document &document, const std::string &name, T value);
+    inline void serializeScalar(bsoncxx::builder::basic::document &document, const char *name, T value);
 
     template <class T>
-    inline void serializeScalar(bsoncxx::builder::basic::document &document, const std::string &name, T value)
+    inline void serializeScalar(bsoncxx::builder::basic::document &document, const char *name, T value)
     {
         if constexpr (is_optional<T>::value)
         {
             if (value.has_value())
             {
-                document.append(bsoncxx::builder::basic::kvp(name, std::move(value.value())));
+                document.append(bsoncxx::builder::basic::kvp(std::string(name), std::move(value.value())));
             }
             else
             {
-                document.append(bsoncxx::builder::basic::kvp(name, bsoncxx::types::b_null{}));
+                document.append(bsoncxx::builder::basic::kvp(std::string(name), bsoncxx::types::b_null{}));
             }
         }
         else
         {
-            document.append(bsoncxx::builder::basic::kvp(name, std::move(value)));
+            document.append(bsoncxx::builder::basic::kvp(std::string(name), std::move(value)));
         }
     }
 
     template <>
-    inline void serializeScalar<Datetime>(bsoncxx::builder::basic::document &document, const std::string &name, Datetime value)
+    inline void serializeScalar<Datetime>(bsoncxx::builder::basic::document &document, const char *name, Datetime value)
     {
-        document.append(bsoncxx::builder::basic::kvp(name, bsoncxx::types::b_date(value)));
+        document.append(bsoncxx::builder::basic::kvp(std::string(name), bsoncxx::types::b_date(value)));
     }
     template <>
-    inline void serializeScalar<std::optional<Datetime>>(bsoncxx::builder::basic::document &document, const std::string &name, std::optional<Datetime> value)
+    inline void serializeScalar<std::optional<Datetime>>(bsoncxx::builder::basic::document &document, const char *name, std::optional<Datetime> value)
     {
         if (value.has_value())
         {
@@ -267,12 +267,12 @@ namespace accounts
         }
         else
         {
-            document.append(bsoncxx::builder::basic::kvp(name, bsoncxx::types::b_null{}));
+            document.append(bsoncxx::builder::basic::kvp(std::string(name), bsoncxx::types::b_null{}));
         }
     }
 
     template <class T>
-    static void serializeVector(bsoncxx::builder::basic::document &document, const std::string &name, T value)
+    static void serializeVector(bsoncxx::builder::basic::document &document, const char *name, T value)
     {
         bsoncxx::builder::basic::array ar;
 
@@ -288,36 +288,36 @@ namespace accounts
             }
         }
 
-        document.append(bsoncxx::builder::basic::kvp(name, std::move(ar)));
+        document.append(bsoncxx::builder::basic::kvp(std::string(name), std::move(ar)));
     }
 
     template <class T>
-    static void serializeObject(bsoncxx::builder::basic::document &document, const std::string &name, T value)
+    static void serializeObject(bsoncxx::builder::basic::document &document, const char *name, T value)
     {
-        document.append(bsoncxx::builder::basic::kvp(name, toMongoDocument(std::move(value))));
+        document.append(bsoncxx::builder::basic::kvp(std::string(name), toMongoDocument(std::move(value))));
     }
 
     template <class TItem>
-    static constexpr void handleTypesToMongoDocument(bsoncxx::builder::basic::document &document, const std::string &name, TItem item)
+    static constexpr void handleTypesToMongoDocument(bsoncxx::builder::basic::document &document, const char *name, TItem item)
     {
         using real_t = typename unwrap_optional<TItem>::type;
 
-        if constexpr (boost::describe::has_describe_enumerators<real_t>::value)
+        if constexpr (boost::describe::has_describe_enumerators<real_t>::value && !is_primitive<real_t>::value)
         {
             serializeEnum(document, name, std::move(item));
             return;
         }
-        else if constexpr (is_primitive<real_t>::value)
+        else if constexpr (!boost::describe::has_describe_enumerators<real_t>::value && is_primitive<real_t>::value)
         {
             serializeScalar(document, name, std::move(item));
             return;
         }
-        else if constexpr (is_vector<TItem>::value)
+        else if constexpr (!std::is_class<TItem>::value && is_vector<TItem>::value)
         {
             serializeVector(document, name, std::move(item));
             return;
         }
-        else if constexpr (std::is_class<TItem>::value)
+        else if constexpr (std::is_class<TItem>::value && !is_vector<TItem>::value)
         {
             serializeObject(document, name, std::move(item));
             return;

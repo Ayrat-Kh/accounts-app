@@ -44,8 +44,9 @@ namespace accounts
 
         auto &&modelErrors = value_from(std::move(obj));
 
-        res->writeHeader("Content-Type", "application/json")
+        res
             ->writeStatus("400")
+            ->writeHeader("Content-Type", "application/json")
             ->end(serialize(
                 std::move(value_from(
                     std::move(ValidationAppError{

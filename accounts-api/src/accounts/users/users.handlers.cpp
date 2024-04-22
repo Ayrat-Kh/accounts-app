@@ -25,7 +25,7 @@ void accounts::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest
             std::move(
                 AppError{
                     .code = enumToString(EAppErrorCode::VALIDATION_ERROR),
-                    .message = "Only can update yourself"}));
+                    .message = "Only can fetch information about yourself"}));
 
         return;
     }

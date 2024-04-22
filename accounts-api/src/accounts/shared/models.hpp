@@ -86,7 +86,7 @@ namespace accounts
     BOOST_DESCRIBE_STRUCT(
         UserDb,
         (BaseDb),
-        (firstName, lastName, alias, email, googleId, status, settings));
+        (id, createdAt, updatedAt, firstName, lastName, alias, email, googleId, status, settings));
 
     // below
     // auth

@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
                 res->end("Server is working fine");
             })
         .post(
-            "/login/google-auth",
+            "/login/google-auth/callback",
             accounts::handleGoogleLogin)
         .post(
             "/v1/accounts",
