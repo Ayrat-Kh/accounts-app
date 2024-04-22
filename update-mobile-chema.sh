@@ -1,0 +1,1 @@
+docker run --rm -v .:/local openapitools/openapi-generator-cli generate -i /local/accounts-api/api-doc.json -g typescript-axios -c /local/mobile/open-api-config.yaml -o /local/mobile/src/lib/api/open-api --global-property models,apis,supportingFiles

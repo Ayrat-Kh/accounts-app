@@ -13,6 +13,18 @@
  */
 
 
-export * from "./api";
-export * from "./configuration";
-export * from "./models";
+
+/**
+ * 
+ * @export
+ * @interface GoogleLoginRequest
+ */
+export interface GoogleLoginRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof GoogleLoginRequest
+     */
+    'idToken': string;
+}
+

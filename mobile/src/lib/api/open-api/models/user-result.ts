@@ -13,6 +13,21 @@
  */
 
 
-export * from "./api";
-export * from "./configuration";
-export * from "./models";
+// May contain unused imports in some cases
+// @ts-ignore
+import { User } from './user';
+
+/**
+ * 
+ * @export
+ * @interface UserResult
+ */
+export interface UserResult {
+    /**
+     * 
+     * @type {User}
+     * @memberof UserResult
+     */
+    'user': User;
+}
+

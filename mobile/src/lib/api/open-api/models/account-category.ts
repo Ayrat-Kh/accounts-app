@@ -13,6 +13,20 @@
  */
 
 
-export * from "./api";
-export * from "./configuration";
-export * from "./models";
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const AccountCategory = {
+    Other: 'OTHER',
+    Grocery: 'GROCERY',
+    Shopping: 'SHOPPING'
+} as const;
+
+export type AccountCategory = typeof AccountCategory[keyof typeof AccountCategory];
+
+
+
