@@ -41,6 +41,8 @@ void accounts::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest
 
     res
         ->writeHeader("Content-Type", "application/json")
-        ->end(boost::json::serialize(std::move(boost::json::value_from(
-            std::move(userDbCasted)))));
+        ->end(boost::json::serialize(
+            boost::json::object(
+                {{"user",
+                  boost::json::value_from(std::move(userDbCasted))}})));
 }

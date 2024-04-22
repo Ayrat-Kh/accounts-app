@@ -10,6 +10,13 @@
 
 namespace accounts
 {
+    enum class ECurrency
+    {
+        USD,
+        EUR,
+    };
+    BOOST_DESCRIBE_ENUM(ECurrency, USD, EUR)
+
     struct BaseDb
     {
         std::string id;
@@ -62,7 +69,7 @@ namespace accounts
     // users
     struct UserSettingsDb
     {
-        std::string defaultCurrency;
+        ECurrency defaultCurrency;
     };
     BOOST_DESCRIBE_STRUCT(UserSettingsDb, (), (defaultCurrency));
 
