@@ -80,7 +80,7 @@ namespace accounts
     };
     BOOST_DESCRIBE_ENUM(EUserStatus, CREATED, BLOCKED)
 
-    struct UserDb : public BaseDb
+    struct UpsertUserDb
     {
         std::string firstName;
         std::string lastName;
@@ -89,10 +89,36 @@ namespace accounts
         std::string googleId;
         EUserStatus status;
         UserSettingsDb settings;
+        std::optional<Datetime> updatedAt;
+    };
+    BOOST_DESCRIBE_STRUCT(
+        UpsertUserDb,
+        (),
+        (updatedAt, firstName, lastName, alias, email, googleId, status, settings));
+
+    struct GoogleUpsertUserDb : public UpsertUserDb
+    {
+        std::string id;
+    };
+    BOOST_DESCRIBE_STRUCT(
+        GoogleUpsertUserDb,
+        (UpsertUserDb),
+        (id, updatedAt, firstName, lastName, alias, email, googleId, status, settings));
+
+    struct UserDb : public GoogleUpsertUserDb
+    {
+        std::string firstName;
+        std::string lastName;
+        std::string alias;
+        std::string email;
+        std::string googleId;
+        EUserStatus status;
+        UserSettingsDb settings;
+        Datetime createdAt;
     };
     BOOST_DESCRIBE_STRUCT(
         UserDb,
-        (BaseDb),
+        (GoogleUpsertUserDb),
         (id, createdAt, updatedAt, firstName, lastName, alias, email, googleId, status, settings));
 
     // below

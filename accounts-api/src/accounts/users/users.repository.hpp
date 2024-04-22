@@ -18,8 +18,8 @@ namespace accounts
     public:
         virtual std::variant<UserDb, AppError> getUserByGoogleId(std::string_view googleId) = 0;
         virtual std::variant<UserDb, AppError> getUserById(std::string_view userId) = 0;
-        virtual std::variant<UserDb, AppError> createUserByIdIfNotExist(UserDb user) = 0;
-        virtual std::variant<UserDb, AppError> createUserByGoogleIdIfNotExist(UserDb user) = 0;
+        virtual std::variant<UserDb, AppError> upsertUserByIdIfNotExist(std::string_view userId, UpsertUserDb user) = 0;
+        virtual std::variant<UserDb, AppError> createUserByGoogleIdIfNotExist(GoogleUpsertUserDb user) = 0;
     };
 
     class UsersRepositoryImpl : public IUsersRepository
@@ -29,12 +29,11 @@ namespace accounts
 
         virtual std::variant<UserDb, AppError> getUserByGoogleId(std::string_view googleId) override;
         virtual std::variant<UserDb, AppError> getUserById(std::string_view userId) override;
-        virtual std::variant<UserDb, AppError> createUserByIdIfNotExist(UserDb user) override;
-        virtual std::variant<UserDb, AppError> createUserByGoogleIdIfNotExist(UserDb user) override;
+        virtual std::variant<UserDb, AppError> upsertUserByIdIfNotExist(std::string_view userId, UpsertUserDb user) override;
+        virtual std::variant<UserDb, AppError> createUserByGoogleIdIfNotExist(GoogleUpsertUserDb user) override;
 
     private:
         std::variant<UserDb, AppError> getUserByQuery(bsoncxx::document::value query);
-        std::variant<UserDb, AppError> createUserByQueryIfNotExist(bsoncxx::document::value query, const UserDb &user);
 
         std::shared_ptr<IMongoAccess> _mongoAccess;
     };

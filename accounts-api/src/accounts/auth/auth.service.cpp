@@ -27,16 +27,16 @@ std::variant<UserLoginResult, AppError> AuthServiceImpl::googleAuth(std::string_
 
     GoogleTokenInfo googleLoginResult = std::get<GoogleTokenInfo>(std::move(googleAuthResult));
 
-    UserDb &&saveUserDb = UserDb{
-        .firstName = std::move(googleLoginResult.given_name),
-        .lastName = std::move(googleLoginResult.given_name),
-        .alias = std::move(googleLoginResult.name),
-        .email = std::move(googleLoginResult.email),
-        .googleId = std::move(googleLoginResult.sub),
-        .settings = {
-            .defaultCurrency = ECurrency::USD}};
-
+    GoogleUpsertUserDb saveUserDb;
     saveUserDb.id = "user_" + boost::uuids::to_string(boost::uuids::random_generator()());
+    saveUserDb.firstName = std::move(googleLoginResult.given_name);
+    saveUserDb.lastName = std::move(googleLoginResult.given_name);
+    saveUserDb.alias = std::move(googleLoginResult.name);
+    saveUserDb.email = std::move(googleLoginResult.email);
+    saveUserDb.googleId = std::move(googleLoginResult.sub);
+    saveUserDb.status = EUserStatus::CREATED;
+    saveUserDb.settings = {
+        .defaultCurrency = ECurrency::USD};
 
     auto userDbResult = _userRepository.get()->createUserByGoogleIdIfNotExist(std::move(saveUserDb));
 

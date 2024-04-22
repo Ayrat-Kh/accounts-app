@@ -48,8 +48,9 @@ void accounts::handleGetAccountsByUserId(uWS::HttpResponse<false> *res, uWS::Htt
 
     res
         ->writeHeader("Content-Type", "application/json")
-        ->end(boost::json::serialize(std::move(boost::json::value_from(
-            std::move(accountsDbCasted)))));
+        ->end(boost::json::serialize(boost::json::object(
+            {{"accounts",
+              boost::json::value_from(std::move(accountsDbCasted))}})));
 }
 
 void accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequest *_req)
@@ -79,8 +80,9 @@ void accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequest
 
         res
             ->writeHeader("Content-Type", "application/json")
-            ->end(boost::json::serialize(std::move(boost::json::value_from(
-                std::move(accountDbCasted)))));
+            ->end(boost::json::serialize(boost::json::object(
+                {{"account",
+                  boost::json::value_from(std::move(accountDbCasted))}})));
     };
 
     RequestJsonBodyReader reader;
@@ -128,8 +130,9 @@ void accounts::handleUpdateAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequ
 
         res
             ->writeHeader("Content-Type", "application/json")
-            ->end(boost::json::serialize(std::move(boost::json::value_from(
-                std::move(accountDbCasted)))));
+            ->end(boost::json::serialize(boost::json::object(
+                {{"account",
+                  boost::json::value_from(std::move(accountDbCasted))}})));
     };
 
     RequestJsonBodyReader reader;

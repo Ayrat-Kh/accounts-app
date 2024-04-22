@@ -36,24 +36,92 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::getUserById(std::string_view
                 make_document(kvp("_id", userId)))));
 }
 
-std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByIdIfNotExist(UserDb user)
+std::variant<UserDb, AppError> UsersRepositoryImpl::upsertUserByIdIfNotExist(std::string_view userId, UpsertUserDb user)
 {
-    return std::move(
-        createUserByQueryIfNotExist(
-            std::move(
-                make_document(
-                    kvp("_id", user.id))),
-            user));
+    auto client = _mongoAccess->getConnection();
+    auto db = (*client)["expenso-app"];
+
+    try
+    {
+        auto root = make_document(
+            kvp("$set", std::move(toMongoDocument(std::move(user)))),
+            kvp("$setOnInsert", make_document(kvp("createdAt", bsoncxx::types::b_date(std::chrono::system_clock::now())))));
+
+        mongocxx::options::find_one_and_update options;
+        options.upsert(true);
+        options.return_document(mongocxx::options::return_document::k_after);
+
+        stdx::optional<bsoncxx::document::value> result =
+            db
+                .collection("users")
+                .find_one_and_update(
+                    make_document(
+                        kvp("_id", userId)),
+                    std::move(root),
+                    options);
+
+        if (!result.has_value())
+        {
+            return std::move(
+                AppError{
+                    .code = enumToString(EAppErrorCode::DB_INSERT_ERROR),
+                    .message = "Couldn't insert document"});
+        }
+
+        return std::move(deserializeMongoDocument<UserDb>(result.value().view()));
+    }
+    catch (std::exception &exception)
+    {
+        return std::move(
+            AppError{
+                .code = enumToString(EAppErrorCode::DB_INSERT_ERROR),
+                .message = exception.what()});
+    }
 }
 
-std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExist(UserDb user)
+std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExist(GoogleUpsertUserDb user)
 {
-    return std::move(
-        createUserByQueryIfNotExist(
-            std::move(
-                make_document(
-                    kvp("googleId", user.googleId))),
-            user));
+    auto client = _mongoAccess->getConnection();
+    auto db = (*client)["expenso-app"];
+
+    auto userDocument = toMongoDocument(std::move(user));
+    userDocument.append(kvp("createdAt", bsoncxx::types::b_date(std::chrono::system_clock::now())));
+
+    try
+    {
+        auto root = make_document(
+            kvp("$setOnInsert", std::move(userDocument)));
+
+        mongocxx::options::find_one_and_update options;
+        options.upsert(true);
+        options.return_document(mongocxx::options::return_document::k_after);
+
+        stdx::optional<bsoncxx::document::value> result =
+            db
+                .collection("users")
+                .find_one_and_update(
+                    make_document(
+                        kvp("googleId", user.googleId)),
+                    std::move(root),
+                    options);
+
+        if (!result.has_value())
+        {
+            return std::move(
+                AppError{
+                    .code = enumToString(EAppErrorCode::DB_INSERT_ERROR),
+                    .message = "Couldn't insert document"});
+        }
+
+        return std::move(deserializeMongoDocument<UserDb>(result.value().view()));
+    }
+    catch (std::exception &exception)
+    {
+        return std::move(
+            AppError{
+                .code = enumToString(EAppErrorCode::DB_INSERT_ERROR),
+                .message = exception.what()});
+    }
 }
 
 std::variant<UserDb, AppError> UsersRepositoryImpl::getUserByQuery(bsoncxx::document::value query)
@@ -80,46 +148,6 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::getUserByQuery(bsoncxx::docu
         return std::move(
             AppError{
                 .code = enumToString(EAppErrorCode::DB_QUERY_ERROR),
-                .message = exception.what()});
-    }
-}
-
-std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByQueryIfNotExist(bsoncxx::document::value query, const UserDb &user)
-{
-    auto client = _mongoAccess->getConnection();
-    auto db = (*client)["expenso-app"];
-
-    try
-    {
-        bsoncxx::builder::basic::document insertData = toMongoDocument(std::move(user));
-
-        mongocxx::options::find_one_and_update options;
-        options.upsert(true);
-        options.return_document(mongocxx::options::return_document::k_after);
-
-        stdx::optional<bsoncxx::document::value> result =
-            db
-                .collection("users")
-                .find_one_and_update(
-                    query.view(),
-                    make_document(kvp("$setOnInsert", insertData.view())),
-                    options);
-
-        if (!result.has_value())
-        {
-            return std::move(
-                AppError{
-                    .code = enumToString(EAppErrorCode::DB_INSERT_ERROR),
-                    .message = "Couldn't insert document"});
-        }
-
-        return std::move(deserializeMongoDocument<UserDb>(result.value().view()));
-    }
-    catch (std::exception &exception)
-    {
-        return std::move(
-            AppError{
-                .code = enumToString(EAppErrorCode::DB_INSERT_ERROR),
                 .message = exception.what()});
     }
 }

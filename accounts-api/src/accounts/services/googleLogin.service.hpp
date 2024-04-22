@@ -4,6 +4,8 @@
 #include <string>
 #include <string_view>
 
+#include <boost/describe.hpp>
+
 #include "accounts/shared/models.hpp"
 
 namespace accounts
@@ -27,6 +29,7 @@ namespace accounts
         std::string sub;
         std::string typ;
     };
+    BOOST_DESCRIBE_STRUCT(GoogleTokenInfo, (), (alg, at_hash, aud, azp, email, email_verified, exp, family_name, given_name, iat, iss, kid, name, picture, sub, typ))
 
     class IGoogleLoginService
     {

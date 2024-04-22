@@ -161,6 +161,26 @@
         "x-codegen-request-body-name": "data"
       }
     },
+    "/health-check": {
+      "get": {
+        "tags": ["health"],
+        "summary": "Get server info",
+        "description": "Get server info",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/users/{userId}": {
       "get": {
         "tags": ["users"],
