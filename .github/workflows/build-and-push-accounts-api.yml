@@ -2,9 +2,9 @@ name: Build and push accounts API image, and deploy to thin box
 
 on:
   push:
-    branches: ['ac-8-accounts']
-  pull_request:
-    branches: ['ac-8-accounts']
+    branches: ['main']
+  # pull_request:
+  #   branches: ['main']
 
 jobs:
   push_to_registry:
