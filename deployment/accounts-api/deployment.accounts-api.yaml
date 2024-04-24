@@ -59,7 +59,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: api.accounts.thin-box.online
+    - host: api-accounts.thin-box.online
       http:
         paths:
           - path: /
@@ -72,4 +72,4 @@ spec:
   tls:
     - secretName: thin-box.online
       hosts:
-        - thin-box.online
+        - 'api-accounts.thin-box.online'

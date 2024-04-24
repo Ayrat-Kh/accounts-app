@@ -13,8 +13,8 @@ commonLabels:
   env: stage
 
 resources:
-  - ./accounts-api.deployment
-  - ./mongo.deployment
+  - ./deployment.accounts-api.yaml
+  - ./deployment.accounts-db.yaml
   - ./namespace
   - ./rbac
   - ./roleBinding
