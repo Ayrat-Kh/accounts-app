@@ -19,7 +19,7 @@ jobs:
           KUBE_CERTIFICATE: ${{ secrets.KUBE_CERTIFICATE }}
           KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
         with:
-          args: get deployments
+          args: get deployments -n accounts-stage
     # runs-on: ubuntu-latest
     # steps:
     #   - name: Check out the repo
