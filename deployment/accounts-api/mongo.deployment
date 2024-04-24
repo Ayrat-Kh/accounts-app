@@ -6,11 +6,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: accounts-db
+      app: accounts-db-pod
   template:
     metadata:
       labels:
-        app: accounts-db
+        app: accounts-db-pod
     spec:
       containers:
         - name: accounts-db
@@ -32,7 +32,7 @@ metadata:
   name: accounts-db-svc
 spec:
   selector:
-    app: accounts-db
+    app: accounts-db-pod
   ports:
     - protocol: TCP
       port: 27017

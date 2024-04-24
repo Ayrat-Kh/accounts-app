@@ -1,22 +1,21 @@
-namespace: accounts-stage
-namePrefix: stage-
-
 generatorOptions:
   disableNameSuffixHash: true
-  labels:
-    type: generated
-  annotations:
-    note: generated
+
+namespace: accounts-stage
+namePrefix: stage-
 
 secretGenerator:
   - name: accounts-secret
     envs:
       - .env
 
+commonLabels:
+  env: stage
+
 resources:
+  - ./accounts-api.deployment
+  - ./mongo.deployment
   - ./namespace
   - ./rbac
   - ./roleBinding
   - ./serviceAccount
-  - ./mongo.deployment
-  - ./accounts-api.deployment

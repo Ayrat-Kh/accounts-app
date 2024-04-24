@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: accounts-api-pod
-          image: ayratkhisamiev/accounts-api
+          image: ayratkhisamiev/accounts-api:ac-8-accounts
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -59,7 +59,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: http://localhost:3000
+    - host: api.accounts.thin-box.online
       http:
         paths:
           - path: /
@@ -70,6 +70,6 @@ spec:
                 port:
                   number: 3000
   tls:
-    - secretName: <TLS_CERT_SECRET_NAME>
+    - secretName: thin-box.online
       hosts:
-        - <STREAMER_DOMAIN>
+        - thin-box.online
