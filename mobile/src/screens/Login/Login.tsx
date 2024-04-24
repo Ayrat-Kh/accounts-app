@@ -10,7 +10,7 @@ export const Login = () => {
   return (
     <LoginContainer>
       <Text variant="h1" kind="bold" className="mb-28">
-        Expenso
+        Accounts
       </Text>
       <Button variant="ghost" onPress={googleLogin}>
         <IconGoogle color="primary" size={40} />

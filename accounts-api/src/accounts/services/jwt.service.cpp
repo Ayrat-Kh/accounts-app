@@ -16,7 +16,7 @@ std::string JwtServiceImpl::createUserToken(std::string_view userId)
     return std::move(
         jwt::create()
             .set_type("JWT")
-            .set_issuer("expenso")
+            .set_issuer("accounts")
             .set_payload_claim("user_id", jwt::claim(std::string(userId)))
             .set_expires_at(std::chrono::system_clock::now() + std::chrono::seconds{7 * 24 * 60 * 60})
             .sign(jwt::algorithm::hs256{_jwtSecret}));
@@ -27,7 +27,7 @@ std::optional<AuthUser> JwtServiceImpl::getAuthUser(std::string_view jwtToken)
     auto verifier =
         jwt::verify()
             .with_type("JWT")
-            .with_issuer("expenso")
+            .with_issuer("accounts")
             .allow_algorithm(jwt::algorithm::hs256{_jwtSecret});
 
     try

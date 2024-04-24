@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Expenso app",
-    "scheme": "expensoapp",
-    "slug": "expenso-app",
+    "name": "Accounts app",
+    "scheme": "accountsapp",
+    "slug": "accounts-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,7 +18,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.airatkhisamiev.expensoapp"
+      "package": "com.airatkhisamiev.accountsapp"
     },
     "extra": {
       "eas": {
@@ -44,10 +44,11 @@
         {
           "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
-      ]
+      ],
+      "expo-router"
     ],
     "ios": {
-      "bundleIdentifier": "com.airatkhisamiev.expensoapp"
+      "bundleIdentifier": "com.airatkhisamiev.accountsapp"
     }
   }
 }
