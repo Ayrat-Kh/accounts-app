@@ -54,4 +54,4 @@ jobs:
           KUBE_CERTIFICATE: ${{ secrets.KUBE_CERTIFICATE }}
           KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
         with:
-          args: kubectl label deployments stage-accounts-api-deployment tag=${{ steps.meta.outputs.labels }} get deployments -n accounts-stage
+          args: label deployments stage-accounts-api-deployment tag=${{ steps.meta.outputs.labels }} get deployments -n accounts-stage
