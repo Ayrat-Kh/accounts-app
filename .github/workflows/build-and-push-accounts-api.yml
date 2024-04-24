@@ -25,6 +25,11 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y%m%d')"
+        shell: bash
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
@@ -38,7 +43,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=sha,prefix={{branch}}-
             type=raw,value=mytag-{{branch}}-{{sha}}
-            type=date,value={{date 'YYYY-MM-DD'}}
+            type=raw,value=${{ steps.date.outputs.date }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
