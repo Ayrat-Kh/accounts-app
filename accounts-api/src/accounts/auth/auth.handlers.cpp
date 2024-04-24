@@ -5,11 +5,7 @@
 #include "accounts/utils/jsonSerialize.hpp"
 #include "accounts/utils/error.hpp"
 
-using namespace ::accounts::utils;
-using namespace ::accounts::error;
-using namespace ::accounts::services;
-
-void accounts::auth::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpRequest *_req)
+void accounts::handleGoogleLogin(uWS::HttpResponse<false> *_res, uWS::HttpRequest *_req)
 {
 	auto handler = [](uWS::HttpResponse<false> *res, uWS::HttpRequest *, GoogleLoginRequest parsedBody) mutable
 	{

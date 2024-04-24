@@ -1,8 +1,6 @@
 #include "date.hpp"
 
-using namespace ::accounts::shared;
-
-std::string accounts::utils::timePointToString(const Datetime &timePoint)
+std::string accounts::timePointToString(const Datetime &timePoint)
 {
     auto timeT = std::chrono::system_clock::to_time_t(timePoint);
 
@@ -10,12 +8,12 @@ std::string accounts::utils::timePointToString(const Datetime &timePoint)
     return boost::posix_time::to_iso_extended_string(pt);
 }
 
-Datetime accounts::utils::msToTimePoint(std::int64_t ms)
+accounts::Datetime accounts::msToTimePoint(std::int64_t ms)
 {
     return std::chrono::system_clock::from_time_t(0) + std::chrono::milliseconds(ms);
 }
 
-Datetime accounts::utils::convertToTimePoint(const std::string &timeStr)
+accounts::Datetime accounts::convertToTimePoint(const std::string &timeStr)
 {
 
     boost::posix_time::ptime pt = boost::posix_time::from_iso_extended_string(timeStr);

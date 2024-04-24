@@ -6,7 +6,7 @@
 
 #include "accounts/shared/models.hpp"
 
-namespace accounts::auth
+namespace accounts
 {
 	struct GoogleLoginRequest
 	{
@@ -25,7 +25,7 @@ namespace accounts::auth
 		std::string accessToken;
 		std::string sessionToken;
 
-		::accounts::shared::UserDb user;
+		UserDb user;
 	};
 	BOOST_DESCRIBE_STRUCT(UserLoginResult, (), (accessToken, sessionToken, user))
 

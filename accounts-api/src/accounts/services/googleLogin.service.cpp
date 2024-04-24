@@ -5,12 +5,11 @@
 #include <boost/asio.hpp>
 #include <boost/json.hpp>
 
-#include "accounts/utils/enumToString.hpp"
+#include "accounts/utils/enumHelpers.hpp"
 
-using namespace ::accounts::shared;
-using namespace ::accounts::utils;
+using namespace accounts;
 
-std::variant<accounts::services::GoogleTokenInfo, AppError> accounts::services::GoogleLoginServiceImpl::getGoogleUser(std::string_view idToken) noexcept
+std::variant<GoogleTokenInfo, AppError> GoogleLoginServiceImpl::getGoogleUser(std::string_view idToken) noexcept
 {
     namespace beast = boost::beast;
     namespace http = beast::http;
@@ -57,40 +56,32 @@ std::variant<accounts::services::GoogleTokenInfo, AppError> accounts::services::
         if (!json_response.is_object())
         {
             return AppError{
-                .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST),
+                .code = enumToString(EAppErrorCode::THIRD_PARTY_REQUEST),
                 .message = "get google id token info response is not json object"};
         }
 
         if (json_response.as_object().contains("error_description"))
         {
             return AppError{
-                .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST),
+                .code = enumToString(EAppErrorCode::THIRD_PARTY_REQUEST),
                 .message = "get google id token info error_description: " + std::string(json_response.as_object()["error_description"].as_string())};
         }
 
-        return std::move(GoogleTokenInfo{
-            .alg = json_response.at("alg").as_string().c_str(),
-            .at_hash = json_response.at("at_hash").as_string().c_str(),
-            .aud = json_response.at("aud").as_string().c_str(),
-            .azp = json_response.at("azp").as_string().c_str(),
-            .email = json_response.at("email").as_string().c_str(),
-            .email_verified = json_response.at("email_verified").as_string().c_str(),
-            .exp = json_response.at("exp").as_string().c_str(),
-            .family_name = json_response.at("family_name").as_string().c_str(),
-            .given_name = json_response.at("given_name").as_string().c_str(),
-            .iat = json_response.at("iat").as_string().c_str(),
-            .iss = json_response.at("iss").as_string().c_str(),
-            .kid = json_response.at("kid").as_string().c_str(),
-            .name = json_response.at("name").as_string().c_str(),
-            .picture = json_response.at("picture").as_string().c_str(),
-            .sub = json_response.at("sub").as_string().c_str(),
-            .typ = json_response.at("typ").as_string().c_str(),
-        });
+        auto result = boost::json::try_value_to<GoogleTokenInfo>(json_response);
+
+        if (result.has_error())
+        {
+            return AppError{
+                .code = enumToString(EAppErrorCode::THIRD_PARTY_REQUEST),
+                .message = std::move(result.error().what())};
+        }
+
+        return std::move(result.value());
     }
     catch (const std::exception &e)
     {
         return AppError{
-            .code = enumToString(AppErrorCode::THIRD_PARTY_REQUEST),
+            .code = enumToString(EAppErrorCode::THIRD_PARTY_REQUEST),
             .message = "get google id token info " + std::string(e.what())};
     }
 }

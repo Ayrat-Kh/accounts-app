@@ -4,14 +4,10 @@
 #include "accounts/services/appDependencies.hpp"
 #include "accounts/utils/error.hpp"
 #include "accounts/utils/jsonSerialize.hpp"
-#include "accounts/utils/enumToString.hpp"
+#include "accounts/utils/enumHelpers.hpp"
+#include "accounts/utils/userId.hpp"
 
-using namespace ::accounts::shared;
-using namespace ::accounts::services;
-using namespace ::accounts::error;
-using namespace ::accounts::utils;
-
-void accounts::users::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
+void accounts::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
 {
     auto authToken = req->getHeader("authorization");
     auto userId = req->getParameter("userId");
@@ -23,14 +19,19 @@ void accounts::users::handleGetUserById(uWS::HttpResponse<false> *res, uWS::Http
         return;
     }
 
+    if (isMe(userId))
+    {
+        userId = authUser.value().userId;
+    }
+
     if (userId != authUser.value().userId)
     {
         abort(
             res,
             std::move(
                 AppError{
-                    .code = enumToString(AppErrorCode::VALIDATION_ERROR),
-                    .message = "Only can update yourself"}));
+                    .code = enumToString(EAppErrorCode::VALIDATION_ERROR),
+                    .message = "Only can fetch information about yourself"}));
 
         return;
     }
@@ -46,6 +47,8 @@ void accounts::users::handleGetUserById(uWS::HttpResponse<false> *res, uWS::Http
 
     res
         ->writeHeader("Content-Type", "application/json")
-        ->end(boost::json::serialize(std::move(boost::json::value_from(
-            std::move(userDbCasted)))));
+        ->end(boost::json::serialize(
+            boost::json::object(
+                {{"user",
+                  boost::json::value_from(std::move(userDbCasted))}})));
 }

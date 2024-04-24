@@ -1,0 +1,22 @@
+generatorOptions:
+  disableNameSuffixHash: true
+
+namespace: accounts-stage
+namePrefix: stage-
+
+secretGenerator:
+  - name: accounts-secret
+    envs:
+      - .env
+
+commonLabels:
+  env: stage
+
+commonAnnotations:
+  kubernetes.io/service-account.name: stage-accounts-deployer
+
+resources:
+  - ./deployment.accounts-api.yaml
+  - ./deployment.accounts-db.yaml
+  - ./namespace.yaml
+  - ./serviceAccount.yaml

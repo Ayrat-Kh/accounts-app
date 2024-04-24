@@ -1,6 +1,8 @@
 #include "auth.utils.hpp"
 
-std::optional<accounts::auth::GoogleLoginValidationResult> accounts::auth::validateGoogleLoginBody(const GoogleLoginRequest &body)
+using namespace accounts;
+
+std::optional<GoogleLoginValidationResult> accounts::validateGoogleLoginBody(const GoogleLoginRequest &body)
 {
     if (body.idToken.size() != 0)
     {

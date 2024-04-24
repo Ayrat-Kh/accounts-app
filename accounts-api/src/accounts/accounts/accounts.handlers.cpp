@@ -1,14 +1,15 @@
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+
 #include "accounts.handlers.hpp"
 #include "accounts/services/appDependencies.hpp"
 #include "accounts/utils/error.hpp"
+#include "accounts/utils/userId.hpp"
+#include "accounts/utils/objectMapper.hpp"
 #include "accounts/utils/readRequestJson.hpp"
 #include "accounts/accounts/accounts.models.hpp"
 
-using namespace ::accounts::error;
-using namespace ::accounts::services;
-using namespace ::accounts::utils;
-
-void accounts::accounts::handleGetAccountsByUserId(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
+void accounts::handleGetAccountsByUserId(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
 {
     auto authToken = req->getHeader("authorization");
     auto &&authUser = AppDependencies::instance().jwtService->getAuthUser(authToken);
@@ -18,6 +19,24 @@ void accounts::accounts::handleGetAccountsByUserId(uWS::HttpResponse<false> *res
     }
 
     auto userId = req->getParameter("userId");
+
+    if (userId != authUser.value().userId)
+    {
+        abort(
+            res,
+            std::move(
+                AppError{
+                    .code = enumToString(EAppErrorCode::VALIDATION_ERROR),
+                    .message = "Only can fetch account information about yourself"}));
+
+        return;
+    }
+
+    if (isMe(userId))
+    {
+        userId = authUser.value().userId;
+    }
+
     auto &&accountsDb = AppDependencies::instance().accountsRepo->getAccountsByUserId(userId);
 
     if (abortIfAppError(res, &accountsDb))
@@ -29,13 +48,14 @@ void accounts::accounts::handleGetAccountsByUserId(uWS::HttpResponse<false> *res
 
     res
         ->writeHeader("Content-Type", "application/json")
-        ->end(boost::json::serialize(std::move(boost::json::value_from(
-            std::move(accountsDbCasted)))));
+        ->end(boost::json::serialize(boost::json::object(
+            {{"accounts",
+              boost::json::value_from(std::move(accountsDbCasted))}})));
 }
 
-void accounts::accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequest *_req)
+void accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequest *_req)
 {
-    auto handler = [](uWS::HttpResponse<false> *res, uWS::HttpRequest *req, AccountDb parsedBody) mutable
+    auto handler = [](uWS::HttpResponse<false> *res, uWS::HttpRequest *req, UpsertAccountDto parsedBody) mutable
     {
         auto authToken = req->getHeader("authorization");
 
@@ -46,7 +66,10 @@ void accounts::accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::H
             return;
         }
 
-        auto &&accountDb = AppDependencies::instance().accountsRepo->upsertAccount(std::move(parsedBody));
+        UpsertAccountDb &&saveAccountDb = remapObject<UpsertAccountDb, UpsertAccountDto>(std::move(parsedBody));
+        auto &&accountDb = AppDependencies::instance().accountsRepo->upsertAccount(
+            "acc_" + boost::uuids::to_string(boost::uuids::random_generator()()),
+            std::move(saveAccountDb));
 
         if (abortIfAppError(res, &accountDb))
         {
@@ -57,10 +80,61 @@ void accounts::accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::H
 
         res
             ->writeHeader("Content-Type", "application/json")
-            ->end(boost::json::serialize(std::move(boost::json::value_from(
-                std::move(accountDbCasted)))));
+            ->end(boost::json::serialize(boost::json::object(
+                {{"account",
+                  boost::json::value_from(std::move(accountDbCasted))}})));
     };
 
     RequestJsonBodyReader reader;
-    reader.read<AccountDb>(_res, _req, handler);
+    reader.read<UpsertAccountDto>(_res, _req, handler);
+}
+
+void accounts::handleUpdateAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequest *_req)
+{
+    auto handler = [](uWS::HttpResponse<false> *res, uWS::HttpRequest *req, UpsertAccountDto parsedBody) mutable
+    {
+        auto authToken = req->getHeader("authorization");
+        auto accountId = req->getParameter("accountId");
+
+        auto &&authUser = AppDependencies::instance().jwtService->getAuthUser(authToken);
+
+        if (abortIfUnauthorized(res, authUser))
+        {
+            return;
+        }
+
+        if (parsedBody.userId != authUser.value().userId)
+        {
+            abort(
+                res,
+                std::move(
+                    AppError{
+                        .code = enumToString(EAppErrorCode::VALIDATION_ERROR),
+                        .message = "Only can update information about your accounts"}));
+
+            return;
+        }
+
+        UpsertAccountDb &&updateAccountDb = remapObject<UpsertAccountDb, UpsertAccountDto>(std::move(parsedBody));
+        updateAccountDb.updatedAt = std::chrono::system_clock::now();
+
+        auto &&accountDb = AppDependencies::instance().accountsRepo->upsertAccount(
+            accountId, std::move(updateAccountDb));
+
+        if (abortIfAppError(res, &accountDb))
+        {
+            return;
+        }
+
+        auto &&accountDbCasted = std::get<AccountDb>(std::move(accountDb));
+
+        res
+            ->writeHeader("Content-Type", "application/json")
+            ->end(boost::json::serialize(boost::json::object(
+                {{"account",
+                  boost::json::value_from(std::move(accountDbCasted))}})));
+    };
+
+    RequestJsonBodyReader reader;
+    reader.read<UpsertAccountDto>(_res, _req, handler);
 }

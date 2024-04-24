@@ -7,44 +7,69 @@
 #include <boost/describe.hpp>
 
 #include "accounts/shared/types.hpp"
+#include "accounts/shared/models.hpp"
 
-namespace accounts::accounts
+namespace accounts
 {
-    struct AccountDetailDb
+    enum class EAccountCategory
+    {
+        OTHER,
+        GROCERY,
+        SHOPPING
+    };
+    BOOST_DESCRIBE_ENUM(EAccountCategory, OTHER, GROCERY, SHOPPING)
+
+    enum class EAccountStatus
+    {
+        DRAFT,
+        CREATED
+    };
+    BOOST_DESCRIBE_ENUM(EAccountStatus, DRAFT, CREATED)
+
+    struct AccountDetail
     {
         std::string name;
-        double price;
-        std::string currencyCode;
+        double value;
+        ECurrency currencyCode;
     };
-    BOOST_DESCRIBE_STRUCT(AccountDetailDb, (), (name, price, currencyCode))
+    BOOST_DESCRIBE_STRUCT(AccountDetail, (), (name, value, currencyCode))
 
     struct AccountAddress
     {
         std::string address;
-        double longitude;
-        double latitude;
+        double lng;
+        double lat;
     };
-    BOOST_DESCRIBE_STRUCT(AccountAddress, (), (address, longitude, latitude))
+    BOOST_DESCRIBE_STRUCT(AccountAddress, (), (address, lng, lat))
 
-    struct AccountDb
+    struct UpsertAccountDto
     {
-        std::string id;
-        shared::Datetime createdAt;
-        std::optional<shared::Datetime> updatedAt;
+        Datetime date;
         std::string userId;
-        std::string currencyCode;
-        std::string category;
+        ECurrency currencyCode;
+        EAccountCategory category;
         std::string name;
-        std::vector<AccountDetailDb> details;
+        std::vector<AccountDetail> details;
         AccountAddress address;
-
-        double total;
+        EAccountStatus status;
+        double value;
     };
     BOOST_DESCRIBE_STRUCT(
-        AccountDb,
+        UpsertAccountDto,
         (),
-        (id,
-         createdAt,
-         updatedAt,
-         userId, currencyCode, category, name, details, address, total))
+        (date, userId, currencyCode, category, name, details, address, value, status))
+
+    struct UpsertAccountDb : public UpsertAccountDto
+    {
+        std::optional<Datetime> updatedAt;
+    };
+    BOOST_DESCRIBE_STRUCT(
+        UpsertAccountDb,
+        (UpsertAccountDto),
+        (updatedAt, userId, currencyCode, category, name, details, address, value))
+
+    struct AccountDb : public UpsertAccountDto, public BaseDb
+    {
+    };
+    BOOST_DESCRIBE_STRUCT(AccountDb, (UpsertAccountDto, BaseDb), (id, createdAt, updatedAt, userId, currencyCode, category, name, details, address, value))
 }

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounts-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: accounts-db-pod
+  template:
+    metadata:
+      labels:
+        app: accounts-db-pod
+    spec:
+      containers:
+        - name: accounts-db
+          image: mongo
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: accounts-db-storage
+              mountPath: /data/db
+      volumes:
+        - name: accounts-db-storage
+          hostPath:
+            path: /var/cluster/accounts-stage-db
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounts-db-svc
+spec:
+  selector:
+    app: accounts-db-pod
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017

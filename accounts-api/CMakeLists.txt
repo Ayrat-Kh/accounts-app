@@ -81,6 +81,8 @@ FetchContent_Declare(
   libs/beast
   libs/system
   libs/uuid
+  libs/process
+  libs/filesystem
   libs/intrusive
   libs/throw_exception
   libs/move
@@ -109,7 +111,6 @@ ExternalProject_Add(
   GIT_TAG r3.10.1
   BUILD_COMMAND ${CMAKE_COMMAND} . -DCMAKE_BUILD_TYPE=Release -DENABLE_BSONCXX_POLY_USE_IMPLS=1 -DENABLE_TESTS=OFF
   COMMAND ${CMAKE_COMMAND} --build .
-  COMMAND ${CMAKE_COMMAND} --install . --prefix install
 )
 ExternalProject_Get_property(mongo_content BINARY_DIR)
 set(MONGO_INSTALL_DIR ${BINARY_DIR})
@@ -125,6 +126,8 @@ target_include_directories(AccountsApi
   ${MONGO_INSTALL_DIR}/install/include/mongocxx/v_noabi
   ${boost_SOURCE_DIR}/libs/uuid/include
   ${boost_SOURCE_DIR}/libs/callable_traits/include
+  ${boost_SOURCE_DIR}/libs/process/include
+  ${boost_SOURCE_DIR}/libs/filesystem/include
   ${boost_SOURCE_DIR}/libs/random/include
   ${boost_SOURCE_DIR}/libs/tti/include
   ${cppjwt_content_SOURCE_DIR}/include
@@ -136,7 +139,6 @@ target_link_libraries(AccountsApi
   Boost::beast
   Boost::asio
   Boost::json
-  # Boost::program_options
   uWebSockets
   OpenSSL::SSL
   ${MONGO_INSTALL_DIR}/install/lib/libmongocxx${LIB_EXT}

@@ -2,7 +2,7 @@
 
 #include <App.h>
 
-namespace accounts::users
+namespace accounts
 {
     void handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest *req);
 }

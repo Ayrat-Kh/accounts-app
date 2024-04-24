@@ -1,8 +1,7 @@
 #include "jsonSerialize.hpp"
 #include "date.hpp"
 
-using namespace ::accounts::shared;
-using namespace ::accounts::utils;
+using namespace ::accounts;
 
 namespace std::chrono
 {
@@ -11,11 +10,11 @@ namespace std::chrono
         jv = timePointToString(timePoint);
     }
 
-    boost::json::result<Datetime> tag_invoke(boost::json::try_value_to_tag<Datetime> v, const boost::json::value &s)
+    boost::json::result<::accounts::Datetime> tag_invoke(boost::json::try_value_to_tag<::accounts::Datetime> v, const boost::json::value &s)
     {
         if (!s.if_string())
         {
-            return boost::json::result<Datetime>();
+            return Datetime{};
         }
 
         return convertToTimePoint(std::string(s.get_string()));

@@ -1,0 +1,506 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Accounts API",
+    "contact": { "name": "Accounts API", "email": "aira3t@gmail.com" },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    { "url": "http://localhost:3000", "description": "Local server" },
+    { "url": "http://localhost:3000", "description": "Stage server" }
+  ],
+  "paths": {
+    "/login/google-auth/callback": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Google auth login",
+        "description": "Google auth callback verification",
+        "requestBody": {
+          "description": "Google login request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginRequest"
+              },
+              "example": {
+                "idToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjZTExYWVjZjllYjE0MDI0YTQ0YmJmZDFiY2Y4YjMyYTEyMjg3ZmEiLCJ0eXAiOiJKV1QifQ"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLoginResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "data"
+      }
+    },
+    "/v1/accounts": {
+      "post": {
+        "tags": ["accounts"],
+        "summary": "Create an expense for a logged in user",
+        "description": "Create an account for a logged in user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "description": "Update expense model",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpsertAccount" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "data"
+      }
+    },
+    "/v1/accounts/{accountId}": {
+      "put": {
+        "tags": ["accounts"],
+        "summary": "Update an account for a logged in user",
+        "description": "Update an account for a logged in user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "accountId",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "description": "Update account model",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpsertAccount" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "data"
+      }
+    },
+    "/health-check": {
+      "get": {
+        "tags": ["health"],
+        "summary": "Get server info",
+        "description": "Get server info",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{userId}": {
+      "get": {
+        "tags": ["users"],
+        "summary": "Get user info",
+        "description": "Get user info",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "uuid or me - to get info for the logged in user",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserIdOrMe"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserResult" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{userId}/accounts": {
+      "get": {
+        "tags": ["accounts", "users"],
+        "summary": "Get accounts for the logged in user",
+        "description": "Get accounts for the logged in user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page or 1 by default",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "pageSize or 300 by default",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "user id",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserIdOrMe"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAccountsResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AppErrorCode": {
+        "type": "string",
+        "enum": [
+          "APP_ERROR",
+          "INVALID_INPUT",
+
+          "DB_NOT_FOUND",
+          "DB_INSERT_ERROR",
+          "DB_QUERY_ERROR",
+
+          "THIRD_PARTY_REQUEST",
+
+          "VALIDATION_ERROR",
+          "PARSE_BODY_ERROR"
+        ]
+      },
+      "Currency": { "type": "string", "enum": ["EUR", "USD"] },
+      "GoogleLoginRequest": {
+        "required": ["idToken"],
+        "type": "object",
+        "properties": { "idToken": { "type": "string" } }
+      },
+      "UserLoginResult": {
+        "required": ["accessToken", "sessionToken", "user"],
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string" },
+          "sessionToken": { "type": "string" },
+          "user": { "$ref": "#/components/schemas/User" }
+        }
+      },
+      "AccountCategory": {
+        "type": "string",
+        "enum": ["OTHER", "GROCERY", "SHOPPING"]
+      },
+      "AccountAddress": {
+        "type": "object",
+        "properties": {
+          "lat": { "type": "number" },
+          "lng": { "type": "number" },
+          "address": { "type": "string" }
+        },
+        "required": ["lat", "lng", "address"],
+        "example": {
+          "lat": 55.8172316,
+          "lng": 49.1298979,
+          "address": "Магазин Леруа Мерлен, Fatima Amirkhan St, 3, Kazan, Republic of Tatarstan, Russia, 420124"
+        }
+      },
+      "AccountDetail": {
+        "required": ["currencyCode", "name", "value"],
+        "type": "object",
+        "properties": {
+          "currencyCode": { "$ref": "#/components/schemas/Currency" },
+          "name": { "type": "string" },
+          "value": { "type": "number" }
+        },
+        "example": { "currencyCode": "EUR", "name": "Coffee", "value": 2.53 }
+      },
+      "Account": {
+        "required": [
+          "address",
+          "category",
+          "createdAt",
+          "currencyCode",
+          "date",
+          "details",
+          "id",
+          "name",
+          "userId",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "category": { "$ref": "#/components/schemas/AccountCategory" },
+          "address": { "$ref": "#/components/schemas/AccountAddress" },
+          "createdAt": { "type": "string", "example": "2024-04-22T15:09:03" },
+          "updatedAt": { "type": "string", "example": "2024-04-22T15:09:03" },
+          "date": { "type": "string", "example": "2024-04-22T15:09:03" },
+          "currencyCode": { "$ref": "#/components/schemas/Currency" },
+          "details": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AccountDetail" }
+          },
+          "id": {
+            "type": "string",
+            "example": "acc_10872204-74e7-4973-9c53-3113a79ab8d9"
+          },
+          "name": { "type": "string", "example": "Lerua Merlen" },
+          "value": { "type": "number", "example": 2.53 },
+          "userId": {
+            "type": "string",
+            "example": "user_10872204-74e7-4973-9c53-3113a79ab8d9"
+          }
+        }
+      },
+      "UpsertAccount": {
+        "required": [
+          "category",
+          "currencyCode",
+          "date",
+          "details",
+          "id",
+          "name",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "category": { "$ref": "#/components/schemas/AccountCategory" },
+          "address": { "$ref": "#/components/schemas/AccountAddress" },
+          "date": { "type": "string", "example": "2024-04-22T15:09:03" },
+          "currencyCode": { "$ref": "#/components/schemas/Currency" },
+          "details": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AccountDetail" }
+          },
+          "id": {
+            "type": "string",
+            "example": "acc_10872204-74e7-4973-9c53-3113a79ab8d9"
+          },
+          "name": { "type": "string", "example": "Lerua Merlen" },
+          "value": { "type": "number", "example": 2.53 },
+          "userId": {
+            "type": "string",
+            "example": "user_10872204-74e7-4973-9c53-3113a79ab8d9"
+          }
+        }
+      },
+      "AccountResult": {
+        "type": "object",
+        "properties": { "account": { "$ref": "#/components/schemas/Account" } }
+      },
+      "UserAccountsResult": {
+        "required": ["accounts"],
+        "type": "object",
+        "properties": {
+          "accounts": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Account" }
+          }
+        }
+      },
+      "User": {
+        "required": ["createdAt", "email", "id", "settings"],
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string" },
+          "updatedAt": { "type": "string" },
+          "alias": { "type": "string" },
+          "email": { "type": "string" },
+          "firstName": { "type": "string" },
+          "googleId": { "type": "string" },
+          "id": { "type": "string" },
+          "lastName": { "type": "string" },
+          "settings": { "$ref": "#/components/schemas/UserSettings" }
+        },
+        "example": {
+          "id": "user_10872204-74e7-4973-9c53-3113a79ab8d9",
+          "createdAt": "1970-01-01T00:00:00",
+          "updatedAt": null,
+          "firstName": "Ayrat",
+          "lastName": "",
+          "alias": "Ayrat Khisamiev",
+          "email": "test@test.com",
+          "googleId": "102511175170556336716",
+          "status": "CREATED",
+          "settings": { "defaultCurrency": "EUR" }
+        }
+      },
+      "UserSettings": {
+        "type": "object",
+        "properties": {
+          "defaultCurrency": { "$ref": "#/components/schemas/Currency" }
+        },
+        "example": { "defaultCurrency": "EUR" }
+      },
+      "UserResult": {
+        "required": ["user"],
+        "type": "object",
+        "properties": { "user": { "$ref": "#/components/schemas/User" } }
+      },
+      "ErrorResponse": {
+        "required": ["code", "message"],
+        "type": "object",
+        "properties": {
+          "code": { "$ref": "#/components/schemas/AppErrorCode" },
+          "message": { "type": "string" }
+        }
+      },
+      "PaginationResult": {
+        "required": ["currentPage", "itemsPerPage", "totalPages"],
+        "type": "object",
+        "properties": {
+          "currentPage": { "type": "integer" },
+          "itemsPerPage": { "type": "integer" },
+          "totalPages": { "type": "integer" }
+        }
+      },
+      "UserIdOrMe": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "string",
+            "enum": ["me"]
+          }
+        ],
+        "example": "me"
+      }
+    }
+  },
+  "x-original-swagger-version": "2.0"
+}

@@ -4,7 +4,7 @@
 
 #include "auth.models.hpp"
 
-namespace accounts::auth
+namespace accounts
 {
     std::optional<GoogleLoginValidationResult> validateGoogleLoginBody(const GoogleLoginRequest &body);
 }

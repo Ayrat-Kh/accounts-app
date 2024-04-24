@@ -1,25 +1,22 @@
 #include "appDependencies.hpp"
+#include "accounts/shared/env.hpp"
 
-using namespace ::accounts::users;
-using namespace ::accounts::accounts;
-using namespace ::accounts::auth;
-
-accounts::services::AppDependencies &accounts::services::AppDependencies::instance()
+accounts::AppDependencies &accounts::AppDependencies::instance()
 {
     static AppDependencies instance = {};
     return instance;
 }
 
-void accounts::services::AppDependencies::init()
+void accounts::AppDependencies::init()
 {
-    std::string secretKey = "secret super duper key";
+    auto &env = accounts::getEnv();
 
     std::shared_ptr<MongoAccessImpl> mongoAccess = std::make_shared<MongoAccessImpl>();
-    configureMongoInstance(mongocxx::uri("mongodb://localhost:27017"), mongoAccess);
+    configureMongoInstance(mongocxx::uri(env.mongoUrl), mongoAccess);
     this->mongoAccess = mongoAccess;
 
     googleLoginService = std::make_shared<GoogleLoginServiceImpl>();
-    jwtService = std::make_shared<JwtServiceImpl>(secretKey);
+    jwtService = std::make_shared<JwtServiceImpl>(env.jwtKey);
     userRepo = std::make_shared<UsersRepositoryImpl>(mongoAccess);
     accountsRepo = std::make_shared<AccountsRepositoryImpl>(mongoAccess);
     authService = std::make_shared<AuthServiceImpl>(googleLoginService, userRepo, jwtService);
