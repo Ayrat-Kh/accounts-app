@@ -36,14 +36,7 @@ jobs:
         with:
           images: ayratkhisamiev/accounts-api
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha,prefix={{branch}}-
-            type=raw,value=mytag-{{branch}}-{{sha}}
-            type=raw,value=${{ steps.date.outputs.date }}
+            type=raw,value={{branch}}-{{sha}}-${{ steps.date.outputs.date }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
