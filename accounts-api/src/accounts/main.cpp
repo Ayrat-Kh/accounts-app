@@ -4,6 +4,7 @@
 #include "accounts/accounts/accounts.handlers.hpp"
 #include "accounts/auth/auth.handlers.hpp"
 #include "accounts/users/users.handlers.hpp"
+#include "accounts/shared/env.hpp"
 
 // #include <boost/describe.hpp>
 // #include "accounts/utils/objectMapper.hpp"
@@ -81,14 +82,12 @@ int main(int argc, char *argv[])
     // return 0;
 
     // ToDo config section - hardcoded for now. later read from env
-    int32_t appPort = 3000;
+    auto &env = accounts::getEnv();
 
     // dependency section
     ::accounts::AppDependencies::instance().init();
-    // uWS::App::getLoop()->
+
     // server section
-    /* Keep in mind that uWS::SSLApp({options}) is the same as uWS::App() when compiled without SSL support.
-     * You may swap to using uWS:App() if you don't need SSL */
     uWS::App()
         .get(
             "/health-check",
@@ -112,12 +111,12 @@ int main(int argc, char *argv[])
             "/v1/users/:userId/accounts",
             accounts::handleGetAccountsByUserId)
         .listen(
-            appPort,
-            [appPort](auto *listen_socket)
+            env.port,
+            [&env](auto *listen_socket)
             {
                 if (listen_socket)
                 {
-                    std::cout << "Listening on port " << appPort << std::endl;
+                    std::cout << "Listening on port " << env.port << std::endl;
                 }
             })
         .run();

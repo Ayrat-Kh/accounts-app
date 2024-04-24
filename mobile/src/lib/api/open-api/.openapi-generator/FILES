@@ -3,6 +3,7 @@
 api.ts
 api/accounts-api.ts
 api/auth-api.ts
+api/health-api.ts
 api/users-api.ts
 base.ts
 common.ts

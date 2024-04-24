@@ -135,7 +135,6 @@ target_link_libraries(AccountsApi
   Boost::beast
   Boost::asio
   Boost::json
-  # Boost::program_options
   uWebSockets
   OpenSSL::SSL
   ${MONGO_INSTALL_DIR}/install/lib/libmongocxx${LIB_EXT}

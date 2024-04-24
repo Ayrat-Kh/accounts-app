@@ -128,4 +128,12 @@ namespace accounts
         std::string userId;
     };
     BOOST_DESCRIBE_STRUCT(AuthUser, (), (userId));
+
+    // below config model
+    struct EnvironmentVar
+    {
+        std::int32_t port;
+        std::string mongoUrl;
+        std::string jwtKey;
+    };
 }
