@@ -36,6 +36,7 @@ ENV LD_LIBRARY_PATH=/app/lib:$LD_LIBRARY_PATH
 ENV ACCOUNTS_DB_URL=""
 ENV ACCOUNTS_JWT_KEY=""
 ENV ACCOUNTS_PORT=3000
+ENV ACCOUNTS_DB="accounts"
 
 RUN useradd -ms /bin/bash accounts
 USER accounts
