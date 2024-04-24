@@ -34,5 +34,7 @@ namespace accounts
 
     private:
         std::shared_ptr<IMongoAccess> _mongoAccess;
+
+        constexpr static const char *collectionName = "accounts";
     };
 }

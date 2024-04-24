@@ -5,6 +5,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "accounts.repository.hpp"
+#include "accounts/shared/env.hpp"
 #include "accounts/utils/date.hpp"
 #include "accounts/utils/enumHelpers.hpp"
 #include "accounts/utils/mongoDocument.hpp"
@@ -30,13 +31,13 @@ std::variant<AccountDb, AppError> accounts::AccountsRepositoryImpl::getAccountBy
 std::variant<std::vector<AccountDb>, AppError> accounts::AccountsRepositoryImpl::getAccountsByUserId(std::string_view userId)
 {
     auto client = _mongoAccess->getConnection();
-    auto db = (*client)["expenso-app"];
+    auto db = (*client)[accounts::getEnv().dbName];
 
     try
     {
         auto accountsAll =
             db
-                .collection("accounts")
+                .collection(collectionName)
                 .find(make_document(kvp("userId", userId)));
 
         std::vector<AccountDb> result;
@@ -61,7 +62,7 @@ std::variant<std::vector<AccountDb>, AppError> accounts::AccountsRepositoryImpl:
 std::variant<AccountDb, AppError> accounts::AccountsRepositoryImpl::upsertAccount(std::string_view accountId, UpsertAccountDb account)
 {
     auto client = _mongoAccess->getConnection();
-    auto db = (*client)["expenso-app"];
+    auto db = (*client)[accounts::getEnv().dbName];
 
     try
     {
@@ -78,7 +79,7 @@ std::variant<AccountDb, AppError> accounts::AccountsRepositoryImpl::upsertAccoun
         stdx::optional<bsoncxx::document::value>
             result =
                 db
-                    .collection("accounts")
+                    .collection(collectionName)
                     .find_one_and_update(
                         make_document(kvp("_id", accountId)),
                         std::move(root),

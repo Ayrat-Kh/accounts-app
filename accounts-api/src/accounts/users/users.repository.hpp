@@ -36,5 +36,7 @@ namespace accounts
         std::variant<UserDb, AppError> getUserByQuery(bsoncxx::document::value query);
 
         std::shared_ptr<IMongoAccess> _mongoAccess;
+
+        constexpr static const char *collectionName = "users";
     };
 }

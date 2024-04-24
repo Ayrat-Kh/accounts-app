@@ -27,6 +27,7 @@ const accounts::EnvironmentVar &accounts::getEnv()
         variables.mongoUrl = e["ACCOUNTS_DB_URL"].to_string();
         variables.jwtKey = e["ACCOUNTS_JWT_KEY"].to_string();
         variables.port = e["ACCOUNTS_PORT"].empty() ? 3000 : atoi(e["ACCOUNTS_PORT"].to_string().c_str());
+        variables.dbName = e["ACCOUNTS_DB"].empty() ? "accounts" : e["ACCOUNTS_DB"].to_string().c_str();
     }
 
     return variables;

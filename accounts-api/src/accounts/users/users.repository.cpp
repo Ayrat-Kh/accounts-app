@@ -5,6 +5,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "users.repository.hpp"
+#include "accounts/shared/env.hpp"
 #include "accounts/utils/enumHelpers.hpp"
 #include "accounts/utils/mongoDocument.hpp"
 
@@ -39,7 +40,7 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::getUserById(std::string_view
 std::variant<UserDb, AppError> UsersRepositoryImpl::upsertUserByIdIfNotExist(std::string_view userId, UpsertUserDb user)
 {
     auto client = _mongoAccess->getConnection();
-    auto db = (*client)["expenso-app"];
+    auto db = (*client)[accounts::getEnv().dbName];
 
     try
     {
@@ -53,7 +54,7 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::upsertUserByIdIfNotExist(std
 
         stdx::optional<bsoncxx::document::value> result =
             db
-                .collection("users")
+                .collection(collectionName)
                 .find_one_and_update(
                     make_document(
                         kvp("_id", userId)),
@@ -82,7 +83,7 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::upsertUserByIdIfNotExist(std
 std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExist(GoogleUpsertUserDb user)
 {
     auto client = _mongoAccess->getConnection();
-    auto db = (*client)["expenso-app"];
+    auto db = (*client)[accounts::getEnv().dbName];
 
     auto userDocument = toMongoDocument(std::move(user));
     userDocument.append(kvp("createdAt", bsoncxx::types::b_date(std::chrono::system_clock::now())));
@@ -98,7 +99,7 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExi
 
         stdx::optional<bsoncxx::document::value> result =
             db
-                .collection("users")
+                .collection(collectionName)
                 .find_one_and_update(
                     make_document(
                         kvp("googleId", user.googleId)),
@@ -127,11 +128,11 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExi
 std::variant<UserDb, AppError> UsersRepositoryImpl::getUserByQuery(bsoncxx::document::value query)
 {
     auto client = _mongoAccess->getConnection();
-    auto db = (*client)["expenso-app"];
+    auto db = (*client)[accounts::getEnv().dbName];
 
     try
     {
-        stdx::optional<document::value> result = db.collection("users").find_one(query.view());
+        stdx::optional<document::value> result = db.collection(collectionName).find_one(query.view());
 
         if (!result.has_value())
         {
