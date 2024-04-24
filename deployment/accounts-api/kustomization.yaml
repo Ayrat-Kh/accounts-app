@@ -12,10 +12,11 @@ secretGenerator:
 commonLabels:
   env: stage
 
+commonAnnotations:
+  kubernetes.io/service-account.name: stage-accounts-deployer
+
 resources:
   - ./deployment.accounts-api.yaml
   - ./deployment.accounts-db.yaml
-  - ./namespace
-  - ./rbac
-  - ./roleBinding
-  - ./serviceAccount
+  - ./namespace.yaml
+  - ./serviceAccount.yaml

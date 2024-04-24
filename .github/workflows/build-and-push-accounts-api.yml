@@ -11,56 +11,56 @@ jobs:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          version: v0.10.0
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ayratkhisamiev/accounts-api
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: accounts-api/.
-          file: ./accounts-api/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: accounts-api/.
-          file: ./accounts-api/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Deploy to thin box cluster cluster
-        uses: kodermax/kubectl-aws-eks@master
+      - name: checkout code
+        uses: actions/checkout@master
+      - uses: actions-hub/kubectl@master
         env:
-          RELEASE_IMAGE: ayratkhisamiev/accounts-api:${{ steps.meta.outputs.labels }}
+          KUBE_HOST: ${{ secrets.KUBE_HOST }}
+          KUBE_CERTIFICATE: ${{ secrets.KUBE_CERTIFICATE }}
+          KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
         with:
-          args: set image deployment/my-pod app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
+          args: get pods
+    # runs-on: ubuntu-latest
+    # steps:
+    #   - name: Check out the repo
+    #     uses: actions/checkout@v4
+
+    #   - name: Set up Docker Buildx
+    #     uses: docker/setup-buildx-action@v3
+    #     with:
+    #       version: v0.10.0
+
+    #   - name: Log in to Docker Hub
+    #     uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+    #     with:
+    #       username: ${{ secrets.DOCKER_USERNAME }}
+    #       password: ${{ secrets.DOCKER_PASSWORD }}
+
+    #   - name: Extract metadata (tags, labels) for Docker
+    #     id: meta
+    #     uses: docker/metadata-action@v5
+    #     with:
+    #       images: ayratkhisamiev/accounts-api
+    #       tags: |
+    #         type=ref,event=branch
+    #         type=ref,event=pr
+    #         type=semver,pattern={{version}}
+    #         type=semver,pattern={{major}}.{{minor}}
+
+    #   - name: Build and push Docker image
+    #     uses: docker/build-push-action@v5
+    #     with:
+    #       context: accounts-api/.
+    #       file: ./accounts-api/Dockerfile
+    #       push: ${{ github.event_name != 'pull_request' }}
+    #       tags: ${{ steps.meta.outputs.tags }}
+    #       labels: ${{ steps.meta.outputs.labels }}
+    #       cache-from: type=gha
+    #       cache-to: type=gha,mode=max
+
+    #   - name: Deploy to thin box cluster cluster
+    #     uses: yellowmegaman/k3s-gha@master
+    #     env:
+    #       RELEASE_IMAGE: ayratkhisamiev/accounts-api:${{ steps.meta.outputs.labels }}
+    #     with:
+    #       args: set image deployment.apps/stage-accounts-api-deployment app=${{ env.RELEASE_IMAGE }} --record -n accounts-stage
