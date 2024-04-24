@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
             "/health-check",
             [](uWS::HttpResponse<false> *res, auto *req)
             {
-                res->end("Server is working fine");
+                res->end("Server is working fine !");
             })
         .post(
             "/login/google-auth/callback",

@@ -46,3 +46,21 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: accounts-api/.
+          file: ./accounts-api/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy to thin box cluster cluster
+        uses: kodermax/kubectl-aws-eks@master
+        env:
+          RELEASE_IMAGE: ayratkhisamiev/accounts-api:${{ steps.meta.outputs.labels }}
+        with:
+          args: set image deployment/my-pod app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE
