@@ -72,4 +72,4 @@ spec:
   tls:
     - secretName: thin-box.online
       hosts:
-        - 'api-accounts.thin-box.online'
+        - api-accounts.thin-box.online
