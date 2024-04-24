@@ -1,8 +1,8 @@
 # prepare project
 
 ```
-chmod +x ./preinit
-./preinit
+cd build
+cmake ..
 ```
 
 # pack to docker
@@ -13,7 +13,13 @@ docker build --progress=plain -t accounts-api .
 
 # run on docker
 
-docker run --name accounts-api accounts-api
+docker stop accounts-api; \
+docker rm accounts-api; \
+docker run --name accounts-api \
+ -e ACCOUNTS_DB_URL='mongodb://localhost:27017' \
+ -e ACCOUNTS_JWT_KEY='superDuperKey' \
+ -e ACCOUNTS_PORT=3000 \
+ accounts-api
 
 # run mongo db
 

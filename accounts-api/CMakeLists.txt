@@ -81,6 +81,8 @@ FetchContent_Declare(
   libs/beast
   libs/system
   libs/uuid
+  libs/process
+  libs/filesystem
   libs/intrusive
   libs/throw_exception
   libs/move
@@ -124,6 +126,8 @@ target_include_directories(AccountsApi
   ${MONGO_INSTALL_DIR}/install/include/mongocxx/v_noabi
   ${boost_SOURCE_DIR}/libs/uuid/include
   ${boost_SOURCE_DIR}/libs/callable_traits/include
+  ${boost_SOURCE_DIR}/libs/process/include
+  ${boost_SOURCE_DIR}/libs/filesystem/include
   ${boost_SOURCE_DIR}/libs/random/include
   ${boost_SOURCE_DIR}/libs/tti/include
   ${cppjwt_content_SOURCE_DIR}/include
