@@ -29,6 +29,7 @@ export const AccountUpsert: FC<AccountUpsertProps> = ({ ...form }) => {
           <FormNumberInput
             name="value"
             label="Price"
+            placeholder="Enter Price"
             control={control}
             className="grow-[4]"
             maxLength={10}

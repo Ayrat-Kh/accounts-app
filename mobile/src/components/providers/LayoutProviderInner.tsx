@@ -10,7 +10,7 @@ export const LayoutProviderInner: FC<LayoutProviderInnerProps> = ({
   const { bottom, left, right, top } = useSafeAreaInsets();
   return (
     <View
-      className="flex-1 bg-primary"
+      className="flex-1 bg-secondary"
       style={{
         paddingTop: top,
         paddingLeft: left,

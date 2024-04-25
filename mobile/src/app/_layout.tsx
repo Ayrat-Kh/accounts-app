@@ -7,7 +7,7 @@ import {
 import { Slot, SplashScreen } from 'expo-router';
 import { useEffect } from 'react';
 
-import { AppProvider, LayoutProvider } from '~/components/providers';
+import { AppProvider } from '~/components/providers';
 import '~/global.css';
 import { axiosInstance } from '~/lib/api/axios';
 import { registerAccessTokenHeader } from '~/lib/api/interceptors/register-access-token-header';
@@ -36,9 +36,7 @@ export default function AppLayout() {
   // Render the children routes now that all the assets are loaded.
   return (
     <AppProvider>
-      <LayoutProvider>
-        <Slot />
-      </LayoutProvider>
+      <Slot />
     </AppProvider>
   );
 }

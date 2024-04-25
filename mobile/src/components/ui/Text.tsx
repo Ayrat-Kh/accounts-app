@@ -67,11 +67,7 @@ export const Text: FC<TextProps> = ({
   ];
 
   return (
-    <TextRN
-      {...rest}
-      className={classNames.join(' ')}
-      // style={{ fontFamily: 'Inter_700Bold' }}
-    >
+    <TextRN {...rest} className={classNames.join(' ')}>
       {children}
     </TextRN>
   );

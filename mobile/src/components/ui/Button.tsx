@@ -15,7 +15,7 @@ const buttonVariants: Record<ButtonVariant, string> = {
   primary: 'bg-compPrimary border-2 border-primary font-bold py-2 px-2',
   secondary: 'bg-compSecondary border-2 border-secondary font-bold py-2 px-2',
   ghost: 'border-transparent py-2 px-2',
-  input: 'border px-4 py-2 rounded bg-primary border-primary',
+  input: 'border px-4 py-2 rounded bg-surface border-secondary',
 };
 
 type ContentAlignment = 'left' | 'center';
@@ -34,7 +34,7 @@ const textKinds: Record<ButtonVariant, TextKind> = {
 const textColors: Record<ButtonVariant, TextColor> = {
   primary: 'primary',
   secondary: 'secondary',
-  input: 'primary',
+  input: 'secondary',
   ghost: 'primary',
 };
 

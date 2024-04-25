@@ -5,6 +5,7 @@ import {
   type UpsertAccount as UpsertAccountModel,
 } from '~/lib/api/open-api';
 
+import { LayoutProvider } from '../providers';
 import { AccountUpsert } from './AccountUpsert';
 
 export const AccountAddScreen = () => {
@@ -14,5 +15,9 @@ export const AccountAddScreen = () => {
       currencyCode: Currency.Usd,
     },
   });
-  return <AccountUpsert {...form} />;
+  return (
+    <LayoutProvider>
+      <AccountUpsert {...form} />
+    </LayoutProvider>
+  );
 };

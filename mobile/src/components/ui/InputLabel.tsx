@@ -10,7 +10,7 @@ export const InputLabel = ({ label, className }: InputLabelProps) => {
   return isLabelAccessabilityLabel(label) ? (
     label.component
   ) : (
-    <Text variant="base1" color="primary-low" className={className}>
+    <Text variant="base1" color="secondary" className={className}>
       {label}
     </Text>
   );

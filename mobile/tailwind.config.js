@@ -10,6 +10,9 @@ import {
 module.exports = {
   content: ['./App.tsx', './src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
+  corePlugin: {
+    backgroundOpacity: true,
+  },
   theme: {
     extend: {
       textColor: appTextColors,
