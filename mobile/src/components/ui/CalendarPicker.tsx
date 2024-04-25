@@ -14,17 +14,17 @@ import { Text } from './Text';
 import { type AccessabilityLabel, getAccessabilityLabelNode } from './utils';
 
 type CalendarPickerModalProps = {
-  selected?: Date;
+  selectedDate?: string;
   label: AccessabilityLabel;
   isVisible: boolean;
-  onChange: (value: Date) => void;
+  onChange: (newDateValue: string) => void;
   close: VoidFunction;
 };
 
 const CalendarPickerModal = ({
   label,
   isVisible,
-  selected,
+  selectedDate,
   close,
   onChange,
 }: CalendarPickerModalProps) => {
@@ -35,13 +35,14 @@ const CalendarPickerModal = ({
 
   const compBgColor = useBgColor('compPrimary');
   const borderColor = useBorderColor('primary');
-  const [selectedState, setSelectedState] = useState<typeof selected>(selected);
+  const [selectedState, setSelectedState] =
+    useState<typeof selectedDate>(selectedDate);
   const { bottom } = useSafeAreaInsets();
 
   const selectedDateString = formatISODate(selectedState);
 
   const handleDayPress = (day: DateData) => {
-    setSelectedState(new Date(day.dateString));
+    setSelectedState(day.dateString);
   };
 
   const handleApply = () => {
@@ -83,7 +84,7 @@ const CalendarPickerModal = ({
                 }
               : undefined
           }
-          current={selectedState?.toLocaleDateString('en-US')}
+          current={selectedState}
           onDayPress={handleDayPress}
         />
 
@@ -112,15 +113,14 @@ export type CalendarPickerProps = Omit<
 export const CalendarPicker = ({
   error,
   label,
-  selected,
+  selectedDate,
   className,
   placeholder,
   onChange,
 }: CalendarPickerProps) => {
   const { isVisible, show, close } = useModal();
 
-  const itemText =
-    selected?.toLocaleDateString() || (placeholder ?? 'Select date...');
+  const itemText = selectedDate || (placeholder ?? 'Select date...');
 
   return (
     <View className={className}>
@@ -131,9 +131,9 @@ export const CalendarPicker = ({
       {error && <Text className="mt-1">{error}</Text>}
 
       <CalendarPickerModal
-        key={formatISODate(selected)}
+        key={selectedDate}
         isVisible={isVisible}
-        selected={selected}
+        selectedDate={selectedDate}
         label={label}
         close={close}
         onChange={onChange}

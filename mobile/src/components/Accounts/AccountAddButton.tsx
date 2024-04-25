@@ -1,18 +1,22 @@
+import { useNavigation } from 'expo-router';
 import { View } from 'react-native';
 
 import { IconAddOutlinedNoBorder } from '~/assets/icons';
 import { Button } from '~/components/ui';
+import { AppNavigationProp, AppRoutes } from '~/constants/routes';
 
 export const AccountAddButton = () => {
-  // const { isVisible, close, show } = useModal();
+  const { navigate } = useNavigation<AppNavigationProp>();
+
+  const handlePress = () => {
+    navigate(AppRoutes.ACCOUNTS_ADD);
+  };
 
   return (
-    <>
-      <View className="top-[-28] h-[56] max-w-[56] flex-1 justify-center items-center rounded-full bg-app-primary-200">
-        <Button variant="primary" rounded maxWidth onPress={show}>
-          <IconAddOutlinedNoBorder color="primary" size={40} />
-        </Button>
-      </View>
-    </>
+    <View className="absolute bottom-[25] right-[15] justify-center items-center rounded-full bg-app-primary-200">
+      <Button variant="primary" rounded onPress={handlePress}>
+        <IconAddOutlinedNoBorder color="primary" size={25} />
+      </Button>
+    </View>
   );
 };
