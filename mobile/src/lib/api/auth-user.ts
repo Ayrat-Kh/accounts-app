@@ -40,7 +40,7 @@ const getMe = async (): Promise<UserResult> => {
   try {
     // authorization should be empty token will be passed in interceptor
     const { data } = await userApi.v1UsersUserIdGet('', 'me');
-    // throw 'intent';
+
     return data;
   } catch (error) {
     const axiosError = error as AxiosError;
