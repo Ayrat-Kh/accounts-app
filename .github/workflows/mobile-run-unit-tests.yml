@@ -1,12 +1,12 @@
-name: Run unit tests
+name: Run mobile unit test
 
 on:
   pull_request:
     branches: ['main']
 
 jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub
+  run_mobile_unit_tests:
+    name: Run mobile unit test
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
