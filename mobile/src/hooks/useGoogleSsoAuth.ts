@@ -6,7 +6,7 @@ import {
   type ExchangeAuthCodeResult,
   useExchangeGoogleAuthCode,
 } from '~/lib/api/google';
-import type { AuthUserLoginResult } from '~/lib/api/open-api';
+import type { UserLoginResult } from '~/lib/api/open-api';
 import { useLoginStore } from '~/lib/store';
 
 const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
@@ -17,7 +17,7 @@ type LoginResult =
     }
   | {
       result: 'SUCCESS';
-      userInfo: AuthUserLoginResult;
+      userInfo: UserLoginResult;
     };
 
 type UseAuthResult = () => Promise<LoginResult>;
