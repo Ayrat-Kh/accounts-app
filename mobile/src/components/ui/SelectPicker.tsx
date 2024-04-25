@@ -14,7 +14,11 @@ import {
 } from './SelectPickerItem';
 import { SelectPickerItemSeparator } from './SelectPickerItemSeparator';
 import { Text } from './Text';
-import { type AccessabilityLabel, getAccessabilityLabelNode } from './utils';
+import {
+  type AccessabilityLabel,
+  type InputSizeVariant,
+  getAccessabilityLabelNode,
+} from './utils';
 
 type SelectPickerModalProps<
   TData,
@@ -122,6 +126,7 @@ export type SelectPickerProps<
       selected?: SelectPickerItemOption<TData, TValue>;
       onChange: (value: SelectPickerItemOption<TData, TValue>) => void;
     }) & {
+  size?: InputSizeVariant;
   options: SelectPickerItemOption<TData, TValue>[];
   label: AccessabilityLabel;
   error?: string | ReactNode;
@@ -134,6 +139,7 @@ export const SelectPicker = <
   TValue extends string | number,
   TMultiple extends boolean,
 >({
+  size = 'md',
   isMultiple,
   error,
   label,
@@ -144,8 +150,6 @@ export const SelectPicker = <
   onChange,
 }: SelectPickerProps<TData, TValue, TMultiple>) => {
   const { isVisible, show, close } = useModal();
-
-  console.log('selected', selected);
 
   const itemKey = isMultiple
     ? selected?.map((x) => x.value).join('')
@@ -158,7 +162,7 @@ export const SelectPicker = <
   return (
     <View className={className}>
       <InputLabel label={label} className="mb-1" />
-      <Button variant="input" align="left" onPress={show}>
+      <Button size={size} variant="input" align="left" onPress={show}>
         {itemText}
       </Button>
       {error && <Text className="mt-1">{error}</Text>}

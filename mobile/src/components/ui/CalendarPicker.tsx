@@ -11,7 +11,11 @@ import { InputLabel } from './InputLabel';
 import { Modal } from './Modal';
 import { useModal } from './Modal.hooks';
 import { Text } from './Text';
-import { type AccessabilityLabel, getAccessabilityLabelNode } from './utils';
+import {
+  type AccessabilityLabel,
+  type InputSizeVariant,
+  getAccessabilityLabelNode,
+} from './utils';
 
 type CalendarPickerModalProps = {
   selectedDate?: string;
@@ -105,12 +109,14 @@ export type CalendarPickerProps = Omit<
   CalendarPickerModalProps,
   'isVisible' | 'close'
 > & {
+  size?: InputSizeVariant;
   error?: string | ReactNode;
   className?: string;
   placeholder?: string;
 };
 
 export const CalendarPicker = ({
+  size = 'md',
   error,
   label,
   selectedDate,
@@ -120,12 +126,13 @@ export const CalendarPicker = ({
 }: CalendarPickerProps) => {
   const { isVisible, show, close } = useModal();
 
-  const itemText = selectedDate || (placeholder ?? 'Select date...');
+  const itemText =
+    formatISODate(selectedDate) || (placeholder ?? 'Select date...');
 
   return (
     <View className={className}>
       <InputLabel label={label} className="mb-1" />
-      <Button variant="input" align="left" onPress={show}>
+      <Button size={size} variant="input" align="left" onPress={show}>
         {itemText}
       </Button>
       {error && <Text className="mt-1">{error}</Text>}

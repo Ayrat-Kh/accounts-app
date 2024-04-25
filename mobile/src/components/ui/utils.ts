@@ -16,3 +16,12 @@ export const getAccessabilityLabelNode = (
 ): React.ReactNode => {
   return isLabelAccessabilityLabel(obj) ? obj.component : obj;
 };
+
+export type InputSizeVariant = 'lg' | 'md' | 'sm' | 'any';
+
+export const inputVariantSize: Record<InputSizeVariant, string> = {
+  lg: 'h-[60]',
+  md: 'h-[48]',
+  sm: 'h-[32]',
+  any: '',
+};

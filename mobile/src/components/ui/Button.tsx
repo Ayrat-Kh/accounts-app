@@ -8,6 +8,7 @@ import {
 import { useBgColor } from '~/ui';
 
 import { Text, TextColor, type TextKind } from './Text';
+import { type InputSizeVariant, inputVariantSize } from './utils';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'input';
 const buttonVariants: Record<ButtonVariant, string> = {
@@ -40,6 +41,7 @@ const textColors: Record<ButtonVariant, TextColor> = {
 type ButtonProps = PropsWithChildren<TouchableHighlightProps> & {
   leftIcon?: React.ReactNode;
   variant: ButtonVariant;
+  size?: InputSizeVariant;
   maxWidth?: boolean;
   rounded?: boolean;
   align?: 'left' | 'center';
@@ -49,6 +51,7 @@ export const Button: FC<ButtonProps> = ({
   children,
   leftIcon,
   variant,
+  size = 'md',
   maxWidth = false,
   rounded = false,
   className,
@@ -60,6 +63,7 @@ export const Button: FC<ButtonProps> = ({
     'items-center',
     buttonVariants[variant],
     contentAlignment[align],
+    inputVariantSize[size],
   ];
 
   if (maxWidth) {

@@ -7,7 +7,10 @@ import {
   FormInput,
   FormSelectPicker,
 } from '~/components/form';
-import type { UpsertAccount as UpsertAccountModel } from '~/lib/api/open-api';
+import {
+  Currency,
+  type UpsertAccount as UpsertAccountModel,
+} from '~/lib/api/open-api';
 
 import { AccountUpsertMapInput } from './AccountUpsertMapInput';
 
@@ -18,7 +21,7 @@ export const AccountUpsert: FC<AccountUpsertProps> = ({ ...form }) => {
 
   return (
     <FormProvider {...form}>
-      <ScrollView className="py-4">
+      <ScrollView className="p-2">
         <FormInput name="name" label="Name" control={control} />
 
         <View className="flex-row w-full mt-2 gap-2">
@@ -37,18 +40,11 @@ export const AccountUpsert: FC<AccountUpsertProps> = ({ ...form }) => {
             label="Currency"
             placeholder="Select currency"
             isMultiple={false}
-            options={[
-              {
-                label: 'USD',
-                value: 'USD',
-                data: 'USD',
-              },
-              {
-                label: 'EUR',
-                value: 'EUR',
-                data: 'USD',
-              },
-            ]}
+            options={Object.values(Currency).map((currency) => ({
+              label: currency,
+              value: currency,
+              data: currency,
+            }))}
           />
         </View>
         <FormCalendarPicker
