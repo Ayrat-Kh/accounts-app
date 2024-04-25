@@ -1,39 +1,39 @@
-import { ActivityIndicator, View } from 'react-native';
+// import { ActivityIndicator, View } from 'react-native';
 
-import { useGetMe } from '~/lib/api/auth-user';
+// import { useGetMe } from '~/lib/api/auth-user';
 
-import { useLoginStore } from '../lib/store';
-import { useLogoutWatcher } from './AppNavigationContainer.hooks';
-import { BottomTabNavigator } from './BottomTabNavigator';
-import { LoginNavigator } from './LoginNavigator';
+// import { useLogoutWatcher } from '../components/Login/Login.hooks';
+// import { useLoginStore } from '../lib/store';
+// import { BottomTabNavigator } from './BottomTabNavigator';
+// import { LoginNavigator } from './LoginNavigator';
 
-const AppNavigationContainerInner = () => {
-  const isSignedIn = useLoginStore((state) => state.isSignedIn);
+// const AppNavigationContainerInner = () => {
+//   const isSignedIn = useLoginStore((state) => state.isSignedIn);
 
-  if (isSignedIn) {
-    return <BottomTabNavigator />;
-  }
+//   if (isSignedIn) {
+//     return <BottomTabNavigator />;
+//   }
 
-  return <LoginNavigator />;
-};
+//   return <LoginNavigator />;
+// };
 
-export const AppNavigationContainer = () => {
-  const accessToken = useLoginStore((state) => state.accessToken);
-  const isLoginStoreLoaded = useLoginStore((state) => state._hasHydrated);
+// export const AppNavigationContainer = () => {
+//   const accessToken = useLoginStore((state) => state.accessToken);
+//   const isLoginStoreLoaded = useLoginStore((state) => state._hasHydrated);
 
-  const { isLoading: isLoadingMeInfo } = useGetMe({
-    enabled: Boolean(accessToken),
-  });
+//   const { isLoading: isLoadingMeInfo } = useGetMe({
+//     enabled: Boolean(accessToken),
+//   });
 
-  useLogoutWatcher();
+//   useLogoutWatcher();
 
-  if (!isLoginStoreLoaded || (Boolean(accessToken) && isLoadingMeInfo)) {
-    return (
-      <View className="flex-1 justify-center">
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+//   if (!isLoginStoreLoaded || (Boolean(accessToken) && isLoadingMeInfo)) {
+//     return (
+//       <View className="flex-1 justify-center">
+//         <ActivityIndicator size="large" />
+//       </View>
+//     );
+//   }
 
-  return <AppNavigationContainerInner />;
-};
+//   return <AppNavigationContainerInner />;
+// };

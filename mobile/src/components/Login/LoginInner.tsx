@@ -2,9 +2,9 @@ import { IconGoogle } from '~/assets/icons/icon-google';
 import { Button, Text } from '~/components/ui';
 import { useGoogleSsoAuth } from '~/hooks/useGoogleSsoAuth';
 
-import { LoginContainer } from './Login.styles';
+import { LoginContainer } from './LoginInner.styles';
 
-export const Login = () => {
+export const LoginInner = () => {
   const googleLogin = useGoogleSsoAuth();
 
   return (

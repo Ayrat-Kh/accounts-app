@@ -1,19 +1,19 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { type StyleProp, type TextStyle, View } from 'react-native';
+import { Tabs } from 'expo-router';
+// import React from 'react';
+import { StyleProp, TextStyle } from 'react-native';
 
 import { IconBook, IconSetting } from '~/assets/icons';
-import { AddExpenseModalButton, Expenses } from '~/screens/Expenses';
-import { Profile } from '~/screens/Profile';
-import { appBgColors } from '~/ui';
+
+// import { appBgColors } from '~/ui';
 
 const tabBarLabelStyle: StyleProp<TextStyle> = {
   position: 'absolute',
 };
 
-const tabBarStyle = {
-  backgroundColor: appBgColors.primary,
-  height: 40,
-};
+// const tabBarStyle = {
+//   backgroundColor: appBgColors.primary,
+//   height: 40,
+// };
 
 const tabBarItemStyle = {
   height: 30,
@@ -34,18 +34,11 @@ const ProfileTabBarIcon = ({ focused }: BarIconProps) => (
   <IconSetting color={focused ? 'primary' : 'secondary'} size={24} />
 );
 
-const Tab = createBottomTabNavigator();
-
-export const BottomTabNavigator = () => {
+export default function TabLayout() {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarStyle,
-      }}
-    >
-      <Tab.Screen
-        name="Expenses"
-        component={Expenses}
+    <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
+      <Tabs.Screen
+        name="overview"
         options={{
           headerShown: false,
           tabBarShowLabel: false,
@@ -54,7 +47,7 @@ export const BottomTabNavigator = () => {
           tabBarIcon: ExpensesIcon,
         }}
       />
-      <Tab.Screen
+      {/* <Tabs.Screen
         name="ExpensesUpsert"
         component={View} // stub
         options={{
@@ -66,10 +59,9 @@ export const BottomTabNavigator = () => {
           tabBarButton: AddExpenseModalButton,
           tabBarIcon: () => null,
         }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={Profile}
+      /> */}
+      <Tabs.Screen
+        name="profile"
         options={{
           title: 'Profile',
           tabBarShowLabel: false,
@@ -78,6 +70,6 @@ export const BottomTabNavigator = () => {
           tabBarIcon: ProfileTabBarIcon,
         }}
       />
-    </Tab.Navigator>
+    </Tabs>
   );
-};
+}

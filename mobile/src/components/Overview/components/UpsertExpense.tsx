@@ -7,11 +7,11 @@ import {
   FormInput,
   FormSelectPicker,
 } from '~/components/form';
-import type { ExpensesExpenseDto } from '~/lib/api/open-api';
+import type { UpsertAccount } from '~/lib/api/open-api';
 
 import { MapInput } from './MapInput';
 
-type UpsertExpenseProps = UseFormReturn<ExpensesExpenseDto>;
+type UpsertExpenseProps = UseFormReturn<UpsertAccount>;
 
 export const UpsertExpense: FC<UpsertExpenseProps> = ({ ...form }) => {
   const { control } = form;
@@ -23,7 +23,7 @@ export const UpsertExpense: FC<UpsertExpenseProps> = ({ ...form }) => {
 
         <View className="flex-row w-full mt-2 gap-2">
           <FormInput
-            name="total"
+            name="value"
             label="Price"
             isNumeric
             isDecimal

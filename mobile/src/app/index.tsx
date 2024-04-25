@@ -1,5 +1,5 @@
-import { Text } from '~/components/ui';
+import { AuthProvider } from '~/components/providers';
 
-export const Overview = () => {
-  return <Text>Hello from expo router</Text>;
-};
+export default function App() {
+  return <AuthProvider />;
+}

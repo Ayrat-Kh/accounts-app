@@ -1,5 +1,3 @@
-import { useLayoutEffect } from 'react';
-
 import { useGetMe } from '~/lib/api/auth-user';
 import { useLoginStore } from '~/lib/store';
 
@@ -10,9 +8,7 @@ export const useLogoutWatcher = () => {
     enabled: Boolean(accessToken),
   });
 
-  useLayoutEffect(() => {
-    if (Boolean(accessToken) && isError) {
-      useLoginStore.getState().logout();
-    }
-  }, [accessToken, isError]);
+  if (Boolean(accessToken) && isError) {
+    useLoginStore.getState().logout();
+  }
 };
