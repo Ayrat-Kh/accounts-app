@@ -5,6 +5,7 @@ import { ScrollView, View } from 'react-native';
 import {
   FormCalendarPicker,
   FormInput,
+  FormNumberInput,
   FormSelectPicker,
 } from '~/components/form';
 import {
@@ -25,13 +26,12 @@ export const AccountUpsert: FC<AccountUpsertProps> = ({ ...form }) => {
         <FormInput name="name" label="Name" control={control} />
 
         <View className="flex-row w-full mt-2 gap-2">
-          <FormInput
+          <FormNumberInput
             name="value"
             label="Price"
-            isNumeric
-            isDecimal
             control={control}
             className="grow-[4]"
+            maxLength={10}
           />
           <FormSelectPicker
             className="grow-[1]"
@@ -43,7 +43,6 @@ export const AccountUpsert: FC<AccountUpsertProps> = ({ ...form }) => {
             options={Object.values(Currency).map((currency) => ({
               label: currency,
               value: currency,
-              data: currency,
             }))}
           />
         </View>

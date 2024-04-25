@@ -3,33 +3,39 @@ import { ListRenderItemInfo } from '@shopify/flash-list';
 import { Button } from './Button';
 import { Checkbox } from './Checkbox';
 
-export type SelectPickerItemOption<TData, TValue extends string | number> = {
-  data: TData;
+export type SelectValue<
+  TValue,
+  TMultiple extends boolean,
+> = TMultiple extends true ? TValue[] : TValue | null;
+
+export type SelectPickerItemOption<TValue> = {
   value: TValue;
-  label: string;
 };
 
-export type SelectPickerItemExtraData<TData, TValue extends string | number> = {
-  selected?:
-    | SelectPickerItemOption<TData, TValue>[]
-    | SelectPickerItemOption<TData, TValue>;
-  onChange: (value: SelectPickerItemOption<TData, TValue>) => void;
+export type SelectPickerLabelItemOption<TValue> =
+  SelectPickerItemOption<TValue> & {
+    label: string;
+  };
+
+export type SelectPickerItemExtraData<TValue, TMultiple extends boolean> = {
+  selected: SelectValue<TValue, TMultiple> | null;
+  onChange: (value: SelectPickerItemOption<TValue>) => void;
 };
 
-export type SelectPickerItemProps<TData, TValue extends string | number> = {
-  extraData?: SelectPickerItemExtraData<TData, TValue>;
+export type SelectPickerItemProps<TValue, TMultiple extends boolean> = {
+  extraData?: SelectPickerItemExtraData<TValue, TMultiple>;
 } & Omit<
-  ListRenderItemInfo<SelectPickerItemOption<TData, TValue>>,
+  ListRenderItemInfo<SelectPickerLabelItemOption<TValue>>,
   'extraData' | 'onChange'
 >;
 
-export const SelectPickerItem = <TData, TValue extends string | number>({
+export function SelectPickerItem<TValue, TMultiple extends boolean>({
   extraData,
   item,
-}: SelectPickerItemProps<TData, TValue>) => {
+}: SelectPickerItemProps<TValue, TMultiple>) {
   const isSelected = Array.isArray(extraData?.selected)
     ? extraData.selected.some((x) => x.value === item.value)
-    : extraData?.selected?.value === item.value;
+    : extraData?.selected === item.value;
 
   const handlePress = () => {
     extraData?.onChange(item);
@@ -45,4 +51,4 @@ export const SelectPickerItem = <TData, TValue extends string | number>({
       />
     </Button>
   );
-};
+}

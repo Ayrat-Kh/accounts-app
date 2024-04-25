@@ -7,13 +7,11 @@ import {
   type UseFormStateReturn,
 } from 'react-hook-form';
 
-import {
-  type AccessabilityLabel,
-  Input,
-  type InputProps,
-} from '~/components/ui';
+import { type AccessabilityLabel } from '~/components/ui';
 
-type FormInputProps<
+import { NumberInput, type NumberInputProps } from '../ui/NumberInput';
+
+type FormNumberInputProps<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TFieldValues extends Record<string, any> = Record<string, any>,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -21,9 +19,9 @@ type FormInputProps<
   name: TName;
   label: AccessabilityLabel;
   control: Control<TFieldValues>;
-} & Omit<InputProps, 'onChange'>;
+} & Omit<NumberInputProps, 'onChange'>;
 
-export const FormInput = <
+export const FormNumberInput = <
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TFieldValues extends Record<string, any> = Record<string, any>,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -32,7 +30,7 @@ export const FormInput = <
   label,
   control,
   ...restInputProps
-}: FormInputProps<TFieldValues, TName>): React.ReactElement => {
+}: FormNumberInputProps<TFieldValues, TName>): React.ReactElement => {
   return (
     <Controller
       control={control}
@@ -45,7 +43,7 @@ export const FormInput = <
         fieldState: ControllerFieldState;
         formState: UseFormStateReturn<TFieldValues>;
       }) => (
-        <Input
+        <NumberInput
           {...restInputProps}
           label={label}
           value={field.value}

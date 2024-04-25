@@ -63,7 +63,7 @@ const CalendarPickerModal = ({
       header={getAccessabilityLabelNode(label)}
       onClose={close}
     >
-      <View className="flex-1 justify-between ">
+      <View className="flex-1 justify-between py-2">
         <Calendar
           style={{
             borderRadius: 5,

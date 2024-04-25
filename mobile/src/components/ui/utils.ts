@@ -25,3 +25,21 @@ export const inputVariantSize: Record<InputSizeVariant, string> = {
   sm: 'h-[32]',
   any: '',
 };
+
+const NUMBER_REGEX = /^\d*[.,]?\d*$/;
+
+export const getInputNumberValue = (
+  newValue: string,
+  oldValue: string,
+): { value: number; rawString: string } => {
+  if (NUMBER_REGEX.test(newValue)) {
+    return {
+      rawString: newValue,
+      value: parseFloat(newValue),
+    };
+  }
+  return {
+    rawString: oldValue,
+    value: parseFloat(newValue),
+  };
+};
