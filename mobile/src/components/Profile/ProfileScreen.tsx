@@ -1,5 +1,5 @@
 import { View } from 'react-native';
 
-export const ProfileInner = () => {
+export const ProfileScreen = () => {
   return <View />;
 };

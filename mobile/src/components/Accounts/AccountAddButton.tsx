@@ -1,12 +1,10 @@
 import { View } from 'react-native';
 
 import { IconAddOutlinedNoBorder } from '~/assets/icons';
-import { Button, Modal, useModal } from '~/components/ui';
+import { Button } from '~/components/ui';
 
-import { CreateExpense } from './components/CreateExpense';
-
-export const AddExpenseModalButton = () => {
-  const { isVisible, close, show } = useModal();
+export const AccountAddButton = () => {
+  // const { isVisible, close, show } = useModal();
 
   return (
     <>
@@ -15,10 +13,6 @@ export const AddExpenseModalButton = () => {
           <IconAddOutlinedNoBorder color="primary" size={40} />
         </Button>
       </View>
-      {/** Create expense modal by clicking + button **/}
-      <Modal header="Add expense" isVisible={isVisible} onClose={close}>
-        <CreateExpense />
-      </Modal>
     </>
   );
 };

@@ -7,13 +7,13 @@ import {
   FormInput,
   FormSelectPicker,
 } from '~/components/form';
-import type { UpsertAccount } from '~/lib/api/open-api';
+import type { UpsertAccount as UpsertAccountModel } from '~/lib/api/open-api';
 
-import { MapInput } from './MapInput';
+import { AccountUpsertMapInput } from './AccountUpsertMapInput';
 
-type UpsertExpenseProps = UseFormReturn<UpsertAccount>;
+type AccountUpsertProps = UseFormReturn<UpsertAccountModel>;
 
-export const UpsertExpense: FC<UpsertExpenseProps> = ({ ...form }) => {
+export const AccountUpsert: FC<AccountUpsertProps> = ({ ...form }) => {
   const { control } = form;
 
   return (
@@ -59,7 +59,7 @@ export const UpsertExpense: FC<UpsertExpenseProps> = ({ ...form }) => {
           placeholder="Select date"
         />
 
-        <MapInput />
+        <AccountUpsertMapInput />
       </ScrollView>
     </FormProvider>
   );

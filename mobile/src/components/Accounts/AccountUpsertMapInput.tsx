@@ -8,7 +8,7 @@ import { IconLocation, IconScrollV } from '~/assets/icons';
 import { Button, InputLabel, Map } from '~/components/ui';
 import type { UpsertAccount } from '~/lib/api/open-api';
 
-export const MapInput = () => {
+export const AccountUpsertMapInput = () => {
   const [scrollEnabled, setScrollEnabled] = useState(false);
 
   const mapRef = useRef<MapView>(null);

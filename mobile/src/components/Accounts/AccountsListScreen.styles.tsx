@@ -1,7 +1,9 @@
 import { type PropsWithChildren } from 'react';
 import { View } from 'react-native';
 
-export const OverviewInnerContainer = ({ children }: PropsWithChildren) => {
+export const AccountsListScreenContainer = ({
+  children,
+}: PropsWithChildren) => {
   return (
     <View className="flex-1 items-center justify-center bg-app-primary-100">
       {children}

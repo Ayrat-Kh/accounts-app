@@ -1,1 +1,1 @@
-export { Overview as default } from '~/components/Overview';
+export { OverviewScreen as default } from '~/components/Overview';
