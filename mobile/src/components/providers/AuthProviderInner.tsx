@@ -2,6 +2,7 @@ import { Redirect } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
 
 import { useLogoutWatcher } from '~/components/Login/Login.hooks';
+import { AppRoutes } from '~/constants/routes';
 import { useGetMe } from '~/lib/api/auth-user';
 import { useLoginStore } from '~/lib/store';
 
@@ -25,8 +26,8 @@ export const AuthProviderInner = () => {
   }
 
   if (isSignedIn) {
-    return <Redirect href="overview" />;
+    return <Redirect href={AppRoutes.OVERVIEW} />;
   }
 
-  return <Redirect href="login" />;
+  return <Redirect href={AppRoutes.LOGIN} />;
 };

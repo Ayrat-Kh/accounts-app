@@ -9,6 +9,7 @@ import {
 } from '~/lib/test-utils';
 import { loggedOutUserMock } from '~/lib/test-utils/login-store-mock';
 
+import { AppRoutes } from '~/constants/routes';
 import { UseGetMeKey } from '~/lib/api/auth-user';
 import { queryClient } from '~/lib/api/queryClient';
 import { useLoginStore } from '~/lib/store';
@@ -45,7 +46,10 @@ describe('AuthProviderInner', () => {
       </QueryClientProvider>,
     );
     await waitFor(() =>
-      expect(RedirectComponent).toHaveBeenCalledWith({ href: 'overview' }, {}),
+      expect(RedirectComponent).toHaveBeenCalledWith(
+        { href: AppRoutes.OVERVIEW },
+        {},
+      ),
     );
   });
 
@@ -57,7 +61,10 @@ describe('AuthProviderInner', () => {
       </QueryClientProvider>,
     );
     await waitFor(() =>
-      expect(RedirectComponent).toHaveBeenCalledWith({ href: 'login' }, {}),
+      expect(RedirectComponent).toHaveBeenCalledWith(
+        { href: AppRoutes.LOGIN },
+        {},
+      ),
     );
   });
 });

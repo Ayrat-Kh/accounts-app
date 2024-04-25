@@ -17,6 +17,9 @@ module.exports = {
       backgroundColor: appBgColors,
       fill: appFillColors,
       stroke: appStrokeColors,
+      fontFamily: {
+        app: ['Inter'],
+      },
     },
   },
   future: {
