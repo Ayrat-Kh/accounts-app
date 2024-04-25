@@ -1,0 +1,20 @@
+name: Run unit tests
+
+on:
+  pull_request:
+    branches: ['main']
+
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Install deps and run tests
+        uses: oven-sh/setup-bun@v1
+      - run: |
+          cd mobile
+          bun install
+          bun run test
