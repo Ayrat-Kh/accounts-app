@@ -18,7 +18,7 @@ const scrollPath = Skia.Path.MakeFromSVGString(
 const crossedScrollPath = Skia.Path.MakeFromSVGString('M8,22 L22,4')!;
 const crossedScrollEmptyPath = Skia.Path.MakeFromSVGString('M8,22 L8,22')!;
 
-type IconScrollVProps = Omit<BaseSettingProps, 'size'> & {
+type IconScrollVProps = BaseSettingProps & {
   isCrossed?: boolean;
 };
 
@@ -26,8 +26,8 @@ const duration = 200;
 
 export const IconScrollV: React.FC<IconScrollVProps> = ({
   isCrossed = false,
-
   color = 'primary',
+  size,
   ...rest
 }: IconScrollVProps) => {
   const crossedProgress = useSharedValue(isCrossed ? 1 : 0);
@@ -45,7 +45,7 @@ export const IconScrollV: React.FC<IconScrollVProps> = ({
   );
 
   return (
-    <Canvas style={{ flex: 1, width: 26 }} {...rest}>
+    <Canvas style={{ flex: 1, width: size, height: size }} {...rest}>
       <Path
         path={scrollPath}
         color={strokeColor}

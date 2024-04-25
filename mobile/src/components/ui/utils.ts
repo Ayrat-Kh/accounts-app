@@ -35,11 +35,11 @@ export const getInputNumberValue = (
   if (NUMBER_REGEX.test(newValue)) {
     return {
       rawString: newValue,
-      value: parseFloat(newValue),
+      value: parseFloat(newValue.replaceAll(',', '.')),
     };
   }
   return {
     rawString: oldValue,
-    value: parseFloat(newValue),
+    value: parseFloat(oldValue.replaceAll(',', '.')),
   };
 };
