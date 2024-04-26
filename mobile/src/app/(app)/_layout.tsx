@@ -1,17 +1,8 @@
 import { Tabs } from 'expo-router';
-import { StyleProp, TextStyle } from 'react-native';
 
 import { IconBook, IconSetting } from '~/assets/icons';
 import { AppRoutes } from '~/constants/routes';
-
-const tabBarLabelStyle: StyleProp<TextStyle> = {
-  position: 'absolute',
-};
-
-// const tabBarStyle = {
-//   backgroundColor: appBgColors.primary,
-//   height: 40,
-// };
+import { useBgColor } from '~/ui';
 
 const tabBarItemStyle = {
   height: 30,
@@ -26,7 +17,6 @@ type BarIconProps = {
 
 const hiddenTabOption = {
   href: null,
-  headerShown: false,
 };
 
 const ExpensesIcon = ({ focused }: BarIconProps) => (
@@ -38,30 +28,34 @@ const ProfileTabBarIcon = ({ focused }: BarIconProps) => (
 );
 
 export default function TabLayout() {
+  const tabBarBg = useBgColor('compSecondary');
+  const sectionBg = useBgColor('secondary');
+
   return (
     <>
       <Tabs
+        sceneContainerStyle={{
+          backgroundColor: sectionBg,
+        }}
         screenOptions={{
           headerShown: false,
           title: '',
-          tabBarActiveTintColor: 'blue',
+          tabBarItemStyle,
+          tabBarShowLabel: false,
+          tabBarStyle: {
+            backgroundColor: tabBarBg,
+          },
         }}
       >
         <Tabs.Screen
           name={AppRoutes.OVERVIEW}
           options={{
-            tabBarShowLabel: false,
-            tabBarLabelStyle,
-            tabBarItemStyle,
             tabBarIcon: ExpensesIcon,
           }}
         />
         <Tabs.Screen
           name={AppRoutes.PROFILE}
           options={{
-            tabBarShowLabel: false,
-            tabBarLabelStyle,
-            tabBarItemStyle,
             tabBarIcon: ProfileTabBarIcon,
           }}
         />

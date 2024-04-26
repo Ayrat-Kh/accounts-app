@@ -1,13 +1,13 @@
+import { ScreenSafeLayout } from '~/components/ScreenSafeLayout';
 import { Text } from '~/components/ui/Text';
 
 import { AccountAddButton } from '../Accounts';
-import { LayoutProvider } from '../providers';
 
 export const OverviewScreen = () => {
   return (
-    <LayoutProvider>
+    <ScreenSafeLayout>
       <Text kind="bold">Overview</Text>
       <AccountAddButton />
-    </LayoutProvider>
+    </ScreenSafeLayout>
   );
 };
