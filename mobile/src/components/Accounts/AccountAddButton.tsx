@@ -14,9 +14,13 @@ export const AccountAddButton = () => {
 
   return (
     <View className="absolute bottom-[25] right-[15] justify-center items-center rounded-full bg-app-primary-200">
-      <Button variant="primary" rounded size="any" onPress={handlePress}>
-        <IconAddOutlinedNoBorder color="primary" size={25} />
-      </Button>
+      <Button
+        variant="secondary"
+        rounded
+        size="any"
+        icon={<IconAddOutlinedNoBorder size={25} />}
+        onPress={handlePress}
+      />
     </View>
   );
 };

@@ -1,4 +1,5 @@
 import {
+  AppBgColorKey,
   appBgColors,
   appBorderColors,
   appFillColors,
@@ -31,8 +32,8 @@ export const useStrokeColor = (color: FillColor) => {
   }
 };
 
-// later will be useb for the dark theme
-export const useBgColor = (color: keyof typeof appBgColors) => {
+// later will be used for the dark theme
+export const useBgColor = (color: AppBgColorKey) => {
   return appBgColors[color];
 };
 
@@ -40,7 +41,7 @@ export const useBorderColor = (color: keyof typeof appBorderColors) => {
   return appBorderColors[color];
 };
 
-// later will be useb for the dark theme
+// later will be used for the dark theme
 export const useTextColor = (color: keyof typeof appTextColors) => {
   return appTextColors[color];
 };

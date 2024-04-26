@@ -1,11 +1,17 @@
-import type { FC, PropsWithChildren } from 'react';
+import {
+  type FC,
+  type PropsWithChildren,
+  type ReactElement,
+  cloneElement,
+} from 'react';
 import {
   TouchableHighlight,
   type TouchableHighlightProps,
   View,
 } from 'react-native';
 
-import { useBgColor } from '~/ui';
+import { IconColor } from '~/assets/icons/types';
+import { AppBgColorKey, useBgColor } from '~/ui';
 
 import { Text, TextColor, type TextKind } from './Text';
 import { type InputSizeVariant, inputVariantSize } from './utils';
@@ -38,8 +44,25 @@ const textColors: Record<ButtonVariant, TextColor> = {
   ghost: 'primary',
 };
 
-type ButtonProps = PropsWithChildren<TouchableHighlightProps> & {
-  leftIcon?: React.ReactNode;
+const underlayColors: Record<ButtonVariant, AppBgColorKey> = {
+  primary: 'compPrimary',
+  secondary: 'compSecondary',
+  input: 'compSecondary',
+  ghost: 'compPrimary',
+};
+
+const iconColors: Record<ButtonVariant, IconColor> = {
+  ghost: 'primary',
+  input: 'primary',
+  primary: 'primary',
+  secondary: 'secondary',
+};
+
+type ButtonProps = (
+  | PropsWithChildren<TouchableHighlightProps>
+  | (TouchableHighlightProps & { icon?: ReactElement })
+) & {
+  leftIcon?: ReactElement;
   variant: ButtonVariant;
   size?: InputSizeVariant;
   maxWidth?: boolean;
@@ -48,7 +71,6 @@ type ButtonProps = PropsWithChildren<TouchableHighlightProps> & {
 };
 
 export const Button: FC<ButtonProps> = ({
-  children,
   leftIcon,
   variant,
   size = 'md',
@@ -78,7 +100,15 @@ export const Button: FC<ButtonProps> = ({
 
   classNames.push(className);
 
-  const primaryBackColor = useBgColor('compPrimary');
+  const primaryBackColor = useBgColor(underlayColors[variant]);
+
+  // set icon color based on button variant
+  const centralComponent =
+    'icon' in rest && rest.icon
+      ? cloneElement(rest.icon, {
+          color: iconColors[variant],
+        })
+      : rest.children;
 
   return (
     <TouchableHighlight
@@ -89,18 +119,18 @@ export const Button: FC<ButtonProps> = ({
       <View>
         {leftIcon}
 
-        {Boolean(leftIcon && children) && <View className="mr-2" />}
+        {Boolean(leftIcon && centralComponent) && <View className="mr-2" />}
 
-        {typeof children === 'string' ? (
+        {typeof centralComponent === 'string' ? (
           <Text
             variant="base1"
             kind={textKinds[variant]}
             color={textColors[variant]}
           >
-            {children}
+            {centralComponent}
           </Text>
         ) : (
-          children
+          centralComponent
         )}
       </View>
     </TouchableHighlight>

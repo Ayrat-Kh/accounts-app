@@ -96,6 +96,8 @@ export const appBgColors = {
   surface: appColors.surface,
 } as const satisfies Required<Config>['theme']['colors'];
 
+export type AppBgColorKey = keyof typeof appBgColors;
+
 export const appBorderColors = {
   primary: appColors.purple[600],
   secondary: appColors.gray[600],
