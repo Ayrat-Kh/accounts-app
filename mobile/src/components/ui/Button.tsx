@@ -6,7 +6,7 @@ import {
 } from 'react';
 import {
   TouchableHighlight,
-  type TouchableHighlightProps,
+  type TouchableHighlightProps, 
   View,
 } from 'react-native';
 
