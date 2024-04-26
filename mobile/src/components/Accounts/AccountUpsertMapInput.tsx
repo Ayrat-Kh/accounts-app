@@ -74,13 +74,12 @@ export const AccountUpsertMapInput = () => {
         </View>
 
         <Button
-          variant="primary"
+          variant="secondary"
           size="any"
           className="absolute top-2 left-2"
+          icon={<IconScrollV isCrossed={scrollEnabled} size={26} />}
           onPress={() => setScrollEnabled((prev) => !prev)}
-        >
-          <IconScrollV isCrossed={scrollEnabled} size={26} color="secondary" />
-        </Button>
+        />
       </View>
     </View>
   );
