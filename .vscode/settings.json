@@ -65,6 +65,8 @@
     "fstream": "cpp",
     "__availability": "cpp",
     "format": "cpp",
-    "system_error": "cpp"
+    "system_error": "cpp",
+    "internal.h": "c",
+    "forward_list": "cpp"
   }
 }
