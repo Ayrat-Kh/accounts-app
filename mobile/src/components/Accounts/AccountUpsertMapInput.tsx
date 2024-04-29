@@ -59,8 +59,8 @@ export const AccountUpsertMapInput = () => {
   }, []);
 
   return (
-    <View>
-      <InputLabel label="Paid location" className="mb-1 mt-2" />
+    <>
+      <InputLabel label="Location" className="mb-1 mt-2" />
       <View className="relative items-center justify-center top-0 left-0 right-0 bottom-0">
         <Map
           scrollEnabled={scrollEnabled}
@@ -81,6 +81,6 @@ export const AccountUpsertMapInput = () => {
           onPress={() => setScrollEnabled((prev) => !prev)}
         />
       </View>
-    </View>
+    </>
   );
 };

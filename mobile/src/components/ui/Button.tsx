@@ -6,7 +6,7 @@ import {
 } from 'react';
 import {
   TouchableHighlight,
-  type TouchableHighlightProps, 
+  type TouchableHighlightProps,
   View,
 } from 'react-native';
 
@@ -52,7 +52,7 @@ const underlayColors: Record<ButtonVariant, AppBgColorKey> = {
 };
 
 const iconColors: Record<ButtonVariant, IconColor> = {
-  ghost: 'primary',
+  ghost: 'secondary',
   input: 'primary',
   primary: 'primary',
   secondary: 'secondary',

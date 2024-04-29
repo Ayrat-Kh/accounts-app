@@ -1,4 +1,4 @@
-import { useGetMe } from '~/lib/api/auth-user';
+import { useGetMe } from '~/lib/api/authUser';
 import { useLoginStore } from '~/lib/store';
 
 export const useLogoutWatcher = () => {

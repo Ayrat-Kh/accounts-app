@@ -3,7 +3,7 @@ import { ActivityIndicator, View } from 'react-native';
 
 import { useLogoutWatcher } from '~/components/Login/Login.hooks';
 import { AppRoutes } from '~/constants/routes';
-import { useGetMe } from '~/lib/api/auth-user';
+import { useGetMe } from '~/lib/api/authUser';
 import { useLoginStore } from '~/lib/store';
 
 export const AuthProviderInner = () => {

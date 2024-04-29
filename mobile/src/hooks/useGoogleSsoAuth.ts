@@ -1,7 +1,7 @@
 import * as Google from 'expo-auth-session/providers/google';
 
 import { GOOGLE_AUTH_LOG_PREFIX } from '~/constants/google-auth';
-import { useGoogleAppLoginMutation } from '~/lib/api/auth-user';
+import { useGoogleAppLoginMutation } from '~/lib/api/authUser';
 import {
   type ExchangeAuthCodeResult,
   useExchangeGoogleAuthCode,

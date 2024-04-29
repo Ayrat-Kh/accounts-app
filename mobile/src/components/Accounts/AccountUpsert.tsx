@@ -13,6 +13,7 @@ import {
   type UpsertAccount as UpsertAccountModel,
 } from '~/lib/api/open-api';
 
+import { Button, Text } from '../ui';
 import { AccountUpsertMapInput } from './AccountUpsertMapInput';
 
 type AccountUpsertProps = UseFormReturn<UpsertAccountModel>;
@@ -22,7 +23,11 @@ export const AccountUpsert: FC<AccountUpsertProps> = ({ ...form }) => {
 
   return (
     <FormProvider {...form}>
-      <ScrollView className="p-2">
+      <ScrollView className="p-4" stickyHeaderIndices={[0]}>
+        <Button className="self-end" variant="ghost">
+          <Text>Cancel</Text>
+        </Button>
+
         <FormInput name="name" label="Name" control={control} />
 
         <View className="flex-row w-full mt-2 gap-2">

@@ -61,7 +61,12 @@ export default function TabLayout() {
         />
 
         {/* Hidden tab */}
-        <Tabs.Screen name={AppRoutes.ACCOUNTS_ADD} options={hiddenTabOption} />
+        <Tabs.Screen
+          name={AppRoutes.ACCOUNTS_ADD}
+          options={{
+            ...hiddenTabOption,
+          }}
+        />
       </Tabs>
     </>
   );

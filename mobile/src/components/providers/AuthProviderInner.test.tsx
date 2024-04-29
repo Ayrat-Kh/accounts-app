@@ -10,7 +10,7 @@ import {
 import { loggedOutUserMock } from '~/lib/test-utils/login-store-mock';
 
 import { AppRoutes } from '~/constants/routes';
-import { UseGetMeKey } from '~/lib/api/auth-user';
+import { UseGetMeKey } from '~/lib/api/authUser';
 import { queryClient } from '~/lib/api/queryClient';
 import { useLoginStore } from '~/lib/store';
 

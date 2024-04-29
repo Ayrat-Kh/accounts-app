@@ -32,13 +32,13 @@ const CalendarPickerModal = ({
   close,
   onChange,
 }: CalendarPickerModalProps) => {
-  const selectedTextColor = useTextColor('primary');
-  const selectedTextBgColor = useBgColor('primarySolid');
+  const selectedTextColor = useTextColor('secondary');
+  const selectedTextBgColor = useBgColor('secondarySolid');
 
-  const textColor = useTextColor('primaryLow');
+  const textColor = useTextColor('secondaryLow');
 
-  const compBgColor = useBgColor('compPrimary');
-  const borderColor = useBorderColor('primary');
+  const compBgColor = useBgColor('compSecondary');
+  const borderColor = useBorderColor('secondary');
   const [selectedState, setSelectedState] =
     useState<typeof selectedDate>(selectedDate);
   const { bottom } = useSafeAreaInsets();
