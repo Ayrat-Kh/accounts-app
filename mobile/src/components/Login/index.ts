@@ -1,2 +1,2 @@
-export { LoginInner as Login } from './LoginInner';
+export { LoginScreen } from './LoginScreen';
 export { useLogoutWatcher } from './Login.hooks';

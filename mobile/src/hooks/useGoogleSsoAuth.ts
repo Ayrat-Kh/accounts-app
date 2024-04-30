@@ -1,6 +1,8 @@
 import * as Google from 'expo-auth-session/providers/google';
+import { router } from 'expo-router';
 
 import { GOOGLE_AUTH_LOG_PREFIX } from '~/constants/google-auth';
+import { AppRoutes } from '~/constants/routes';
 import { useGoogleAppLoginMutation } from '~/lib/api/authUser';
 import {
   type ExchangeAuthCodeResult,
@@ -30,6 +32,7 @@ type AuthStatus =
   | 'ERROR_USER_FETCH';
 
 export const useGoogleSsoAuth = (): UseAuthResult => {
+  // const { navigate } = useNavigation<AppNavigationProp>();
   const { mutateAsync: exchangeToken } = useExchangeGoogleAuthCode();
 
   const [authorizationRequest /*response */, , prompt] =
@@ -78,6 +81,8 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
       });
 
       useLoginStore.getState().setAccessToken(userInfo.accessToken);
+      router.replace(AppRoutes.OVERVIEW.path);
+      // navigate();
 
       return {
         result: 'SUCCESS',

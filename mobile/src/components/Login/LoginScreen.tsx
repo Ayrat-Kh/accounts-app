@@ -4,7 +4,7 @@ import { useGoogleSsoAuth } from '~/hooks/useGoogleSsoAuth';
 
 import { LoginContainer } from './LoginInner.styles';
 
-export const LoginInner = () => {
+export const LoginScreen = () => {
   const googleLogin = useGoogleSsoAuth();
 
   return (

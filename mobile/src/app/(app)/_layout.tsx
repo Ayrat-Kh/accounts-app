@@ -48,13 +48,13 @@ export default function TabLayout() {
         }}
       >
         <Tabs.Screen
-          name={AppRoutes.OVERVIEW}
+          name={AppRoutes.OVERVIEW.name}
           options={{
             tabBarIcon: ExpensesIcon,
           }}
         />
         <Tabs.Screen
-          name={AppRoutes.PROFILE}
+          name={AppRoutes.PROFILE.name}
           options={{
             tabBarIcon: ProfileTabBarIcon,
           }}
@@ -62,7 +62,7 @@ export default function TabLayout() {
 
         {/* Hidden tab */}
         <Tabs.Screen
-          name={AppRoutes.ACCOUNTS_ADD}
+          name={AppRoutes.ACCOUNTS_ADD.name}
           options={{
             ...hiddenTabOption,
           }}

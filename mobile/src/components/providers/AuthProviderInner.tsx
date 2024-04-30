@@ -26,8 +26,8 @@ export const AuthProviderInner = () => {
   }
 
   if (isSignedIn) {
-    return <Redirect href={AppRoutes.OVERVIEW} />;
+    return <Redirect href={AppRoutes.OVERVIEW.path} />;
   }
 
-  return <Redirect href={AppRoutes.LOGIN} />;
+  return <Redirect href={AppRoutes.LOGIN.path} />;
 };
