@@ -16,13 +16,14 @@ AuthServiceImpl::AuthServiceImpl(std::shared_ptr<IGoogleLoginService> googleLogi
 {
 }
 
-std::variant<UserLoginResult, AppError> AuthServiceImpl::googleAuth(std::string_view idToken)
+boost::asio::awaitable<std::variant<UserLoginResult, AppError>> AuthServiceImpl::googleAuth(
+    std::string_view idToken)
 {
-    auto googleAuthResult = _googleLoginService.get()->getGoogleUser(idToken);
+    std::variant<GoogleTokenInfo, AppError> googleAuthResult = co_await _googleLoginService.get()->getGoogleUser(idToken);
 
     if (const AppError *error = isError(&googleAuthResult))
     {
-        return std::move(*error);
+        co_return std::move(*error);
     }
 
     GoogleTokenInfo googleLoginResult = std::get<GoogleTokenInfo>(std::move(googleAuthResult));
@@ -42,14 +43,14 @@ std::variant<UserLoginResult, AppError> AuthServiceImpl::googleAuth(std::string_
 
     if (const AppError *error = isError(&userDbResult))
     {
-        return std::move(*error);
+        co_return std::move(*error);
     }
 
     auto user = std::get<UserDb>(std::move(userDbResult));
 
     auto accessToken = _jwtService.get()->createUserToken(user.id);
 
-    return std::move(UserLoginResult{
+    co_return std::move(UserLoginResult{
         .accessToken = std::move(accessToken),
         .sessionToken = "",
         .user = std::move(user)});

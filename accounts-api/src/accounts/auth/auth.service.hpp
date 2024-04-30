@@ -2,6 +2,8 @@
 
 #include <variant>
 
+#include <boost/asio.hpp>
+
 #include "accounts/auth/auth.models.hpp"
 #include "accounts/users/users.repository.hpp"
 #include "accounts/shared/models.hpp"
@@ -13,7 +15,7 @@ namespace accounts
     class IAuthService
     {
     public:
-        virtual std::variant<UserLoginResult, AppError> googleAuth(std::string_view accessToken) = 0;
+        virtual boost::asio::awaitable<std::variant<UserLoginResult, AppError>> googleAuth(std::string_view accessToken) = 0;
     };
 
     class AuthServiceImpl : public IAuthService
@@ -23,10 +25,10 @@ namespace accounts
         std::shared_ptr<IJwtService> _jwtService;
 
     public:
-        AuthServiceImpl(std::shared_ptr<IGoogleLoginService> googleLoginService,
-                        std::shared_ptr<IUsersRepository> userRepository,
+        AuthServiceImpl(std::shared_ptr<IGoogleLoginService> _googleLoginService,
+                        std::shared_ptr<IUsersRepository> _userRepository,
                         std::shared_ptr<IJwtService> _jwtService);
 
-        virtual std::variant<UserLoginResult, AppError> googleAuth(std::string_view idToken);
+        virtual boost::asio::awaitable<std::variant<UserLoginResult, AppError>> googleAuth(std::string_view idToken);
     };
 }

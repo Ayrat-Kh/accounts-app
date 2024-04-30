@@ -34,12 +34,12 @@ namespace accounts
     class IGoogleLoginService
     {
     public:
-        virtual std::variant<GoogleTokenInfo, AppError> getGoogleUser(std::string_view idToken) = 0;
+        virtual boost::asio::awaitable<std::variant<GoogleTokenInfo, AppError>> getGoogleUser(std::string_view idToken) = 0;
     };
 
     class GoogleLoginServiceImpl : public IGoogleLoginService
     {
     public:
-        virtual std::variant<GoogleTokenInfo, AppError> getGoogleUser(std::string_view idToken) noexcept override;
+        virtual boost::asio::awaitable<std::variant<GoogleTokenInfo, AppError>> getGoogleUser(std::string_view idToken) noexcept override;
     };
 }
