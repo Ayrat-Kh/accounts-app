@@ -23,7 +23,6 @@ const googleAppLoginMutation = async (
 ): Promise<UserLoginResult> => {
   try {
     const { data } = await authApi.loginGoogleAuthCallbackPost(request);
-
     return data;
   } catch (error) {
     const axiosError = error as AxiosError;

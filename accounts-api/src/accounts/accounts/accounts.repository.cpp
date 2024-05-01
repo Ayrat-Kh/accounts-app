@@ -23,12 +23,12 @@ accounts::AccountsRepositoryImpl::AccountsRepositoryImpl(std::shared_ptr<IMongoA
 {
 }
 
-std::variant<AccountDb, AppError> accounts::AccountsRepositoryImpl::getAccountById(std::string_view accountId)
+AccountsResult<AccountDb> accounts::AccountsRepositoryImpl::getAccountById(std::string_view accountId)
 {
-    return std::variant<AccountDb, AppError>();
+    return AccountsResult<AccountDb>();
 }
 
-std::variant<std::vector<AccountDb>, AppError> accounts::AccountsRepositoryImpl::getAccountsByUserId(std::string_view userId)
+AccountsResult<std::vector<AccountDb>> accounts::AccountsRepositoryImpl::getAccountsByUserId(std::string_view userId)
 {
     auto client = _mongoAccess->getConnection();
     auto db = (*client)[accounts::getEnv().dbName];
@@ -59,7 +59,7 @@ std::variant<std::vector<AccountDb>, AppError> accounts::AccountsRepositoryImpl:
     }
 }
 
-std::variant<AccountDb, AppError> accounts::AccountsRepositoryImpl::upsertAccount(std::string_view accountId, UpsertAccountDb account)
+AccountsResult<AccountDb> accounts::AccountsRepositoryImpl::upsertAccount(std::string_view accountId, UpsertAccountDb account)
 {
     auto client = _mongoAccess->getConnection();
     auto db = (*client)[accounts::getEnv().dbName];

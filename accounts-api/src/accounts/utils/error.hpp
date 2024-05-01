@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <variant>
 #include <iostream>
 
 #include <boost/json.hpp>
@@ -13,25 +12,6 @@
 
 namespace accounts
 {
-    template <class... Args>
-    AppError *isError(std::variant<Args...> *args)
-    {
-        return std::get_if<AppError>(args);
-    }
-
-    template <class... Args>
-    AppError *logIfError(std::variant<Args...> &args)
-    {
-        AppError *ptr = isError(args);
-
-        if (ptr != nullptr)
-        {
-            // std::cerr << "Caught error: \"{ \"code\": " << static_cast<int>(ptr->code) << ", \"message\":" << ptr->message << "}\"'\n";
-        }
-
-        return ptr;
-    }
-
     template <class TValidationResult>
     bool abortIfValidationFailed(uWS::HttpResponse<false> *res, std::optional<TValidationResult> obj)
     {
@@ -61,23 +41,22 @@ namespace accounts
 
     bool abortIfUnauthorized(uWS::HttpResponse<false> *res, const std::optional<AuthUser> &authUser);
 
-    template <class... Args>
-    bool abortIfAppError(uWS::HttpResponse<false> *res, std::variant<Args...> *args)
+    template <class TResult>
+    bool abortRequestIfAppError(uWS::HttpResponse<false> *res, AccountsResult<TResult> *args)
     {
-        AppError *ptr = isError(args);
-
-        if (ptr == nullptr)
+        if (!args->has_error())
         {
             return false;
         }
 
-        boost::json::object error;
-        error["code"] = ptr->code;
-        error["message"] = std::move(ptr->message);
+        auto v = boost::json::serialize(std::move(boost::json::value_from(
+            std::move(args->value()))));
+
+        std::cerr << v;
 
         res->writeHeader("Content-Type", "application/json")
             ->writeStatus("400")
-            ->end(boost::json::serialize(error));
+            ->end(v);
 
         return true;
     }

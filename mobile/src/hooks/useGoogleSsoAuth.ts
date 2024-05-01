@@ -79,17 +79,17 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
       const userInfo = await googleAppLogin({
         idToken: exchangeTokenResult.idToken,
       });
+      console.log('navigate', userInfo);
 
       useLoginStore.getState().setAccessToken(userInfo.accessToken);
       router.replace(AppRoutes.OVERVIEW.path);
-      // navigate();
 
       return {
         result: 'SUCCESS',
         userInfo: userInfo,
       };
     } catch (e) {
-      console.error(`[${GOOGLE_AUTH_LOG_PREFIX}] error app login`, e);
+      console.error(`[${GOOGLE_AUTH_LOG_PREFIX}] error app login`r);
       return {
         result: 'ERROR_USER_FETCH',
       };

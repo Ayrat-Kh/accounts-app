@@ -21,7 +21,7 @@ UsersRepositoryImpl::UsersRepositoryImpl(std::shared_ptr<IMongoAccess> mongoAcce
 {
 }
 
-std::variant<UserDb, AppError> UsersRepositoryImpl::getUserByGoogleId(std::string_view googleId)
+AccountsResult<UserDb> UsersRepositoryImpl::getUserByGoogleId(std::string_view googleId)
 {
     return std::move(
         getUserByQuery(
@@ -29,7 +29,7 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::getUserByGoogleId(std::strin
                 make_document(kvp("googleId", googleId)))));
 }
 
-std::variant<UserDb, AppError> UsersRepositoryImpl::getUserById(std::string_view userId)
+AccountsResult<UserDb> UsersRepositoryImpl::getUserById(std::string_view userId)
 {
     return std::move(
         getUserByQuery(
@@ -37,7 +37,7 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::getUserById(std::string_view
                 make_document(kvp("_id", userId)))));
 }
 
-std::variant<UserDb, AppError> UsersRepositoryImpl::upsertUserByIdIfNotExist(std::string_view userId, UpsertUserDb user)
+AccountsResult<UserDb> UsersRepositoryImpl::upsertUserByIdIfNotExist(std::string_view userId, UpsertUserDb user)
 {
     auto client = _mongoAccess->getConnection();
     auto db = (*client)[accounts::getEnv().dbName];
@@ -80,7 +80,7 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::upsertUserByIdIfNotExist(std
     }
 }
 
-std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExist(GoogleUpsertUserDb user)
+AccountsResult<UserDb> UsersRepositoryImpl::createUserByGoogleIdIfNotExist(GoogleUpsertUserDb user)
 {
     auto client = _mongoAccess->getConnection();
     auto db = (*client)[accounts::getEnv().dbName];
@@ -125,7 +125,7 @@ std::variant<UserDb, AppError> UsersRepositoryImpl::createUserByGoogleIdIfNotExi
     }
 }
 
-std::variant<UserDb, AppError> UsersRepositoryImpl::getUserByQuery(bsoncxx::document::value query)
+AccountsResult<UserDb> UsersRepositoryImpl::getUserByQuery(bsoncxx::document::value query)
 {
     auto client = _mongoAccess->getConnection();
     auto db = (*client)[accounts::getEnv().dbName];

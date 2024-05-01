@@ -20,18 +20,17 @@ void accounts::handleGoogleLogin(uWS::HttpResponse<false> *rawResponse, uWS::Htt
 			AppDependencies::instance().ioContext,
 			[&parsedBody](uWS::HttpResponse<false> *res) mutable -> boost::asio::awaitable<void>
 			{
-				auto &&result = co_await AppDependencies::instance().authService->googleAuth(parsedBody.idToken);
-				if (abortIfAppError(res, &result))
+				auto &&userLoginResult = co_await AppDependencies::instance().authService->googleAuth(parsedBody.idToken);
+
+				if (abortRequestIfAppError(res, &userLoginResult))
 				{
 					co_return;
 				}
 
-				UserLoginResult &&loginResult = std::get<UserLoginResult>(std::move(result));
-
 				res
 					->writeHeader("Content-Type", "application/json")
 					->end(boost::json::serialize(std::move(boost::json::value_from(
-						std::move(loginResult)))));
+						std::move(userLoginResult.value())))));
 			}(_res),
 			boost::asio::detached);
 	};

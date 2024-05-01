@@ -1,6 +1,5 @@
 #pragma once
 
-#include <variant>
 #include <string_view>
 
 #include <boost/beast/ssl/ssl_stream.hpp>

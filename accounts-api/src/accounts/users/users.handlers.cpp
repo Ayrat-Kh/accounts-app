@@ -38,17 +38,15 @@ void accounts::handleGetUserById(uWS::HttpResponse<false> *res, uWS::HttpRequest
 
     auto &&userDb = AppDependencies::instance().userRepo->getUserById(userId);
 
-    if (abortIfAppError(res, &userDb))
+    if (abortRequestIfAppError(res, &userDb))
     {
         return;
     }
-
-    auto &&userDbCasted = std::get<UserDb>(std::move(userDb));
 
     res
         ->writeHeader("Content-Type", "application/json")
         ->end(boost::json::serialize(
             boost::json::object(
                 {{"user",
-                  boost::json::value_from(std::move(userDbCasted))}})));
+                  boost::json::value_from(std::move(userDb.value()))}})));
 }
