@@ -47,7 +47,7 @@ describe('AuthProviderInner', () => {
     );
     await waitFor(() =>
       expect(RedirectComponent).toHaveBeenCalledWith(
-        { href: AppRoutes.OVERVIEW },
+        { href: AppRoutes.OVERVIEW.path },
         {},
       ),
     );
@@ -62,7 +62,7 @@ describe('AuthProviderInner', () => {
     );
     await waitFor(() =>
       expect(RedirectComponent).toHaveBeenCalledWith(
-        { href: AppRoutes.LOGIN },
+        { href: AppRoutes.LOGIN.path },
         {},
       ),
     );
