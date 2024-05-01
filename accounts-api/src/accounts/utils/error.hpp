@@ -50,9 +50,9 @@ namespace accounts
         }
 
         auto v = boost::json::serialize(std::move(boost::json::value_from(
-            std::move(args->value()))));
+            std::move(args->error()))));
 
-        std::cerr << v;
+        std::cerr << "error occurred: " << v;
 
         res->writeHeader("Content-Type", "application/json")
             ->writeStatus("400")

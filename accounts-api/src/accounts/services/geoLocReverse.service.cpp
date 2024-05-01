@@ -27,10 +27,10 @@ boost::asio::awaitable<AccountsResult<GeocodeReverseResult>> GeoLocReverseServic
     req.version(11);                                                                                                // HTTP/1.1
     req.set(http::field::content_type, "application/x-www-form-urlencoded");                                        // Content type
     req.body() = "lat=" + std::to_string(params.lat) + "&lon=" + std::to_string(params.lon) + "api_key=" + _apiKey; // Your POST data
-    req.prepare_payload();
 
     try
     {
+
         auto response = co_await sendHttpsRequest("geocode.maps.co", std::move(req));
 
         if (response.has_error())

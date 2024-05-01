@@ -1,4 +1,5 @@
 #include <charconv>
+#include <iostream>
 
 #include <boost/asio.hpp>
 
@@ -7,20 +8,28 @@
 #include "accounts/utils/error.hpp"
 #include "accounts/utils/userId.hpp"
 
-void accounts::handleDecodeGeoApi(uWS::HttpResponse<false> *res, uWS::HttpRequest *req)
+void accounts::handleDecodeGeoApi(uWS::HttpResponse<false> *_res, uWS::HttpRequest *req)
 {
     auto authToken = req->getHeader("authorization");
     auto &&authUser = AppDependencies::instance().jwtService->getAuthUser(authToken);
-    if (abortIfUnauthorized(res, authUser))
+    if (abortIfUnauthorized(_res, authUser))
     {
         return;
     }
 
-    auto latParam = req->getParameter("lat");
-    auto lonParam = req->getParameter("lon");
+    auto latParam = req->getQuery("lat");
+    auto lonParam = req->getQuery("lon");
+
+    if (latParam == "" || lonParam == "")
+    {
+        abort(_res, accounts::AppError{
+                        .code = enumToString(EAppErrorCode::INVALID_INPUT),
+                        .message = "lat and lon required params"});
+    }
 
     char *endp = nullptr;
     float lat = std::strtof(latParam.data(), &endp);
+
     float lon = std::strtof(lonParam.data(), &endp);
 
     boost::asio::co_spawn(
@@ -31,7 +40,7 @@ void accounts::handleDecodeGeoApi(uWS::HttpResponse<false> *res, uWS::HttpReques
                 {.lat = lat,
                  .lon = lon});
 
-            if (result.has_error())
+            if (abortRequestIfAppError(res, &result))
             {
                 co_return;
             }
@@ -40,6 +49,10 @@ void accounts::handleDecodeGeoApi(uWS::HttpResponse<false> *res, uWS::HttpReques
                 ->writeHeader("Content-Type", "application/json")
                 ->end(boost::json::serialize(std::move(boost::json::value_from(
                     std::move(result.value())))));
-        }(res),
+        }(_res->onAborted(
+            [_res]()
+            { 
+            std::cerr << "aborted request reverse geocode";
+            _res->end("Aborted request"); })),
         boost::asio::detached);
 }

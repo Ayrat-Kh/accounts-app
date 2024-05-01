@@ -21,47 +21,58 @@ namespace accounts
         {
             _json.reserve(4096);
 
-            response->onAborted([]() {})->onData(
-                [this, handler, response, req](std::string_view data, bool isLast) mutable
-                {
-                    _json.append(data);
-
-                    if (!isLast)
-                    {
-                        return;
-                    }
-
-                    try
-                    {
-                        auto jsonBodyObject = boost::json::parse(_json);
-                        auto &&reqBody = boost::json::try_value_to<TBody>(std::move(jsonBodyObject));
-
-                        if (reqBody.has_error())
+            response->onAborted(
+                        [response]()
                         {
+                            std::cerr << "Aborted request";
+                            abort(
+                                response,
+                                std::move(
+                                    AppError{
+                                        .code = enumToString(EAppErrorCode::APP_ERROR),
+                                        .message = "Aborted request"}));
+                        })
+                ->onData(
+                    [this, handler, response, req](std::string_view data, bool isLast) mutable
+                    {
+                        _json.append(data);
+
+                        if (!isLast)
+                        {
+                            return;
+                        }
+
+                        try
+                        {
+                            auto jsonBodyObject = boost::json::parse(_json);
+                            auto &&reqBody = boost::json::try_value_to<TBody>(std::move(jsonBodyObject));
+
+                            if (reqBody.has_error())
+                            {
+                                abort(
+                                    response,
+                                    std::move(
+                                        AppError{
+                                            .code = enumToString(EAppErrorCode::PARSE_BODY_ERROR),
+                                            .message = std::string(reqBody.error().message())}));
+                                return;
+                            }
+
+                            handler(response, req, std::move(reqBody.value()));
+                        }
+                        catch (std::exception &ex)
+                        {
+                            // ToDo log me later
+                            std::cerr << "Request caught error " << ex.what() << std::endl;
+
                             abort(
                                 response,
                                 std::move(
                                     AppError{
                                         .code = enumToString(EAppErrorCode::PARSE_BODY_ERROR),
-                                        .message = std::string(reqBody.error().message())}));
-                            return;
+                                        .message = "Invalid input json object"}));
                         }
-
-                        handler(response, req, std::move(reqBody.value()));
-                    }
-                    catch (std::exception &ex)
-                    {
-                        // ToDo log me later
-                        std::cerr << "Request caught error " << ex.what() << std::endl;
-
-                        abort(
-                            response,
-                            std::move(
-                                AppError{
-                                    .code = enumToString(EAppErrorCode::PARSE_BODY_ERROR),
-                                    .message = "Invalid input json object"}));
-                    }
-                });
+                    });
         }
     };
 }
