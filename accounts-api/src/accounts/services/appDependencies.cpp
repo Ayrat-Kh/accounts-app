@@ -15,6 +15,9 @@ void accounts::AppDependencies::init()
     configureMongoInstance(mongocxx::uri(env.mongoUrl), mongoAccess);
     this->mongoAccess = mongoAccess;
 
+    geoLocReverseService =
+        std::make_shared<GeoLocReverseServiceImpl>(
+            std::move(env.geoCodeApiKey));
     googleLoginService = std::make_shared<GoogleLoginServiceImpl>();
     jwtService = std::make_shared<JwtServiceImpl>(env.jwtKey);
     userRepo = std::make_shared<UsersRepositoryImpl>(mongoAccess);

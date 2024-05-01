@@ -19,14 +19,14 @@ AuthServiceImpl::AuthServiceImpl(std::shared_ptr<IGoogleLoginService> googleLogi
 boost::asio::awaitable<std::variant<UserLoginResult, AppError>> AuthServiceImpl::googleAuth(
     std::string_view idToken)
 {
-    std::variant<GoogleTokenInfo, AppError> googleAuthResult = co_await _googleLoginService.get()->getGoogleUser(idToken);
+    accounts::AccountsResult<GoogleTokenInfo> googleAuthResult = co_await _googleLoginService.get()->getGoogleUser(idToken);
 
-    if (const AppError *error = isError(&googleAuthResult))
+    if (googleAuthResult.has_error())
     {
-        co_return std::move(*error);
+        co_return std::move(googleAuthResult.error());
     }
 
-    GoogleTokenInfo googleLoginResult = std::get<GoogleTokenInfo>(std::move(googleAuthResult));
+    GoogleTokenInfo &googleLoginResult = googleAuthResult.value();
 
     GoogleUpsertUserDb saveUserDb;
     saveUserDb.id = "user_" + boost::uuids::to_string(boost::uuids::random_generator()());

@@ -24,6 +24,14 @@ const accounts::EnvironmentVar &accounts::getEnv()
             throw new std::domain_error(errorMessage);
         }
 
+        if (e["ACCOUNTS_GEOCODE_API_KEY"].empty())
+        {
+            const char *errorMessage = R"(Please set "ACCOUNTS_GEOCODE_API_KEY")";
+            std::cerr << errorMessage << std::endl;
+            throw new std::domain_error(errorMessage);
+        }
+
+        variables.geoCodeApiKey = e["ACCOUNTS_GEOCODE_API_KEY"].to_string();
         variables.mongoUrl = e["ACCOUNTS_DB_URL"].to_string();
         variables.jwtKey = e["ACCOUNTS_JWT_KEY"].to_string();
         variables.port = e["ACCOUNTS_PORT"].empty() ? 3000 : atoi(e["ACCOUNTS_PORT"].to_string().c_str());

@@ -1,9 +1,9 @@
 #pragma once
 
-#include <variant>
 #include <string>
 #include <string_view>
 
+#include <boost/asio/awaitable.hpp>
 #include <boost/describe.hpp>
 
 #include "accounts/shared/models.hpp"
@@ -34,12 +34,12 @@ namespace accounts
     class IGoogleLoginService
     {
     public:
-        virtual boost::asio::awaitable<std::variant<GoogleTokenInfo, AppError>> getGoogleUser(std::string_view idToken) = 0;
+        virtual boost::asio::awaitable<AccountsResult<GoogleTokenInfo>> getGoogleUser(std::string_view idToken) = 0;
     };
 
     class GoogleLoginServiceImpl : public IGoogleLoginService
     {
     public:
-        virtual boost::asio::awaitable<std::variant<GoogleTokenInfo, AppError>> getGoogleUser(std::string_view idToken) noexcept override;
+        virtual boost::asio::awaitable<AccountsResult<GoogleTokenInfo>> getGoogleUser(std::string_view idToken) noexcept override;
     };
 }

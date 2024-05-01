@@ -2,15 +2,10 @@
 
 #include "accounts/services/appDependencies.hpp"
 #include "accounts/accounts/accounts.handlers.hpp"
+#include "accounts/geoCode/geoCode.handlers.hpp"
 #include "accounts/auth/auth.handlers.hpp"
 #include "accounts/users/users.handlers.hpp"
 #include "accounts/shared/env.hpp"
-
-// #include <boost/describe.hpp>
-// #include "accounts/utils/objectMapper.hpp"
-// #include <string>
-// #include <vector>
-// #include <iostream>
 
 // void *operator new(size_t size)
 // {
@@ -111,7 +106,11 @@ int main(int argc, char *argv[])
             accounts::handleGetUserById)
         .get(
             "/v1/users/:userId/accounts",
-            accounts::handleGetAccountsByUserId);
+            accounts::handleGetAccountsByUserId)
+        .get(
+            "/v1/geo/reverse",
+            accounts::handleDecodeGeoApi);
+    ;
 
     // start server
     app
