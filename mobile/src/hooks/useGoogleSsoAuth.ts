@@ -1,12 +1,14 @@
 import * as Google from 'expo-auth-session/providers/google';
+import { router } from 'expo-router';
 
 import { GOOGLE_AUTH_LOG_PREFIX } from '~/constants/google-auth';
-import { useGoogleAppLoginMutation } from '~/lib/api/auth-user';
+import { AppRoutes } from '~/constants/routes';
+import { useGoogleAppLoginMutation } from '~/lib/api/authUser';
 import {
   type ExchangeAuthCodeResult,
   useExchangeGoogleAuthCode,
 } from '~/lib/api/google';
-import type { AuthUserLoginResult } from '~/lib/api/open-api';
+import type { UserLoginResult } from '~/lib/api/open-api';
 import { useLoginStore } from '~/lib/store';
 
 const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
@@ -17,7 +19,7 @@ type LoginResult =
     }
   | {
       result: 'SUCCESS';
-      userInfo: AuthUserLoginResult;
+      userInfo: UserLoginResult;
     };
 
 type UseAuthResult = () => Promise<LoginResult>;
@@ -30,6 +32,7 @@ type AuthStatus =
   | 'ERROR_USER_FETCH';
 
 export const useGoogleSsoAuth = (): UseAuthResult => {
+  // const { navigate } = useNavigation<AppNavigationProp>();
   const { mutateAsync: exchangeToken } = useExchangeGoogleAuthCode();
 
   const [authorizationRequest /*response */, , prompt] =
@@ -78,13 +81,14 @@ export const useGoogleSsoAuth = (): UseAuthResult => {
       });
 
       useLoginStore.getState().setAccessToken(userInfo.accessToken);
+      router.replace(AppRoutes.OVERVIEW.path);
 
       return {
         result: 'SUCCESS',
         userInfo: userInfo,
       };
     } catch (e) {
-      console.error(`[${GOOGLE_AUTH_LOG_PREFIX}] error app login`, e);
+      console.error(`[${GOOGLE_AUTH_LOG_PREFIX}] error app login`);
       return {
         result: 'ERROR_USER_FETCH',
       };

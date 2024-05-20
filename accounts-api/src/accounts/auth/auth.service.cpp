@@ -16,16 +16,17 @@ AuthServiceImpl::AuthServiceImpl(std::shared_ptr<IGoogleLoginService> googleLogi
 {
 }
 
-std::variant<UserLoginResult, AppError> AuthServiceImpl::googleAuth(std::string_view idToken)
+boost::asio::awaitable<AccountsResult<UserLoginResult>> AuthServiceImpl::googleAuth(
+    std::string_view idToken)
 {
-    auto googleAuthResult = _googleLoginService.get()->getGoogleUser(idToken);
+    accounts::AccountsResult<GoogleTokenInfo> googleAuthResult = co_await _googleLoginService.get()->getGoogleUser(idToken);
 
-    if (const AppError *error = isError(&googleAuthResult))
+    if (googleAuthResult.has_error())
     {
-        return std::move(*error);
+        co_return std::move(googleAuthResult.error());
     }
 
-    GoogleTokenInfo googleLoginResult = std::get<GoogleTokenInfo>(std::move(googleAuthResult));
+    GoogleTokenInfo &googleLoginResult = googleAuthResult.value();
 
     GoogleUpsertUserDb saveUserDb;
     saveUserDb.id = "user_" + boost::uuids::to_string(boost::uuids::random_generator()());
@@ -40,17 +41,15 @@ std::variant<UserLoginResult, AppError> AuthServiceImpl::googleAuth(std::string_
 
     auto userDbResult = _userRepository.get()->createUserByGoogleIdIfNotExist(std::move(saveUserDb));
 
-    if (const AppError *error = isError(&userDbResult))
+    if (userDbResult.has_error())
     {
-        return std::move(*error);
+        co_return std::move(userDbResult.error());
     }
 
-    auto user = std::get<UserDb>(std::move(userDbResult));
+    auto accessToken = _jwtService.get()->createUserToken(userDbResult.value().id);
 
-    auto accessToken = _jwtService.get()->createUserToken(user.id);
-
-    return std::move(UserLoginResult{
+    co_return std::move(UserLoginResult{
         .accessToken = std::move(accessToken),
         .sessionToken = "",
-        .user = std::move(user)});
+        .user = std::move(userDbResult.value())});
 }

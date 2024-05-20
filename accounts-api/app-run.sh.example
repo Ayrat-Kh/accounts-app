@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#!/bin/bash
+
+export ACCOUNTS_DB_URL=mongodb://localhost:27017
+export ACCOUNTS_JWT_KEY=superDuperKey
+export ACCOUNTS_PORT=3000
+export ACCOUNTS_DB=accounts
+export ACCOUNTS_GEOCODE_API_KEY=
+
+./build/AccountsApi

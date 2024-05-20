@@ -40,19 +40,21 @@ export const Modal: FC<ModalProps> = ({
         onClose();
       }}
     >
-      <View className="flex-row justify-between items-center border-b-4 px-4 pt-4 pb-3 border-primary bg-primary">
+      <View className="flex-row justify-between items-center border-b-4 px-4 pt-4 pb-3 border-secondary bg-compSecondary">
         {typeof header === 'string' ? (
-          <Text variant="h3" kind="bold" color="primary">
+          <Text variant="h3" kind="bold" color="secondary">
             {header}
           </Text>
         ) : (
           header
         )}
-        <Button variant="ghost" onPress={onClose}>
-          <IconCloseOutlinedNoBorder size={20} color="secondary" />
-        </Button>
+        <Button
+          variant="ghost"
+          icon={<IconCloseOutlinedNoBorder size={20} />}
+          onPress={onClose}
+        />
       </View>
-      <View className="px-4 pt-3 flex-1 bg-primary">{children}</View>
+      <View className="px-4 pt-3 flex-1 bg-secondary">{children}</View>
     </ModalRN>
   );
 };

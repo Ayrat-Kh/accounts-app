@@ -2,15 +2,10 @@
 
 #include "accounts/services/appDependencies.hpp"
 #include "accounts/accounts/accounts.handlers.hpp"
+#include "accounts/geoCode/geoCode.handlers.hpp"
 #include "accounts/auth/auth.handlers.hpp"
 #include "accounts/users/users.handlers.hpp"
 #include "accounts/shared/env.hpp"
-
-// #include <boost/describe.hpp>
-// #include "accounts/utils/objectMapper.hpp"
-// #include <string>
-// #include <vector>
-// #include <iostream>
 
 // void *operator new(size_t size)
 // {
@@ -79,22 +74,24 @@ int main(int argc, char *argv[])
     // std::cout << "int " << base.nested.nesInt[0] << std::endl;
     // std::cout << "nes " << base.nesNes[0].name.value() << std::endl;
 
-    // return 0;
-
     // ToDo config section - hardcoded for now. later read from env
     auto &env = accounts::getEnv();
 
-    // dependency section
+    // dependency section, init asio io_context
     ::accounts::AppDependencies::instance().init();
 
+    // set asio io_context
+    uWS::Loop::get(&::accounts::AppDependencies::instance().ioContext);
+
     // server section
-    uWS::App()
-        .get(
-            "/health-check",
-            [](uWS::HttpResponse<false> *res, auto *req)
-            {
-                res->end("Server is working fine !");
-            })
+    auto app = uWS::App();
+
+    app.get(
+           "/health-check",
+           [](uWS::HttpResponse<false> *res, auto *req)
+           {
+               res->end("Server is working fine !");
+           })
         .post(
             "/login/google-auth/callback",
             accounts::handleGoogleLogin)
@@ -110,6 +107,13 @@ int main(int argc, char *argv[])
         .get(
             "/v1/users/:userId/accounts",
             accounts::handleGetAccountsByUserId)
+        .get(
+            "/v1/geo/reverse",
+            accounts::handleDecodeGeoApi);
+    ;
+
+    // start server
+    app
         .listen(
             env.port,
             [&env](auto *listen_socket)
@@ -118,8 +122,10 @@ int main(int argc, char *argv[])
                 {
                     std::cout << "Listening on port " << env.port << std::endl;
                 }
-            })
-        .run();
+            });
+
+    // keep runner
+    ::accounts::AppDependencies::instance().ioContext.run();
 
     return 0;
 }

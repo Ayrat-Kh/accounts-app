@@ -3,6 +3,7 @@
 api.ts
 api/accounts-api.ts
 api/auth-api.ts
+api/geo-api.ts
 api/health-api.ts
 api/users-api.ts
 base.ts
@@ -18,6 +19,7 @@ models/account.ts
 models/app-error-code.ts
 models/currency.ts
 models/error-response.ts
+models/geocode-reverse-result.ts
 models/google-login-request.ts
 models/index.ts
 models/pagination-result.ts

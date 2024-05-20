@@ -50,7 +50,7 @@ export const FormCalendarPicker = <
           {...restInputProps}
           label={label}
           error={fieldState.error?.message}
-          selected={field.value}
+          selectedDate={field.value}
           onChange={(value) => {
             field.onChange(value);
           }}

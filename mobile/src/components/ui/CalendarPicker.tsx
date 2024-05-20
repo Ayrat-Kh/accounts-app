@@ -11,37 +11,42 @@ import { InputLabel } from './InputLabel';
 import { Modal } from './Modal';
 import { useModal } from './Modal.hooks';
 import { Text } from './Text';
-import { type AccessabilityLabel, getAccessabilityLabelNode } from './utils';
+import {
+  type AccessabilityLabel,
+  type InputSizeVariant,
+  getAccessabilityLabelNode,
+} from './utils';
 
 type CalendarPickerModalProps = {
-  selected?: Date;
+  selectedDate?: string;
   label: AccessabilityLabel;
   isVisible: boolean;
-  onChange: (value: Date) => void;
+  onChange: (newDateValue: string) => void;
   close: VoidFunction;
 };
 
 const CalendarPickerModal = ({
   label,
   isVisible,
-  selected,
+  selectedDate,
   close,
   onChange,
 }: CalendarPickerModalProps) => {
-  const selectedTextColor = useTextColor('primary');
-  const selectedTextBgColor = useBgColor('primarySolid');
+  const selectedTextColor = useTextColor('secondary');
+  const selectedTextBgColor = useBgColor('secondarySolid');
 
-  const textColor = useTextColor('primaryLow');
+  const textColor = useTextColor('secondaryLow');
 
-  const compBgColor = useBgColor('compPrimary');
-  const borderColor = useBorderColor('primary');
-  const [selectedState, setSelectedState] = useState<typeof selected>(selected);
+  const compBgColor = useBgColor('compSecondary');
+  const borderColor = useBorderColor('secondary');
+  const [selectedState, setSelectedState] =
+    useState<typeof selectedDate>(selectedDate);
   const { bottom } = useSafeAreaInsets();
 
   const selectedDateString = formatISODate(selectedState);
 
   const handleDayPress = (day: DateData) => {
-    setSelectedState(new Date(day.dateString));
+    setSelectedState(day.dateString);
   };
 
   const handleApply = () => {
@@ -58,7 +63,7 @@ const CalendarPickerModal = ({
       header={getAccessabilityLabelNode(label)}
       onClose={close}
     >
-      <View className="flex-1 justify-between ">
+      <View className="flex-1 justify-between py-2">
         <Calendar
           style={{
             borderRadius: 5,
@@ -83,7 +88,7 @@ const CalendarPickerModal = ({
                 }
               : undefined
           }
-          current={selectedState?.toLocaleDateString('en-US')}
+          current={selectedState}
           onDayPress={handleDayPress}
         />
 
@@ -104,15 +109,17 @@ export type CalendarPickerProps = Omit<
   CalendarPickerModalProps,
   'isVisible' | 'close'
 > & {
+  size?: InputSizeVariant;
   error?: string | ReactNode;
   className?: string;
   placeholder?: string;
 };
 
 export const CalendarPicker = ({
+  size = 'md',
   error,
   label,
-  selected,
+  selectedDate,
   className,
   placeholder,
   onChange,
@@ -120,20 +127,20 @@ export const CalendarPicker = ({
   const { isVisible, show, close } = useModal();
 
   const itemText =
-    selected?.toLocaleDateString() || (placeholder ?? 'Select date...');
+    formatISODate(selectedDate) || (placeholder ?? 'Select date...');
 
   return (
     <View className={className}>
       <InputLabel label={label} className="mb-1" />
-      <Button variant="input" align="left" onPress={show}>
+      <Button size={size} variant="input" align="left" onPress={show}>
         {itemText}
       </Button>
       {error && <Text className="mt-1">{error}</Text>}
 
       <CalendarPickerModal
-        key={formatISODate(selected)}
+        key={selectedDate}
         isVisible={isVisible}
-        selected={selected}
+        selectedDate={selectedDate}
         label={label}
         close={close}
         onChange={onChange}

@@ -11,37 +11,28 @@ import {
   SelectPickerItem,
   type SelectPickerItemExtraData,
   type SelectPickerItemOption,
+  type SelectPickerLabelItemOption,
+  type SelectValue,
 } from './SelectPickerItem';
 import { SelectPickerItemSeparator } from './SelectPickerItemSeparator';
 import { Text } from './Text';
-import { type AccessabilityLabel, getAccessabilityLabelNode } from './utils';
+import {
+  type AccessabilityLabel,
+  type InputSizeVariant,
+  getAccessabilityLabelNode,
+} from './utils';
 
-type SelectPickerModalProps<
-  TData,
-  TValue extends string | number,
-  TMultiple extends boolean,
-> = (TMultiple extends true
-  ? {
-      isMultiple: true;
-      selected?: SelectPickerItemOption<TData, TValue>[];
-      onChange: (value: SelectPickerItemOption<TData, TValue>[]) => void;
-    }
-  : {
-      isMultiple: false;
-      selected?: SelectPickerItemOption<TData, TValue>;
-      onChange: (value: SelectPickerItemOption<TData, TValue>) => void;
-    }) & {
-  options: SelectPickerItemOption<TData, TValue>[];
+type SelectPickerModalProps<TValue, TMultiple extends boolean> = {
+  selected?: SelectValue<TValue, TMultiple>;
+  isMultiple: TMultiple;
+  options: SelectPickerLabelItemOption<TValue>[];
   label: AccessabilityLabel;
   isVisible: boolean;
   close: VoidFunction;
+  onChange: (value: SelectValue<TValue, TMultiple>) => void;
 };
 
-const SelectPickerModal = <
-  TData,
-  TValue extends string | number,
-  TMultiple extends boolean,
->({
+function SelectPickerModal<TValue, TMultiple extends boolean>({
   isMultiple,
   options,
   label,
@@ -49,37 +40,47 @@ const SelectPickerModal = <
   selected,
   close,
   onChange,
-}: SelectPickerModalProps<TData, TValue, TMultiple>) => {
-  const [selectedState, setSelectedState] = useState<typeof selected>(selected);
+}: SelectPickerModalProps<TValue, TMultiple>) {
+  const [selectedState, setSelectedState] = useState<SelectValue<
+    TValue,
+    TMultiple
+  > | null>(selected ?? null);
   const { bottom } = useSafeAreaInsets();
 
-  const extraData: SelectPickerItemExtraData<TData, TValue> = {
+  const extraData: SelectPickerItemExtraData<TValue, TMultiple> = {
     selected: selectedState,
-    onChange: (value: SelectPickerItemOption<TData, TValue>) => {
+    onChange: (value: SelectPickerItemOption<TValue>) => {
+      // handle multiple cases
       if (isMultiple) {
-        const filteredData = [
-          ...(selected?.filter((x) => x.value !== value.value) ?? []),
-        ];
+        let filteredData: TValue[] = [];
 
-        if (value) {
-          filteredData.push(value);
+        if (Array.isArray(selectedState)) {
+          const a = selectedState as TValue[];
+          filteredData = a.filter((x) => x !== value.value);
         }
 
-        setSelectedState(filteredData);
-      } else {
-        setSelectedState(value);
+        if (value) {
+          filteredData.push(value.value);
+        }
+
+        setSelectedState(filteredData as SelectValue<TValue, TMultiple>);
+
+        return;
+      }
+
+      // handle single case
+      if (!isMultiple) {
+        setSelectedState(value.value as SelectValue<TValue, TMultiple>);
       }
     },
   };
 
   const handleApply = () => {
-    if (isMultiple) {
-      onChange(selectedState as SelectPickerItemOption<TData, TValue>[]);
-    } else {
-      onChange(selectedState as SelectPickerItemOption<TData, TValue>);
+    onChange(selectedState as SelectValue<TValue, TMultiple>);
+
+    if (!isMultiple) {
       close();
     }
-    close();
   };
 
   return (
@@ -92,10 +93,10 @@ const SelectPickerModal = <
         estimatedItemSize={60}
         extraData={extraData}
         data={options}
-        renderItem={SelectPickerItem<TData, TValue>}
+        renderItem={SelectPickerItem<TValue, TMultiple>}
         ItemSeparatorComponent={SelectPickerItemSeparator}
       />
-      <View style={{ paddingBottom: bottom }}>
+      <View style={{ paddingBottom: bottom + 10 }}>
         <Button variant="primary" onPress={handleApply}>
           Apply
         </Button>
@@ -105,35 +106,22 @@ const SelectPickerModal = <
       </View>
     </Modal>
   );
-};
+}
 
-export type SelectPickerProps<
-  TData,
-  TValue extends string | number,
-  TMultiple extends boolean,
-> = (TMultiple extends true
-  ? {
-      isMultiple: true;
-      selected?: SelectPickerItemOption<TData, TValue>[];
-      onChange: (value: SelectPickerItemOption<TData, TValue>[]) => void;
-    }
-  : {
-      isMultiple: false;
-      selected?: SelectPickerItemOption<TData, TValue>;
-      onChange: (value: SelectPickerItemOption<TData, TValue>) => void;
-    }) & {
-  options: SelectPickerItemOption<TData, TValue>[];
+export type SelectPickerProps<TValue, TMultiple extends boolean> = Omit<
+  SelectPickerModalProps<TValue, TMultiple>,
+  'close' | 'isVisible'
+> & {
+  size?: InputSizeVariant;
+  options: SelectPickerLabelItemOption<TValue>[];
   label: AccessabilityLabel;
   error?: string | ReactNode;
   className?: string;
   placeholder?: string;
 };
 
-export const SelectPicker = <
-  TData,
-  TValue extends string | number,
-  TMultiple extends boolean,
->({
+export function SelectPicker<TValue, TMultiple extends boolean>({
+  size = 'md',
   isMultiple,
   error,
   label,
@@ -142,51 +130,46 @@ export const SelectPicker = <
   className,
   placeholder,
   onChange,
-}: SelectPickerProps<TData, TValue, TMultiple>) => {
+}: SelectPickerProps<TValue, TMultiple>) {
   const { isVisible, show, close } = useModal();
 
-  console.log('selected', selected);
+  let selectedText = '';
+  let itemKey = '';
 
-  const itemKey = isMultiple
-    ? selected?.map((x) => x.value).join('')
-    : selected?.value;
+  if (Array.isArray(selected)) {
+    itemKey = selected?.join('') ?? '';
 
-  const itemText =
-    (isMultiple ? selected?.map((x) => x.label).join(', ') : selected?.label) ||
-    (placeholder ?? 'Select items...');
+    selectedText =
+      options.filter((x) => selected.includes(x.value)).join(', ') ??
+      placeholder ??
+      'Select items...';
+  } else {
+    itemKey = `${selected}` ?? '';
+
+    selectedText =
+      options.find((x) => selected === x.value)?.label ??
+      placeholder ??
+      'Selected items...';
+  }
 
   return (
     <View className={className}>
       <InputLabel label={label} className="mb-1" />
-      <Button variant="input" align="left" onPress={show}>
-        {itemText}
+      <Button size={size} variant="input" align="left" onPress={show}>
+        {selectedText}
       </Button>
       {error && <Text className="mt-1">{error}</Text>}
 
-      {/** weird... */}
-      {isMultiple ? (
-        <SelectPickerModal<TData, TValue, typeof isMultiple>
-          key={itemKey}
-          isMultiple={isMultiple}
-          isVisible={isVisible}
-          options={options}
-          selected={selected}
-          label={label}
-          close={close}
-          onChange={onChange}
-        />
-      ) : (
-        <SelectPickerModal<TData, TValue, typeof isMultiple>
-          key={itemKey}
-          isMultiple={isMultiple}
-          isVisible={isVisible}
-          options={options}
-          selected={selected}
-          label={label}
-          close={close}
-          onChange={onChange}
-        />
-      )}
+      <SelectPickerModal<TValue, TMultiple>
+        key={itemKey}
+        isMultiple={isMultiple}
+        isVisible={isVisible}
+        options={options}
+        selected={selected}
+        label={label}
+        close={close}
+        onChange={onChange}
+      />
     </View>
   );
-};
+}

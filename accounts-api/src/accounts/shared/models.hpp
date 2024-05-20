@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <boost/system/result.hpp>
 #include <boost/json/value.hpp>
 #include <boost/describe/class.hpp>
 #include <boost/describe/enum.hpp>
@@ -51,6 +52,14 @@ namespace accounts
         AppError,
         (),
         (message, code));
+
+    template <class T>
+    using AccountsResult = boost::system::result<T, AppError>;
+
+    BOOST_NORETURN BOOST_NOINLINE inline void throw_exception_from_error(AppError const &e, boost::source_location const &loc)
+    {
+        boost::throw_with_location(std::domain_error(e.code), loc);
+    }
 
     struct ValidationAppError
     {
@@ -136,5 +145,6 @@ namespace accounts
         std::string mongoUrl;
         std::string jwtKey;
         std::string dbName;
+        std::string geoCodeApiKey;
     };
 }

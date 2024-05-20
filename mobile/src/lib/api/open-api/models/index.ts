@@ -6,6 +6,7 @@ export * from './account-result';
 export * from './app-error-code';
 export * from './currency';
 export * from './error-response';
+export * from './geocode-reverse-result';
 export * from './google-login-request';
 export * from './pagination-result';
 export * from './upsert-account';

@@ -39,18 +39,16 @@ void accounts::handleGetAccountsByUserId(uWS::HttpResponse<false> *res, uWS::Htt
 
     auto &&accountsDb = AppDependencies::instance().accountsRepo->getAccountsByUserId(userId);
 
-    if (abortIfAppError(res, &accountsDb))
+    if (abortRequestIfAppError(res, &accountsDb))
     {
         return;
     }
-
-    auto &&accountsDbCasted = std::get<std::vector<AccountDb>>(std::move(accountsDb));
 
     res
         ->writeHeader("Content-Type", "application/json")
         ->end(boost::json::serialize(boost::json::object(
             {{"accounts",
-              boost::json::value_from(std::move(accountsDbCasted))}})));
+              boost::json::value_from(std::move(accountsDb.value()))}})));
 }
 
 void accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequest *_req)
@@ -71,18 +69,16 @@ void accounts::handleAddAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequest
             "acc_" + boost::uuids::to_string(boost::uuids::random_generator()()),
             std::move(saveAccountDb));
 
-        if (abortIfAppError(res, &accountDb))
+        if (abortRequestIfAppError(res, &accountDb))
         {
             return;
         }
-
-        auto &&accountDbCasted = std::get<AccountDb>(std::move(accountDb));
 
         res
             ->writeHeader("Content-Type", "application/json")
             ->end(boost::json::serialize(boost::json::object(
                 {{"account",
-                  boost::json::value_from(std::move(accountDbCasted))}})));
+                  boost::json::value_from(std::move(accountDb.value()))}})));
     };
 
     RequestJsonBodyReader reader;
@@ -121,18 +117,16 @@ void accounts::handleUpdateAccount(uWS::HttpResponse<false> *_res, uWS::HttpRequ
         auto &&accountDb = AppDependencies::instance().accountsRepo->upsertAccount(
             accountId, std::move(updateAccountDb));
 
-        if (abortIfAppError(res, &accountDb))
+        if (abortRequestIfAppError(res, &accountDb))
         {
             return;
         }
-
-        auto &&accountDbCasted = std::get<AccountDb>(std::move(accountDb));
 
         res
             ->writeHeader("Content-Type", "application/json")
             ->end(boost::json::serialize(boost::json::object(
                 {{"account",
-                  boost::json::value_from(std::move(accountDbCasted))}})));
+                  boost::json::value_from(std::move(accountDb.value()))}})));
     };
 
     RequestJsonBodyReader reader;

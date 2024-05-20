@@ -286,6 +286,58 @@
           }
         }
       }
+    },
+    "/v1/geo/reverse": {
+      "get": {
+        "tags": ["geo"],
+        "summary": "Get location address information",
+        "description": "Get location address information",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "lat",
+            "in": "query",
+            "description": "latitude",
+            "required": true,
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "lon",
+            "in": "query",
+            "description": "longitude",
+            "required": true,
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeocodeReverseResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -499,6 +551,30 @@
           }
         ],
         "example": "me"
+      },
+      "GeocodeReverseResult": {
+        "required": ["code", "message"],
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "locality": { "type": "string" },
+          "municipality": { "type": "string" },
+          "county": { "type": "string" },
+          "state": { "type": "string" },
+          "region": { "type": "string" },
+          "country": { "type": "string" },
+          "countryCode": { "type": "string" }
+        },
+        "example": {
+          "name": "Гортопский залив, городское поселение Болгар, Spassky District, Tatarstan, Volga Federal District, Russia",
+          "locality": "Гортопский залив",
+          "municipality": "городское поселение Болгар",
+          "county": "Spassky District",
+          "state": "Tatarstan",
+          "region": "Volga Federal District",
+          "country": "Russia",
+          "country_code": "ru"
+        }
       }
     }
   },

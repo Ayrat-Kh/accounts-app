@@ -15,7 +15,7 @@ import {
 } from '../ui';
 
 type FormSelectPickerProps<
-  TValue extends string | number,
+  TValue,
   TMultiple extends boolean,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TFieldValues extends Record<string, any> = Record<string, any>,
@@ -24,10 +24,7 @@ type FormSelectPickerProps<
   name: TName;
   label: AccessabilityLabel;
   control: Control<TFieldValues>;
-} & Omit<
-  SelectPickerProps<unknown, TValue, TMultiple>,
-  'onChange' | 'selected'
->;
+} & Omit<SelectPickerProps<TValue, TMultiple>, 'onChange' | 'selected'>;
 
 export const FormSelectPicker = <
   TValue extends string | number,
@@ -65,7 +62,7 @@ export const FormSelectPicker = <
           label={label}
           error={fieldState.error?.message}
           selected={field.value}
-          onChange={(value: unknown) => {
+          onChange={(value) => {
             field.onChange(value);
           }}
         />

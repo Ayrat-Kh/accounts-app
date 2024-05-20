@@ -25,9 +25,9 @@ const textVariants: Record<TextVariant, string> = {
 export type TextKind = 'normal' | 'semibold' | 'bold';
 
 const textKinds: Record<TextKind, string> = {
-  normal: 'font-normal',
-  bold: 'font-bold',
-  semibold: 'font-semibold',
+  normal: 'font-normal font-app',
+  bold: 'font-bold font-app',
+  semibold: 'font-semibold font-app',
 };
 
 export type TextColor =
