@@ -21,6 +21,7 @@ docker build --progress=plain -t accounts-api .
 
 ```
 docker run --name accounts-db -p 27017:27017 -d mongo
+docker restart accounts-db
 ```
 
 # Run the app on the docker
