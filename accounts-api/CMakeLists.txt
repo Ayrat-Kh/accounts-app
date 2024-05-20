@@ -24,7 +24,8 @@ find_package(OpenSSL REQUIRED)
 add_subdirectory(external)
 
 file(GLOB_RECURSE SOURCES src/**/*.cpp)
-  add_executable(AccountsApi
+
+add_executable(AccountsApi
   src/accounts/main.cpp
   ${SOURCES}
 )
@@ -40,6 +41,6 @@ target_link_libraries(AccountsApi
   Boost::json
   uWebSockets
   OpenSSL::SSL
-  mongo
+  mongoLibrary
   jwt
 )
