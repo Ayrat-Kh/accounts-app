@@ -22,15 +22,12 @@ boost::asio::awaitable<AccountsResult<GeocodeReverseResult>> GeoLocReverseServic
 
     // Set up an HTTP POST request
     http::request<http::string_body> req;
-    req.method(http::verb::post);
-    req.target("/reverse");                                                                                         // Specify your API endpoint
-    req.version(11);                                                                                                // HTTP/1.1
-    req.set(http::field::content_type, "application/x-www-form-urlencoded");                                        // Content type
-    req.body() = "lat=" + std::to_string(params.lat) + "&lon=" + std::to_string(params.lon) + "api_key=" + _apiKey; // Your POST data
+    req.method(http::verb::get);
+    req.target("/reverse?lat=" + std::to_string(params.lat) + "&lon=" + std::to_string(params.lon) + "&api_key=" + _apiKey); // Specify your API endpoint
+    req.version(11);
 
     try
     {
-
         auto response = co_await sendHttpsRequest("geocode.maps.co", std::move(req));
 
         if (response.has_error())
@@ -106,6 +103,6 @@ boost::asio::awaitable<AccountsResult<GeocodeReverseResult>> GeoLocReverseServic
     {
         co_return AppError{
             .code = enumToString(EAppErrorCode::THIRD_PARTY_REQUEST),
-            .message = "get google id token info " + std::string(e.what())};
+            .message = "get geo reverse " + std::string(e.what())};
     }
 }
