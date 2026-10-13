@@ -1,0 +1,61 @@
+# Stateless: all state lives in Postgres and Garage, so it can run several
+# replicas. Migrations take a Postgres advisory lock, so replicas starting
+# together cannot both migrate.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounts-api
+  namespace: app-accounts
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate: {maxUnavailable: 0, maxSurge: 1}
+  selector:
+    matchLabels: {app: accounts-api}
+  template:
+    metadata:
+      labels: {app: accounts-api}
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets: [{name: ghcr}]      # private GHCR (deploy.sh secrets)
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: accounts-api
+          image: registry.example.com/accounts-api@sha256:PIN
+          args: ["--config", "/etc/accounts/accounts.toml"]
+          ports:
+            - {name: http, containerPort: 8080}
+          volumeMounts:
+            - {name: config, mountPath: /etc/accounts/accounts.toml, subPath: accounts.toml, readOnly: true}
+            - {name: secrets, mountPath: /etc/accounts/secrets, readOnly: true}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          readinessProbe:
+            httpGet: {path: /readyz, port: http}
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /healthz, port: http}
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests: {cpu: 50m, memory: 64Mi}
+            limits: {memory: 256Mi}    # 10 MB image uploads are buffered in memory
+      volumes:
+        - name: config
+          configMap: {name: accounts-config}
+        - name: secrets
+          secret:
+            secretName: accounts-secrets
+            defaultMode: 0440
+            items:
+              - {key: pg-password, path: pg-password}
+              - {key: jwt-ed25519.pem, path: jwt-ed25519.pem}
+              - {key: s3.access, path: s3.access}
+              - {key: s3.secret, path: s3.secret}

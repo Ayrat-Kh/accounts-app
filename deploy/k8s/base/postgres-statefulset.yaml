@@ -1,0 +1,68 @@
+# Single Postgres instance. The data lives on a PVC; pg-backup copies a
+# nightly dump to Garage.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: app-accounts
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels: {app: postgres}
+  template:
+    metadata:
+      labels: {app: postgres}
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 60     # let Postgres checkpoint on shutdown
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999                      # "postgres" in the official image
+        runAsGroup: 999
+        fsGroup: 999
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: postgres
+          image: postgres:PIN
+          env:
+            - {name: POSTGRES_USER, value: accounts}
+            - {name: POSTGRES_DB, value: accounts}
+            - {name: POSTGRES_PASSWORD_FILE, value: /etc/postgres/secrets/pg-password}
+            - {name: PGDATA, value: /var/lib/postgresql/data/pgdata}   # a subdirectory: the PVC root has lost+found
+          ports:
+            - {name: postgres, containerPort: 5432}
+          volumeMounts:
+            - {name: data, mountPath: /var/lib/postgresql/data}
+            - {name: run, mountPath: /var/run/postgresql}
+            - {name: tmp, mountPath: /tmp}
+            - name: secrets
+              mountPath: /etc/postgres/secrets
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          readinessProbe:
+            exec: {command: ["pg_isready", "-U", "accounts", "-d", "accounts"]}
+            periodSeconds: 5
+          livenessProbe:
+            exec: {command: ["pg_isready", "-U", "accounts", "-d", "accounts"]}
+            periodSeconds: 20
+            failureThreshold: 6
+          resources:
+            requests: {cpu: 50m, memory: 128Mi}
+            limits: {memory: 512Mi}
+      volumes:
+        - {name: run, emptyDir: {}}
+        - {name: tmp, emptyDir: {}}
+        - name: secrets
+          secret:
+            secretName: accounts-secrets
+            defaultMode: 0440
+            items: [{key: pg-password, path: pg-password}]
+  volumeClaimTemplates:
+    - metadata: {name: data}
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources: {requests: {storage: 10Gi}}

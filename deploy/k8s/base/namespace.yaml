@@ -1,0 +1,8 @@
+# For reference / clusters without vps-setup. vps-setup creates this namespace.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app-accounts
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest

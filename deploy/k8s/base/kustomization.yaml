@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: app-accounts
+# namespace.yaml is NOT listed: the cluster admin creates app-accounts
+# (vps-setup ./run-remote.sh 06 with app-accounts in APP_NAMESPACES), and the
+# CI deploy identity may not modify namespaces.
+resources:
+  - accounts-api-deployment.yaml
+  - accounts-api-service.yaml
+  - postgres-statefulset.yaml
+  - postgres-service.yaml
+  - pg-backup-cronjob.yaml
+  - ingress.yaml
+  - middlewares.yaml
+  - networkpolicies.yaml
+  - pod-disruption-budget.yaml
+configMapGenerator:
+  # Hash-suffixed: editing accounts.toml rolls the pods on the next apply.
+  - name: accounts-config
+    files: [accounts.toml]

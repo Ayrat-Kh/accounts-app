@@ -1,0 +1,2 @@
+# Placeholder so `kubectl kustomize deploy/k8s/base` works on its own;
+# deploy.sh replaces it with the rendered deploy/accounts.toml.

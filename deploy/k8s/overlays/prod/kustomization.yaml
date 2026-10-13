@@ -1,0 +1,50 @@
+# TEMPLATE: deploy/deploy.sh renders it (${...} from deploy/config.env) into
+# deploy/k8s/.build/prod/ together with accounts.toml, and applies that
+# directory. Don't `kubectl apply -k` this one: its values aren't filled in.
+#
+# Secrets aren't part of this kustomization: `deploy.sh secrets` applies them
+# from deploy/app-secrets.env, and CI never sees them.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+images:
+  # Always by digest: CI passes the one it just built and signed; locally
+  # deploy.sh keeps the running one (or the newest in GHCR on a first deploy).
+  - name: registry.example.com/accounts-api
+    newName: ${ACCOUNTS_IMAGE}
+    digest: ${ACCOUNTS_DIGEST}
+  - name: postgres
+    newName: ${POSTGRES_IMAGE_NAME}
+    digest: ${POSTGRES_IMAGE_DIGEST}
+  - name: rclone/rclone
+    newName: ${RCLONE_IMAGE_NAME}
+    digest: ${RCLONE_IMAGE_DIGEST}
+configMapGenerator:
+  - name: accounts-config
+    behavior: replace
+    files: [accounts.toml]
+patches:
+  - target: {kind: Ingress}
+    patch: |-
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: ${ACCOUNTS_HOST}
+      - op: replace
+        path: /spec/rules/0/host
+        value: ${ACCOUNTS_HOST}
+  - target: {kind: Deployment, name: accounts-api}
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: ${ACCOUNTS_REPLICAS}
+  - target: {kind: StatefulSet, name: postgres}
+    patch: |-
+      - op: replace
+        path: /spec/volumeClaimTemplates/0/spec/resources/requests/storage
+        value: ${POSTGRES_PVC_SIZE}
+  - target: {kind: CronJob, name: pg-backup}
+    patch: |-
+      - op: replace
+        path: /spec/jobTemplate/spec/template/spec/containers/0/env/0/value
+        value: ${ACCOUNTS_BUCKET}

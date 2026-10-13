@@ -1,0 +1,39 @@
+# TLS: no secretName, so Traefik serves the cluster's wildcard *.fernfall.cloud
+# default certificate (vps-setup 03-certs.sh), exactly like obsync.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: accounts-api
+  namespace: app-accounts
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: app-accounts-security-headers@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - {hosts: [accounts.example.com]}
+  rules:
+    - host: accounts.example.com
+      http:
+        paths:
+          - {path: /, pathType: Prefix, backend: {service: {name: accounts-api, port: {name: http}}}}
+---
+# /auth gets an extra rate limit against credential stuffing.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: accounts-api-auth
+  namespace: app-accounts
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: >-
+      app-accounts-security-headers@kubernetescrd,app-accounts-auth-ratelimit@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - {hosts: [accounts.example.com]}
+  rules:
+    - host: accounts.example.com
+      http:
+        paths:
+          - {path: /auth, pathType: Prefix, backend: {service: {name: accounts-api, port: {name: http}}}}

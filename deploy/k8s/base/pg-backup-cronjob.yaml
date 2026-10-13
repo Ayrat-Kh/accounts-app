@@ -1,0 +1,76 @@
+# Nightly logical backup: pg_dump (init container) -> rclone copies the file
+# to Garage under accounts/backups/. Keeps the last 30 dumps.
+apiVersion: batch/v1
+kind: CronJob
+metadata: {name: pg-backup, namespace: app-accounts}
+spec:
+  schedule: "15 2 * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 1800
+      template:
+        metadata:
+          labels: {app: pg-backup}
+        spec:
+          restartPolicy: OnFailure
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 999
+            fsGroup: 999
+            seccompProfile: {type: RuntimeDefault}
+          initContainers:
+            - name: dump
+              image: postgres:PIN
+              command: ["sh", "-c"]
+              args:
+                - >-
+                  PGPASSWORD="$(cat /etc/postgres/secrets/pg-password)"
+                  pg_dump --host=postgres --username=accounts --dbname=accounts --format=custom
+                  --file="/backup/accounts-$(date -u +%Y%m%dT%H%M%SZ).dump"
+              volumeMounts:
+                - {name: backup, mountPath: /backup}
+                - {name: secrets, mountPath: /etc/postgres/secrets, readOnly: true}
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: {drop: ["ALL"]}
+          containers:
+            - name: upload
+              image: rclone/rclone:PIN
+              command: ["sh", "-c"]
+              args:
+                - >-
+                  export RCLONE_CONFIG_GARAGE_ACCESS_KEY_ID="$(cat /etc/accounts/secrets/s3.access)"
+                  RCLONE_CONFIG_GARAGE_SECRET_ACCESS_KEY="$(cat /etc/accounts/secrets/s3.secret)" &&
+                  rclone copy /backup "garage:${BUCKET}/backups" &&
+                  rclone delete "garage:${BUCKET}/backups" --min-age 30d
+              env:
+                - {name: BUCKET, value: accounts}
+                - {name: RCLONE_CONFIG_GARAGE_TYPE, value: s3}
+                - {name: RCLONE_CONFIG_GARAGE_PROVIDER, value: Other}
+                - {name: RCLONE_CONFIG_GARAGE_REGION, value: garage}
+                - {name: RCLONE_CONFIG_GARAGE_ENDPOINT, value: "http://garage.app-obsync.svc.cluster.local:3900"}
+                - {name: RCLONE_CONFIG_GARAGE_FORCE_PATH_STYLE, value: "true"}
+                - {name: XDG_CONFIG_HOME, value: /tmp}
+              volumeMounts:
+                - {name: backup, mountPath: /backup, readOnly: true}
+                - {name: tmp, mountPath: /tmp}
+                - {name: secrets, mountPath: /etc/accounts/secrets, readOnly: true}
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: {drop: ["ALL"]}
+          volumes:
+            - {name: backup, emptyDir: {sizeLimit: 2Gi}}
+            - {name: tmp, emptyDir: {}}
+            - name: secrets
+              secret:
+                secretName: accounts-secrets
+                defaultMode: 0440

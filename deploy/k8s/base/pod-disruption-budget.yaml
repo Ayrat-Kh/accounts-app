@@ -1,0 +1,8 @@
+# Keep one API pod up during node drains (k3s upgrades).
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {name: accounts-api, namespace: app-accounts}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {app: accounts-api}

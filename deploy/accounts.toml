@@ -1,0 +1,30 @@
+# TEMPLATE for the production accounts.toml: deploy/deploy.sh renders the
+# ${...} values from deploy/config.env. See accounts-api/accounts.example.toml
+# for what each setting means.
+
+[server]
+bind_host = "0.0.0.0"
+port = 8080
+max_json_body_kb = 16
+max_image_mb = 10
+
+[database]
+connection = "host=postgres port=5432 dbname=accounts user=accounts connect_timeout=5"
+password_file = "/etc/accounts/secrets/pg-password"
+pool_size = 8
+
+[auth]
+google_client_ids = ${GOOGLE_CLIENT_IDS_TOML}
+allowed_emails = ${ALLOWED_EMAILS_TOML}
+jwt_private_key_file = "/etc/accounts/secrets/jwt-ed25519.pem"
+jwt_issuer = "https://${ACCOUNTS_HOST}"
+access_token_ttl_seconds = 900
+refresh_token_ttl_days = 30
+refresh_absolute_days = 90
+
+[s3]
+endpoint = "http://garage.app-obsync.svc.cluster.local:3900"
+region = "garage"
+bucket = "${ACCOUNTS_BUCKET}"
+access_key_file = "/etc/accounts/secrets/s3.access"
+secret_key_file = "/etc/accounts/secrets/s3.secret"
