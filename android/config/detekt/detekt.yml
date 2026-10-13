@@ -1,0 +1,14 @@
+# Only deviations from detekt's defaults.
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']   # Composables are PascalCase by convention
+style:
+  MagicNumber:
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+complexity:
+  LongParameterList:
+    ignoreDefaultParameters: true
+    ignoreAnnotated: ['Composable']
+  LongMethod:
+    ignoreAnnotated: ['Composable']

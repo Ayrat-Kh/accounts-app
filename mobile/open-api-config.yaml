@@ -1,6 +1,0 @@
-additionalProperties:
-  withSeparateModelsAndApi: true
-  apiPackage: api
-  modelPackage: models
-  implicitHeadersRegex: authorization
-  prependFormOrBodyParameters: true

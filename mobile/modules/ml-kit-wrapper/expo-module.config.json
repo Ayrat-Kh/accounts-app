@@ -1,9 +1,0 @@
-{
-  "platforms": ["ios", "android"],
-  "ios": {
-    "modules": ["MlKitWrapperModule"]
-  },
-  "android": {
-    "modules": ["expo.modules.mlkitwrapper.MlKitWrapperModule"]
-  }
-}

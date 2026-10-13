@@ -1,0 +1,4 @@
+<resources>
+    <!-- Only the window background before Compose draws; the real theme is ui/theme/Theme.kt. -->
+    <style name="Theme.Accounts" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
