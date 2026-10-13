@@ -22,6 +22,9 @@
 #   deploy.sh gh-secrets      upload CI credentials to the GitHub "production" environment
 #   deploy.sh db-shell        psql into the production database
 #   deploy.sh backup-now      run the pg-backup CronJob once, now
+#   deploy.sh publish-models DIR
+#                             upload the scanner models (scripts/download-models.sh DIR)
+#                             to Garage accounts/assets/, where /v1/assets serves them
 # =====================================================================
 set -euo pipefail
 DEPLOY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -281,6 +284,56 @@ cmd_backup_now() {
   log "Backup uploaded to ${ACCOUNTS_BUCKET}/backups in Garage"
 }
 
+# Garage is only reachable inside the cluster, so the files travel through a
+# short-lived rclone pod. It carries the pg-backup label, whose NetworkPolicy
+# already allows exactly what it needs: egress to Garage.
+cmd_publish_models() {
+  local dir="${1:-}" pod="publish-models"
+  [[ -f "$dir/manifest.json" ]] || die "usage: deploy.sh publish-models DIR (run scripts/download-models.sh DIR first)"
+  export_image_parts "$RCLONE_IMAGE" RCLONE_IMAGE
+  k delete pod "$pod" --ignore-not-found >/dev/null
+  k apply -f - <<YAML
+apiVersion: v1
+kind: Pod
+metadata: {name: $pod, labels: {app: pg-backup}}
+spec:
+  restartPolicy: Never
+  automountServiceAccountToken: false
+  securityContext: {runAsNonRoot: true, runAsUser: 65532, runAsGroup: 65532, seccompProfile: {type: RuntimeDefault}}
+  containers:
+    - name: rclone
+      image: ${RCLONE_IMAGE_NAME}@${RCLONE_IMAGE_DIGEST}
+      command: ["sleep", "1800"]
+      env:
+        - {name: RCLONE_CONFIG_GARAGE_TYPE, value: s3}
+        - {name: RCLONE_CONFIG_GARAGE_PROVIDER, value: Other}
+        - {name: RCLONE_CONFIG_GARAGE_REGION, value: garage}
+        - {name: RCLONE_CONFIG_GARAGE_ENDPOINT, value: "http://garage.${GARAGE_NS}.svc.cluster.local:3900"}
+        - {name: RCLONE_CONFIG_GARAGE_FORCE_PATH_STYLE, value: "true"}
+        - {name: XDG_CONFIG_HOME, value: /work}
+      volumeMounts:
+        - {name: work, mountPath: /work}
+        - {name: secrets, mountPath: /etc/accounts/secrets, readOnly: true}
+      securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: ["ALL"]}}
+  volumes:
+    - {name: work, emptyDir: {sizeLimit: 2Gi}}
+    - {name: secrets, secret: {secretName: accounts-secrets, defaultMode: 0440}}
+YAML
+  k wait --for=condition=Ready "pod/$pod" --timeout=2m
+  log "Copying models into the cluster"
+  k exec "$pod" -- mkdir -p /work/assets
+  local file
+  for file in "$dir/manifest.json" "$dir"/tessdata/*.traineddata "$dir"/*.gguf; do
+    k cp "$file" "$pod:/work/assets/$(basename "$file")"
+  done
+  log "Uploading to ${ACCOUNTS_BUCKET}/assets"
+  k exec "$pod" -- sh -c 'export RCLONE_CONFIG_GARAGE_ACCESS_KEY_ID="$(cat /etc/accounts/secrets/s3.access)"
+    RCLONE_CONFIG_GARAGE_SECRET_ACCESS_KEY="$(cat /etc/accounts/secrets/s3.secret)"
+    rclone copy --checksum /work/assets "garage:'"$ACCOUNTS_BUCKET"'/assets"'
+  k delete pod "$pod" >/dev/null
+  log "Models published; phones fetch them from https://${ACCOUNTS_HOST}/v1/assets"
+}
+
 CMD="${1:-}"; shift || true
 case "$CMD" in
   init)        cmd_init ;;
@@ -292,5 +345,6 @@ case "$CMD" in
   gh-secrets)  cmd_gh_secrets ;;
   db-shell)    k exec -it sts/postgres -- psql -U accounts accounts ;;
   backup-now)  cmd_backup_now ;;
-  *) sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+  publish-models) cmd_publish_models "$@" ;;
+  *) sed -n '2,28p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
 esac

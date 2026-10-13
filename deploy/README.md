@@ -58,7 +58,14 @@ Prerequisites on your Mac: `kubectl`, `gh`, `perl`, and `brew install openssl@3`
    ```bash
    deploy/deploy.sh apply
    ```
-7. Publish the scanner models that phones download through `/v1/assets` (see `core/README.md`, "Model assets").
+7. Publish the scanner models (Tesseract eng/deu/rus and EmbeddingGemma 2, about 350 MB) that phones download through
+   `/v1/assets`:
+   ```bash
+   scripts/download-models.sh build/models
+   ```
+   ```bash
+   deploy/deploy.sh publish-models build/models
+   ```
 
 After that, every push to `main` that touches `accounts-api/` or `deploy/` is built, scanned, signed and deployed by
 `.github/workflows/backend.yml`. To deploy `main` right away, run `scripts/deploy-now.sh`.
