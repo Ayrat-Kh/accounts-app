@@ -1,0 +1,66 @@
+{
+  "de_rewe.jpg": {
+    "amount_minor": 577,
+    "currency": "EUR"
+  },
+  "de_betrag.jpg": {
+    "amount_minor": 610,
+    "currency": "EUR"
+  },
+  "de_zu_bezahlen.jpg": {
+    "amount_minor": 680,
+    "currency": null
+  },
+  "de_gesamt.jpg": {
+    "amount_minor": 2047,
+    "currency": null
+  },
+  "en_total.jpg": {
+    "amount_minor": 1064,
+    "currency": null
+  },
+  "en_amount_due.jpg": {
+    "amount_minor": 1748,
+    "currency": null
+  },
+  "en_amount_payable.jpg": {
+    "amount_minor": 1580,
+    "currency": null
+  },
+  "en_grand_total.jpg": {
+    "amount_minor": 3685,
+    "currency": null
+  },
+  "en_balance.jpg": {
+    "amount_minor": 2473,
+    "currency": null
+  },
+  "ru_itogo.jpg": {
+    "amount_minor": 48489,
+    "currency": null
+  },
+  "ru_k_oplate.jpg": {
+    "amount_minor": 36790,
+    "currency": null
+  },
+  "ru_vsego.jpg": {
+    "amount_minor": 79950,
+    "currency": null
+  },
+  "ru_summa.jpg": {
+    "amount_minor": 39000,
+    "currency": null
+  },
+  "de_big.jpg": {
+    "amount_minor": 17398,
+    "currency": "EUR"
+  },
+  "en_restaurant.jpg": {
+    "amount_minor": 3490,
+    "currency": "EUR"
+  },
+  "de_tankstelle.jpg": {
+    "amount_minor": 7522,
+    "currency": null
+  }
+}
