@@ -1,0 +1,239 @@
+openapi: 3.1.0
+info:
+  title: accounts-api
+  version: "1"
+  description: |
+    Stores receipt prices and photos for the Android app. Prices are integer
+    minor units (cents) plus an ISO 4217 currency; timestamps are RFC 3339 UTC.
+    Every /v1 endpoint needs `Authorization: Bearer <access_token>` and only
+    ever sees the caller's own data.
+servers:
+  - url: https://accounts.fernfall.cloud
+security:
+  - bearer: []
+
+paths:
+  /healthz:
+    get:
+      summary: Liveness
+      security: []
+      responses: {"200": {description: Process is serving}}
+  /readyz:
+    get:
+      summary: Readiness (Postgres reachable)
+      security: []
+      responses:
+        "200": {description: Ready}
+        "502": {$ref: "#/components/responses/Error"}
+  /v1/version:
+    get:
+      summary: API version
+      security: []
+      responses: {"200": {description: '{"api": "1"}'}}
+
+  /auth/google:
+    post:
+      summary: Sign in with a Google ID token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [id_token], properties: {id_token: {type: string}}}
+      responses:
+        "200": {$ref: "#/components/responses/TokenPair"}
+        "401": {$ref: "#/components/responses/Error"}
+        "403": {description: E-mail not on the allowlist, $ref: "#/components/responses/Error"}
+  /auth/token:
+    post:
+      summary: Exchange a refresh token for a new pair (the old one is revoked)
+      security: []
+      requestBody: {$ref: "#/components/requestBodies/RefreshToken"}
+      responses:
+        "200": {$ref: "#/components/responses/TokenPair"}
+        "401": {$ref: "#/components/responses/Error"}
+  /auth/signout:
+    post:
+      summary: Revoke a refresh token
+      security: []
+      requestBody: {$ref: "#/components/requestBodies/RefreshToken"}
+      responses: {"204": {description: Revoked}}
+
+  /v1/receipts:
+    get:
+      summary: List receipts, newest purchase first
+      parameters:
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 50}}
+        - {name: cursor, in: query, description: next_cursor from the previous page, schema: {type: string}}
+      responses:
+        "200":
+          description: One page
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, next_cursor]
+                properties:
+                  items: {type: array, items: {$ref: "#/components/schemas/Receipt"}}
+                  next_cursor: {type: [string, "null"]}
+    post:
+      summary: Create a receipt
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: "#/components/schemas/ReceiptDraft"}}}
+      responses:
+        "201": {$ref: "#/components/responses/Receipt"}
+        "400": {$ref: "#/components/responses/Error"}
+
+  /v1/receipts/{id}:
+    parameters: [{$ref: "#/components/parameters/ReceiptId"}]
+    get:
+      summary: Get one receipt
+      responses:
+        "200": {$ref: "#/components/responses/Receipt"}
+        "404": {$ref: "#/components/responses/Error"}
+    patch:
+      summary: Change some fields (an empty merchant clears it)
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: "#/components/schemas/ReceiptChanges"}}}
+      responses:
+        "200": {$ref: "#/components/responses/Receipt"}
+        "400": {$ref: "#/components/responses/Error"}
+        "404": {$ref: "#/components/responses/Error"}
+    delete:
+      summary: Delete a receipt
+      responses:
+        "204": {description: Deleted}
+        "404": {$ref: "#/components/responses/Error"}
+
+  /v1/receipts/{id}/image:
+    parameters: [{$ref: "#/components/parameters/ReceiptId"}]
+    put:
+      summary: Upload (or replace) the receipt photo, at most 10 MB
+      parameters:
+        - {name: X-Content-SHA256, in: header, required: true, description: hex SHA-256 of the body, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          image/jpeg: {schema: {type: string, format: binary}}
+          image/png: {schema: {type: string, format: binary}}
+          image/webp: {schema: {type: string, format: binary}}
+      responses:
+        "200": {$ref: "#/components/responses/Receipt"}
+        "400": {$ref: "#/components/responses/Error"}
+        "404": {$ref: "#/components/responses/Error"}
+        "413": {$ref: "#/components/responses/Error"}
+    get:
+      summary: Download the receipt photo
+      responses:
+        "200": {description: The image, content: {image/*: {schema: {type: string, format: binary}}}}
+        "404": {$ref: "#/components/responses/Error"}
+
+  /v1/assets:
+    get:
+      summary: Manifest of downloadable model files
+      responses:
+        "200":
+          description: Manifest
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required: [name, size, sha256]
+                  properties: {name: {type: string}, size: {type: integer}, sha256: {type: string}}
+  /v1/assets/{name}:
+    get:
+      summary: Download a piece of a model file (at most 8 MiB per request)
+      parameters:
+        - {name: name, in: path, required: true, schema: {type: string, pattern: "^[A-Za-z0-9_][A-Za-z0-9._-]{0,127}$"}}
+        - {name: Range, in: header, description: "bytes=first-last; default bytes=0-8388607", schema: {type: string}}
+      responses:
+        "206": {description: The piece, with Content-Range, content: {application/octet-stream: {}}}
+        "404": {$ref: "#/components/responses/Error"}
+        "416": {description: Range starts past the end}
+
+components:
+  securitySchemes:
+    bearer: {type: http, scheme: bearer, bearerFormat: JWT}
+  parameters:
+    ReceiptId: {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+  requestBodies:
+    RefreshToken:
+      required: true
+      content:
+        application/json:
+          schema: {type: object, required: [refresh_token], properties: {refresh_token: {type: string}}}
+  responses:
+    Receipt:
+      description: A receipt
+      content: {application/json: {schema: {$ref: "#/components/schemas/Receipt"}}}
+    TokenPair:
+      description: Tokens
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [access_token, token_type, expires_in, refresh_token]
+            properties:
+              access_token: {type: string}
+              token_type: {const: Bearer}
+              expires_in: {type: integer, description: seconds}
+              refresh_token: {type: string}
+    Error:
+      description: Failure
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [error]
+            properties:
+              error:
+                type: object
+                required: [code, message]
+                properties:
+                  code: {enum: [invalid_input, unauthorized, forbidden, not_found, payload_too_large, upstream_failure, internal]}
+                  message: {type: string}
+  schemas:
+    Money:
+      type: object
+      properties:
+        amount_minor: {type: integer, minimum: 0, maximum: 1000000000000, description: "12.34 EUR -> 1234"}
+        currency: {type: string, pattern: "^[A-Z]{3}$"}
+    ReceiptDraft:
+      type: object
+      required: [amount_minor, currency, purchased_at]
+      properties:
+        amount_minor: {$ref: "#/components/schemas/Money/properties/amount_minor"}
+        currency: {$ref: "#/components/schemas/Money/properties/currency"}
+        purchased_at: {type: string, format: date-time}
+        merchant: {type: [string, "null"], maxLength: 200}
+        ocr_confidence: {type: [number, "null"], minimum: 0, maximum: 1}
+    ReceiptChanges:
+      type: object
+      properties:
+        amount_minor: {$ref: "#/components/schemas/Money/properties/amount_minor"}
+        currency: {$ref: "#/components/schemas/Money/properties/currency"}
+        purchased_at: {type: string, format: date-time}
+        merchant: {type: string, maxLength: 200}
+        ocr_confidence: {type: number, minimum: 0, maximum: 1}
+    Receipt:
+      type: object
+      required: [id, amount_minor, currency, purchased_at, merchant, ocr_confidence, image, created_at, updated_at]
+      properties:
+        id: {type: string, format: uuid}
+        amount_minor: {type: integer}
+        currency: {type: string}
+        purchased_at: {type: string, format: date-time}
+        merchant: {type: [string, "null"]}
+        ocr_confidence: {type: [number, "null"]}
+        image:
+          oneOf:
+            - type: "null"
+            - type: object
+              required: [sha256, size_bytes, mime_type]
+              properties: {sha256: {type: string}, size_bytes: {type: integer}, mime_type: {type: string}}
+        created_at: {type: string, format: date-time}
+        updated_at: {type: string, format: date-time}

@@ -1,0 +1,32 @@
+# accounts-api configuration. Production renders deploy/accounts.toml instead;
+# this file documents every setting and works with scripts/dev-up.sh.
+# Secrets are never inline: *_file settings point at files (Kubernetes Secret mounts).
+
+[server]
+bind_host = "0.0.0.0"
+port = 8080
+max_json_body_kb = 16      # every JSON endpoint
+max_image_mb = 10          # PUT /v1/receipts/:id/image
+
+[database]
+# libpq connection string without the password.
+connection = "host=accounts-postgres-dev port=5432 dbname=accounts user=accounts"
+password_file = "/src/scripts/dev/.generated/pg-password"
+pool_size = 8
+
+[auth]
+# OAuth client ids whose Google ID tokens we accept (Android + Web client).
+google_client_ids = ["000000000000-android.apps.googleusercontent.com"]
+allowed_emails = ["you@example.com"]
+jwt_private_key_file = "/src/scripts/dev/.generated/jwt-ed25519.pem"  # openssl genpkey -algorithm ed25519
+jwt_issuer = "accounts-api"
+access_token_ttl_seconds = 900
+refresh_token_ttl_days = 30
+refresh_absolute_days = 90
+
+[s3]
+endpoint = "http://accounts-garage-dev:3900"
+region = "garage"
+bucket = "accounts-test"
+access_key_file = "/src/scripts/dev/.generated/s3.access"
+secret_key_file = "/src/scripts/dev/.generated/s3.secret"
