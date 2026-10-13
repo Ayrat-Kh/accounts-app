@@ -1,0 +1,24 @@
+{
+  "name": "receipts-core",
+  "version-string": "0.0.0",
+  "builtin-baseline": "8320904c3fbee4d9f5c145234d8eed3ab5a3a0e5",
+  "dependencies": [
+    "tesseract",
+    "leptonica",
+    {
+      "name": "llama-cpp",
+      "features": [
+        { "name": "metal", "platform": "osx" }
+      ]
+    },
+    {
+      "name": "curl",
+      "default-features": false,
+      "features": ["openssl"]
+    },
+    "openssl",
+    "sqlite3",
+    "nlohmann-json",
+    "catch2"
+  ]
+}

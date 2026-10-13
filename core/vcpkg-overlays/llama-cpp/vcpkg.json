@@ -1,0 +1,17 @@
+{
+  "name": "llama-cpp",
+  "version-string": "b11476",
+  "description": "llama.cpp with its bundled ggml, pinned to a build that supports EmbeddingGemma 2 (see portfile.cmake)",
+  "homepage": "https://github.com/ggml-org/llama.cpp",
+  "license": "MIT",
+  "dependencies": [
+    { "name": "vcpkg-cmake", "host": true },
+    { "name": "vcpkg-cmake-config", "host": true }
+  ],
+  "features": {
+    "metal": {
+      "description": "Apple GPU acceleration",
+      "supports": "osx"
+    }
+  }
+}
