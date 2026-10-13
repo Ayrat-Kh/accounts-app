@@ -1,0 +1,27 @@
+{
+  "name": "usockets",
+  "version-date": "2026-06-03",
+  "description": "uSockets, overlaid to add an 'asio' eventing backend (see README.md)",
+  "homepage": "https://github.com/uNetworking/uSockets",
+  "license": "Apache-2.0",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ],
+  "features": {
+    "asio": {
+      "description": "Run the event loop on a boost::asio::io_context (LIBUS_USE_ASIO)",
+      "dependencies": ["boost-asio"]
+    },
+    "ssl": {
+      "description": "Enable SSL support",
+      "dependencies": ["openssl"]
+    }
+  }
+}

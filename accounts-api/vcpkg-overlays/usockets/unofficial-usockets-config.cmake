@@ -1,0 +1,8 @@
+include(CMakeFindDependencyMacro)
+if("@WITH_OPENSSL@")
+    find_dependency(OpenSSL)
+endif()
+if("@WITH_ASIO@")
+    find_dependency(boost_asio CONFIG)
+endif()
+include("${CMAKE_CURRENT_LIST_DIR}/unofficial-usockets-targets.cmake")

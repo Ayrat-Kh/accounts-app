@@ -1,2 +1,36 @@
-.env
+# OS / editor
 .DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Secrets
+.env
+deploy/app-secrets.env
+deploy/access.env
+deploy/.build/
+deploy/k8s/.build/
+scripts/.dev-env
+
+# C++ / vcpkg
+third_party/
+build/
+vcpkg_installed/
+CMakeUserPresets.json
+.vcpkg-cache/
+.image/
+.cache/
+
+# Android / Gradle
+android/.gradle/
+android/**/build/
+android/local.properties
+android/.kotlin/
+*.apk
+*.keystore
+*.jks
+
+# Model weights are downloaded, never committed
+*.gguf
+*.traineddata
+scripts/dev/.generated/

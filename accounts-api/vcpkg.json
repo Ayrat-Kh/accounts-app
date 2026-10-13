@@ -1,0 +1,37 @@
+{
+  "name": "accounts-api",
+  "version-string": "0.0.0",
+  "builtin-baseline": "8320904c3fbee4d9f5c145234d8eed3ab5a3a0e5",
+  "dependencies": [
+    "boost-asio",
+    "boost-beast",
+    "boost-json",
+    {
+      "name": "usockets",
+      "default-features": false,
+      "features": [
+        "asio"
+      ]
+    },
+    "uwebsockets",
+    {
+      "name": "libpq",
+      "default-features": false,
+      "features": [
+        "openssl"
+      ]
+    },
+    {
+      "name": "aws-sdk-cpp",
+      "default-features": false,
+      "features": [
+        "s3"
+      ]
+    },
+    "jwt-cpp",
+    "openssl",
+    "spdlog",
+    "tomlplusplus",
+    "catch2"
+  ]
+}
