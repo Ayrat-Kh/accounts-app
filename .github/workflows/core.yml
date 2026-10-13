@@ -1,0 +1,88 @@
+name: core
+
+# The portable C++ core on the desktop platforms it supports:
+#   Linux  GCC 14, tests under ASan + UBSan
+#   macOS  Apple Clang with Metal, tests, receipts-cli smoke run, xcframework
+# Both run the accuracy test with the real OCR and EmbeddingGemma models.
+# (The Android build of the core is covered by android.yml.)
+
+on:
+  push:
+    branches: [main]
+    paths: ["core/**", "scripts/download-models.sh", "scripts/bootstrap-vcpkg.sh", ".github/workflows/core.yml", ".github/actions/**"]
+  pull_request:
+    paths: ["core/**", "scripts/download-models.sh", "scripts/bootstrap-vcpkg.sh", ".github/workflows/core.yml", ".github/actions/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: core-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Versions agree
+        run: scripts/check-versions.sh
+      - name: clang-format
+        run: |
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends clang-format-19
+          find core/src core/include core/tests core/tools android/core-jni/src/main/cpp \
+            \( -name "*.cpp" -o -name "*.hpp" \) -print0 | xargs -0 clang-format-19 --dry-run --Werror
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-24.04, preset: asan, cache: core-linux, cc: gcc-14, cxx: g++-14}
+          - {os: macos-15, preset: debug, cache: core-macos, cc: clang, cxx: clang++}
+    runs-on: ${{ matrix.os }}
+    env:
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Tools
+        run: |
+          if [[ "$RUNNER_OS" == Linux ]]; then
+            sudo apt-get update && sudo apt-get install -y --no-install-recommends ninja-build autoconf autoconf-archive automake libtool
+          else
+            brew install ninja autoconf autoconf-archive automake libtool
+          fi
+
+      - uses: ./.github/actions/setup-vcpkg
+        with: {cache-key: "${{ matrix.cache }}"}
+
+      - name: Cache models
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: core/testdata/models
+          key: models-${{ hashFiles('scripts/download-models.sh') }}
+
+      - name: Download models
+        run: scripts/download-models.sh core/testdata/models
+
+      - name: Build
+        run: |
+          cmake -S core --preset ${{ matrix.preset }}
+          cmake --build core/build/${{ matrix.preset }}
+
+      - name: Test
+        run: core/build/${{ matrix.preset }}/receipts_core_tests --order rand
+
+      - name: receipts-cli smoke run
+        if: runner.os == 'macOS'
+        run: |
+          core/build/debug/receipts-cli scan core/testdata/receipts/de_rewe.jpg --models core/testdata/models \
+            | tee scan.json
+          grep -q '"amount_minor": 577' scan.json
+
+      - name: xcframework
+        if: runner.os == 'macOS'
+        run: scripts/build-xcframework.sh

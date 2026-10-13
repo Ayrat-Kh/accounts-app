@@ -1,0 +1,36 @@
+name: Set up vcpkg
+description: >
+  Restores vcpkg's binary cache (so dependencies are built from source only
+  when a manifest changes) and bootstraps vcpkg at the pinned baseline.
+  Shared by the backend, core and android workflows.
+
+inputs:
+  cache-key:
+    description: Distinguishes caches of different platforms/triplets, e.g. "backend-linux".
+    required: true
+  in-dev-container:
+    description: "true: bootstrap inside scripts/dev.sh (the backend's Linux toolchain); false: on the runner."
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Cache vcpkg binaries
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: .vcpkg-cache
+        key: vcpkg-${{ inputs.cache-key }}-${{ hashFiles('accounts-api/vcpkg.json', 'accounts-api/vcpkg-overlays/**', 'core/vcpkg.json', 'core/vcpkg-overlays/**', 'accounts-api/docker/dev.Dockerfile') }}
+        restore-keys: vcpkg-${{ inputs.cache-key }}-
+
+    - name: Bootstrap vcpkg
+      shell: bash
+      run: |
+        mkdir -p .vcpkg-cache
+        # Both scripts/dev.sh and plain vcpkg read the cache location from here.
+        echo "VCPKG_CACHE_DIR=${GITHUB_WORKSPACE}/.vcpkg-cache" >> "$GITHUB_ENV"
+        echo "VCPKG_DEFAULT_BINARY_CACHE=${GITHUB_WORKSPACE}/.vcpkg-cache" >> "$GITHUB_ENV"
+        if [[ "${{ inputs.in-dev-container }}" == "true" ]]; then
+          VCPKG_CACHE_DIR=.vcpkg-cache scripts/dev.sh scripts/bootstrap-vcpkg.sh
+        else
+          scripts/bootstrap-vcpkg.sh
+        fi

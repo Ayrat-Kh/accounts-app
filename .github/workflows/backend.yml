@@ -1,0 +1,214 @@
+name: backend
+
+# accounts-api: lint -> build + test (debug and ASan, against real Postgres
+# and Garage) -> container image (scanned, SBOM, signed) -> deploy to k3s.
+# The same pipeline as ../obsidian's backend workflow.
+
+on:
+  push:
+    branches: [main]
+    paths: ["accounts-api/**", "deploy/**", "scripts/**", ".github/workflows/backend.yml", ".github/actions/**"]
+  pull_request:
+    paths: ["accounts-api/**", "deploy/**", "scripts/**", ".github/workflows/backend.yml", ".github/actions/**"]
+  # scripts/deploy-now.sh: build, push and deploy main's HEAD right away.
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Push and deploy the image (main only)"
+        type: boolean
+        default: false
+      skip_tests:
+        description: "With deploy: skip lint and tests"
+        type: boolean
+        default: false
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/accounts-api
+
+jobs:
+  lint:
+    if: ${{ !(inputs.deploy && inputs.skip_tests) }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup-vcpkg
+        with: {cache-key: backend-linux, in-dev-container: "true"}
+
+      - name: clang-format
+        run: |
+          scripts/dev.sh bash -c 'find accounts-api/src accounts-api/tests \( -name "*.cpp" -o -name "*.hpp" \) |
+            xargs clang-format-19 --dry-run --Werror'
+
+      - name: clang-tidy
+        run: |
+          scripts/dev.sh bash -c 'cmake -S accounts-api --preset debug >/dev/null &&
+            cmake --build accounts-api/build/debug --target accounts_core >/dev/null &&
+            cd accounts-api && find src -name "*.cpp" | xargs -P4 -n4 clang-tidy-19 -p build/debug --quiet'
+
+  build-and-test:
+    if: ${{ !(inputs.deploy && inputs.skip_tests) }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [debug, asan]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup-vcpkg
+        with: {cache-key: backend-linux, in-dev-container: "true"}
+
+      - name: Build (${{ matrix.preset }})
+        run: |
+          scripts/dev.sh cmake -S accounts-api --preset ${{ matrix.preset }}
+          scripts/dev.sh cmake --build accounts-api/build/${{ matrix.preset }}
+
+      - name: Start Postgres and Garage
+        run: scripts/dev-up.sh
+
+      - name: Test (${{ matrix.preset }}, random order)
+        env:
+          DEV_NETWORK: accounts-dev
+          DEV_ENV_FILE: scripts/.dev-env
+        run: scripts/dev.sh accounts-api/build/${{ matrix.preset }}/accounts_tests --order rand
+
+  image:
+    needs: [lint, build-and-test]
+    # The test jobs are skipped for a skip_tests deploy, which a plain `needs:` would treat as failure.
+    if: >-
+      ${{ !cancelled() &&
+          ((needs.lint.result == 'success' && needs.build-and-test.result == 'success') ||
+           (inputs.deploy && inputs.skip_tests)) }}
+    runs-on: ubuntu-24.04
+    outputs:
+      image: ${{ steps.name.outputs.image }}
+      digest: ${{ steps.sign.outputs.digest }}
+    permissions:
+      contents: read
+      packages: write
+      id-token: write # cosign keyless signing (Sigstore OIDC)
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup-vcpkg
+        with: {cache-key: backend-linux-release, in-dev-container: "true"}
+
+      # Registry paths must be lower case; github.repository keeps the owner's case.
+      - name: Image name
+        id: name
+        run: |
+          echo "IMAGE=${REGISTRY}/${IMAGE_NAME,,}" >> "$GITHUB_ENV"
+          echo "image=${REGISTRY}/${IMAGE_NAME,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Build release binary
+        run: |
+          scripts/dev.sh cmake -S accounts-api --preset release -DACCOUNTS_BUILD_TESTS=OFF
+          scripts/dev.sh cmake --build accounts-api/build/release
+          # The build directory is a dev.sh volume: copy the binary out to the runner.
+          scripts/dev.sh bash -c 'strip accounts-api/build/release/accounts-api &&
+            ldd accounts-api/build/release/accounts-api &&
+            install -D -m 755 accounts-api/build/release/accounts-api .image/accounts-api'
+
+      - name: Build image
+        run: docker build --tag "${IMAGE}:${{ github.sha }}" --file accounts-api/docker/runtime.Dockerfile .image
+
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: "${{ env.IMAGE }}:${{ github.sha }}"
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true # fail only on findings a rebuild can fix
+          exit-code: "1"
+
+      - name: SBOM
+        uses: anchore/sbom-action@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
+        with:
+          image: "${{ env.IMAGE }}:${{ github.sha }}"
+          format: spdx-json
+          output-file: accounts-api-sbom.spdx.json
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: accounts-api-sbom
+          path: accounts-api-sbom.spdx.json
+
+      - name: Push
+        if: github.event_name == 'push' || inputs.deploy
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login "${REGISTRY}" -u "${{ github.actor }}" --password-stdin
+          docker push "${IMAGE}:${{ github.sha }}"
+
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        if: github.event_name == 'push' || inputs.deploy
+
+      - name: Sign (keyless)
+        id: sign
+        if: github.event_name == 'push' || inputs.deploy
+        run: |
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "${IMAGE}:${{ github.sha }}")
+          cosign sign --yes "${DIGEST}"
+          echo "digest=${DIGEST#*@}" >> "$GITHUB_OUTPUT"
+
+  # Rolls the signed image out as vps-setup's kube-deploy identity: an SSH key
+  # that can only open a tunnel to the API server, and a token limited to app-*
+  # namespaces. App secrets never reach CI (deploy/README.md).
+  deploy:
+    needs: image
+    if: >-
+      ${{ !cancelled() && needs.image.result == 'success' && github.ref == 'refs/heads/main' &&
+          (github.event_name == 'push' || inputs.deploy) }}
+    runs-on: ubuntu-24.04
+    environment: production
+    timeout-minutes: 20
+    concurrency:
+      group: accounts-deploy
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      packages: read
+    env:
+      IMAGE: ${{ needs.image.outputs.image }}
+      ACCOUNTS_DIGEST: ${{ needs.image.outputs.digest }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Verify the image signature
+        run: |
+          source deploy/config.env
+          [[ "$ACCOUNTS_IMAGE" == "$IMAGE" ]] \
+            || { echo "::error::deploy/config.env has ACCOUNTS_IMAGE=$ACCOUNTS_IMAGE but CI pushed $IMAGE"; exit 1; }
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login "${REGISTRY}" -u "${{ github.actor }}" --password-stdin
+          cosign verify "${IMAGE}@${ACCOUNTS_DIGEST}" \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity "https://github.com/${{ github.workflow_ref }}" > /dev/null
+
+      - name: SSH credentials
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          umask 077
+          mkdir -p ~/.ssh   # KUBE_DEPLOY_SSH_KEY in deploy/config.env points here
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/kube_deploy
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: deploy.sh apply
+        env:
+          KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG }}
+        run: bash deploy/deploy.sh apply
+
+      - name: Smoke test
+        run: |
+          source deploy/config.env
+          curl --fail --silent --show-error --retry 10 --retry-delay 6 --retry-all-errors "https://${ACCOUNTS_HOST}/readyz"
+
+      - name: Clean up
+        if: always()
+        run: rm -rf deploy/.build ~/.ssh/kube_deploy
