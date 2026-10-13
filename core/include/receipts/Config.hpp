@@ -9,15 +9,15 @@ namespace receipts {
 // Where a model runs.
 struct EngineConfig {
     enum class Kind {
-        Local,             // in-process llama.cpp with a GGUF file (phones, offline Macs)
-        OpenAiCompatible,  // an HTTP server: llama.cpp's llama-server, oMLX, Ollama, LM Studio...
+        Local,            // in-process llama.cpp with a GGUF file (phones, offline Macs)
+        OpenAiCompatible, // an HTTP server: llama.cpp's llama-server, oMLX, Ollama, LM Studio...
     };
 
     Kind kind = Kind::Local;
-    std::string modelFile = "embeddinggemma-2-Q8_0.gguf";  // Local: file name inside the models directory
-    std::string baseUrl;                                   // OpenAiCompatible: e.g. "http://localhost:8080"
-    std::string model;                                     // OpenAiCompatible: the server's model name
-    std::optional<std::string> apiKeySecureStoreKey;       // OpenAiCompatible: SecureStore key holding a bearer key
+    std::string modelFile = "embeddinggemma-2-Q8_0.gguf"; // Local: file name inside the models directory
+    std::string baseUrl;                                  // OpenAiCompatible: e.g. "http://localhost:8080"
+    std::string model;                                    // OpenAiCompatible: the server's model name
+    std::optional<std::string> apiKeySecureStoreKey;      // OpenAiCompatible: SecureStore key holding a bearer key
     // Embedding models are trained with task prefixes; change it together
     // with the model. For EmbeddingGemma 2, the "search result" prompt
     // separated totals from other lines best on testdata/receipts (better

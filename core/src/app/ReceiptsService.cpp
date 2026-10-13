@@ -64,8 +64,8 @@ std::string newLocalId() {
 // may only arrive (downloadModels) after the service was created.
 struct ScanPipeline {
     std::unique_ptr<ocr::TesseractOcrEngine> ocr;
-    std::unique_ptr<inference::EmbeddingEngine> embedding;              // null: keywords only
-    std::shared_ptr<inference::OpenAiCompatibleEngine> completionEngine;  // null: no LLM fallback
+    std::unique_ptr<inference::EmbeddingEngine> embedding;               // null: keywords only
+    std::shared_ptr<inference::OpenAiCompatibleEngine> completionEngine; // null: no LLM fallback
     std::unique_ptr<extract::LineScorer> scorer;
     extract::KeywordLineScorer keywordScorer;
     std::unique_ptr<extract::LlmTotalExtractor> llm;
@@ -130,11 +130,11 @@ struct ReceiptsService::Impl {
         if (config.embedding) {
             if (auto embedding = makeEmbeddingEngine(*config.embedding)) {
                 pipeline->embedding = std::move(*embedding);
-                pipeline->scorer = std::make_unique<extract::EmbeddingLineScorer>(*pipeline->embedding,
-                                                                                  config.embedding->textPrefix);
+                pipeline->scorer =
+                    std::make_unique<extract::EmbeddingLineScorer>(*pipeline->embedding, config.embedding->textPrefix);
             } else {
-                logger->log(LogLevel::Warning, "embedding model unavailable, using keywords: " +
-                                                   embedding.error().message);
+                logger->log(LogLevel::Warning,
+                            "embedding model unavailable, using keywords: " + embedding.error().message);
             }
         }
         if (!pipeline->scorer) {
@@ -173,9 +173,8 @@ struct ReceiptsService::Impl {
     }
 };
 
-Result<std::unique_ptr<ReceiptsService>> ReceiptsService::create(CoreConfig config,
-                                                                 std::shared_ptr<SecureStore> secureStore,
-                                                                 std::shared_ptr<Logger> logger) {
+Result<std::unique_ptr<ReceiptsService>>
+ReceiptsService::create(CoreConfig config, std::shared_ptr<SecureStore> secureStore, std::shared_ptr<Logger> logger) {
     if (config.dataDirectory.empty() || !secureStore) {
         return fail(ErrorCode::InvalidInput, "a data directory and a SecureStore are required");
     }

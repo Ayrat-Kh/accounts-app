@@ -11,7 +11,7 @@ namespace fs = std::filesystem;
 
 namespace {
 
-constexpr std::uint64_t pieceSize = 8 * 1024 * 1024;  // the server's maximum per request
+constexpr std::uint64_t pieceSize = 8 * 1024 * 1024; // the server's maximum per request
 
 std::uint64_t sizeOrZero(const fs::path &path) {
     std::error_code error;
@@ -46,8 +46,8 @@ Result<void> ModelDownloader::downloadAll(ProgressListener *progress) {
     if (!assets) {
         return std::unexpected(assets.error());
     }
-    const std::uint64_t bytesTotal = std::accumulate(
-        assets->begin(), assets->end(), std::uint64_t{0}, [](std::uint64_t sum, const auto &a) { return sum + a.size; });
+    const std::uint64_t bytesTotal = std::accumulate(assets->begin(), assets->end(), std::uint64_t{0},
+                                                     [](std::uint64_t sum, const auto &a) { return sum + a.size; });
     std::uint64_t bytesDone = 0;
 
     for (const api::AssetInfo &asset : *assets) {
@@ -65,13 +65,13 @@ Result<void> ModelDownloader::download(const api::AssetInfo &asset, std::uint64_
                                        std::uint64_t bytesTotal, ProgressListener *progress) {
     const fs::path target = localPath(asset.name);
     if (fs::exists(target)) {
-        bytesDoneOverall += asset.size;  // already complete and verified
+        bytesDoneOverall += asset.size; // already complete and verified
         return {};
     }
     fs::create_directories(target.parent_path());
     const fs::path partial = target.string() + ".part";
 
-    std::uint64_t offset = sizeOrZero(partial);  // resume
+    std::uint64_t offset = sizeOrZero(partial); // resume
     bytesDoneOverall += offset;
     while (offset < asset.size) {
         const std::uint64_t last = std::min(offset + pieceSize, asset.size) - 1;

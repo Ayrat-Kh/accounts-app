@@ -38,7 +38,7 @@ std::optional<std::string> dateInLine(const std::string &line) {
         if (auto dayFirst = formatIfValid(year, second, first)) {
             return dayFirst;
         }
-        return formatIfValid(year, first, second);  // month first, US style
+        return formatIfValid(year, first, second); // month first, US style
     }
     return std::nullopt;
 }

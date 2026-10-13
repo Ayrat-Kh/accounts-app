@@ -6,7 +6,7 @@ namespace accounts {
 
 // The identity carried by a verified access token.
 struct AuthUser {
-    std::string userId;  // users.id (uuid)
+    std::string userId; // users.id (uuid)
 };
 
 } // namespace accounts

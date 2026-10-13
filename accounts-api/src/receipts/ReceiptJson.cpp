@@ -10,8 +10,7 @@ boost::json::value optionalToJson(const std::optional<T> &value) {
 }
 
 // Reads an optional RFC 3339 field; a present-but-unparseable value is an error.
-std::optional<Timestamp> readTimestamp(http::JsonFields &fields, std::string_view key,
-                                       std::optional<AppError> &error) {
+std::optional<Timestamp> readTimestamp(http::JsonFields &fields, std::string_view key, std::optional<AppError> &error) {
     const auto text = fields.optionalString(key);
     if (!text) {
         return std::nullopt;

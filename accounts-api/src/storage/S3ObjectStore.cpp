@@ -22,8 +22,7 @@ Aws::S3::S3ClientConfiguration clientConfiguration(const S3Config &config) {
     Aws::S3::S3ClientConfiguration configuration;
     configuration.endpointOverride = config.endpoint;
     configuration.region = config.region;
-    configuration.scheme =
-        config.endpoint.starts_with("https://") ? Aws::Http::Scheme::HTTPS : Aws::Http::Scheme::HTTP;
+    configuration.scheme = config.endpoint.starts_with("https://") ? Aws::Http::Scheme::HTTPS : Aws::Http::Scheme::HTTP;
     configuration.connectTimeoutMs = 3000;
     configuration.requestTimeoutMs = 30000;
     configuration.checksumConfig.requestChecksumCalculation = Aws::Client::RequestChecksumCalculation::WHEN_REQUIRED;
@@ -32,7 +31,7 @@ Aws::S3::S3ClientConfiguration clientConfiguration(const S3Config &config) {
 }
 
 AppError s3Error(std::string_view operation, const std::string &key, const Aws::S3::S3Error &error) {
-    return {ErrorCode::UpstreamFailure, std::format("S3 {} {}: {}", operation, key, error.GetMessage().c_str())};
+    return {ErrorCode::UpstreamFailure, std::format("S3 {} {}: {}", operation, key, error.GetMessage())};
 }
 
 bool isNotFound(const Aws::S3::S3Error &error) {

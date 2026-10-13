@@ -63,7 +63,7 @@ std::string configPathFromArguments(int argc, char **argv) {
 // Runs one coroutine to completion before the server starts (used for migrations).
 Result<void> runToCompletion(asio::io_context &ioContext, asio::awaitable<Result<void>> task) {
     std::optional<Result<void>> outcome;
-    asio::co_spawn(ioContext, std::move(task), [&outcome](std::exception_ptr error, Result<void> result) {
+    asio::co_spawn(ioContext, std::move(task), [&outcome](const std::exception_ptr &error, Result<void> result) {
         if (error) {
             std::rethrow_exception(error);
         }
@@ -77,8 +77,8 @@ Result<void> runToCompletion(asio::io_context &ioContext, asio::awaitable<Result
 void serve(const Config &config) {
     asio::io_context ioContext;
 
-    if (auto migrated = runToCompletion(ioContext, db::runMigrations(config.database.connectionString,
-                                                                     db::embeddedMigrations()));
+    if (auto migrated =
+            runToCompletion(ioContext, db::runMigrations(config.database.connectionString, db::embeddedMigrations()));
         !migrated) {
         throw std::runtime_error(migrated.error().message);
     }

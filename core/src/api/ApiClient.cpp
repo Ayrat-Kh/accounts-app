@@ -14,13 +14,21 @@ namespace {
 
 constexpr const char *accessTokenKey = "accounts.access_token";
 constexpr const char *refreshTokenKey = "accounts.refresh_token";
-constexpr auto uploadTimeout = std::chrono::seconds(120);  // a 10 MB photo on a slow uplink
+constexpr auto uploadTimeout = std::chrono::seconds(120); // a 10 MB photo on a slow uplink
 
 net::HttpRequest jsonRequest(std::string method, std::string url, const json &body) {
     return {.method = std::move(method),
             .url = std::move(url),
             .headers = {{"Content-Type", "application/json"}},
             .body = body.dump()};
+}
+
+// A request without a body, e.g. requestWithoutBody("GET", url).
+net::HttpRequest requestWithoutBody(std::string method, std::string url) {
+    net::HttpRequest request;
+    request.method = std::move(method);
+    request.url = std::move(url);
+    return request;
 }
 
 // Wraps "parse this JSON body" so a malformed server answer becomes an Error, not an exception.
@@ -144,12 +152,12 @@ Result<Receipt> ApiClient::createReceipt(const Receipt &receipt) {
 }
 
 Result<void> ApiClient::uploadImage(const std::string &serverId, const std::string &bytes) {
-    auto response = send({.method = "PUT",
-                          .url = baseUrl_ + "/v1/receipts/" + serverId + "/image",
-                          .headers = {{"Content-Type", "application/octet-stream"},
-                                      {"X-Content-SHA256", files::sha256Hex(bytes)}},
-                          .body = bytes,
-                          .timeout = uploadTimeout});
+    auto response =
+        send({.method = "PUT",
+              .url = baseUrl_ + "/v1/receipts/" + serverId + "/image",
+              .headers = {{"Content-Type", "application/octet-stream"}, {"X-Content-SHA256", files::sha256Hex(bytes)}},
+              .body = bytes,
+              .timeout = uploadTimeout});
     if (!response) {
         return std::unexpected(response.error());
     }
@@ -157,7 +165,7 @@ Result<void> ApiClient::uploadImage(const std::string &serverId, const std::stri
 }
 
 Result<void> ApiClient::deleteReceipt(const std::string &serverId) {
-    auto response = send({.method = "DELETE", .url = baseUrl_ + "/v1/receipts/" + serverId});
+    auto response = send(requestWithoutBody("DELETE", baseUrl_ + "/v1/receipts/" + serverId));
     if (!response && response.error().code != ErrorCode::NotFound) {
         return std::unexpected(response.error());
     }
@@ -170,9 +178,9 @@ Result<std::vector<Receipt>> ApiClient::listAllReceipts() {
     do {
         std::string url = baseUrl_ + "/v1/receipts?limit=100";
         if (cursor) {
-            url += "&cursor=" + *cursor;  // base64url: safe in a URL as is
+            url += "&cursor=" + *cursor; // base64url: safe in a URL as is
         }
-        auto response = send({.method = "GET", .url = url});
+        auto response = send(requestWithoutBody("GET", url));
         if (!response) {
             return std::unexpected(response.error());
         }
@@ -192,7 +200,7 @@ Result<std::vector<Receipt>> ApiClient::listAllReceipts() {
 }
 
 Result<std::vector<AssetInfo>> ApiClient::listAssets() {
-    auto response = send({.method = "GET", .url = baseUrl_ + "/v1/assets"});
+    auto response = send(requestWithoutBody("GET", baseUrl_ + "/v1/assets"));
     if (!response) {
         return std::unexpected(response.error());
     }
@@ -207,10 +215,10 @@ Result<std::vector<AssetInfo>> ApiClient::listAssets() {
 }
 
 Result<AssetPiece> ApiClient::downloadAssetPiece(const std::string &name, std::uint64_t first, std::uint64_t last) {
-    auto response = send({.method = "GET",
-                          .url = baseUrl_ + "/v1/assets/" + name,
-                          .headers = {{"Range", std::format("bytes={}-{}", first, last)}},
-                          .timeout = uploadTimeout});
+    net::HttpRequest request = requestWithoutBody("GET", baseUrl_ + "/v1/assets/" + name);
+    request.headers["Range"] = std::format("bytes={}-{}", first, last);
+    request.timeout = uploadTimeout;
+    auto response = send(std::move(request));
     if (!response) {
         return std::unexpected(response.error());
     }

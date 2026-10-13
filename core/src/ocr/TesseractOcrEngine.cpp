@@ -82,7 +82,7 @@ Result<OcrPage> TesseractOcrEngine::recognize(const std::string &imagePath) {
     page.imageHeight = pixGetHeight(prepared.get());
     std::unique_ptr<tesseract::ResultIterator> line(api_->GetIterator());
     if (!line) {
-        return page;  // a blank image: no text at all
+        return page; // a blank image: no text at all
     }
     do {
         std::unique_ptr<char[]> utf8(line->GetUTF8Text(tesseract::RIL_TEXTLINE));

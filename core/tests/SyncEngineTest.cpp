@@ -18,7 +18,7 @@ namespace {
 // A tiny in-memory accounts-api: enough of it for the sync protocol.
 class FakeServer {
 public:
-    std::map<std::string, std::int64_t> receipts;  // id -> amount
+    std::map<std::string, std::int64_t> receipts; // id -> amount
     std::set<std::string> withImage;
     bool offline = false;
     int nextId = 1;
@@ -63,8 +63,8 @@ private:
 
 struct Fixture {
     FakeServer server;
-    std::shared_ptr<FakeHttpTransport> transport = std::make_shared<FakeHttpTransport>(
-        [this](const net::HttpRequest &request) { return server.handle(request); });
+    std::shared_ptr<FakeHttpTransport> transport =
+        std::make_shared<FakeHttpTransport>([this](const net::HttpRequest &request) { return server.handle(request); });
     std::shared_ptr<MemorySecureStore> secrets = [] {
         auto store = std::make_shared<MemorySecureStore>();
         store->write("accounts.access_token", "token");
@@ -79,7 +79,8 @@ struct Fixture {
     app::SyncEngine sync{api, *store, logger};
 
     void saveLocally(const std::string &localId, std::int64_t amount, std::optional<std::string> image = {}) {
-        REQUIRE(store->addPending({.money = {amount, "EUR"}, .purchasedAt = "2026-10-13T12:00:00.000Z"}, localId, image));
+        REQUIRE(
+            store->addPending({.money = {amount, "EUR"}, .purchasedAt = "2026-10-13T12:00:00.000Z"}, localId, image));
     }
 };
 
@@ -113,14 +114,14 @@ TEST_CASE("offline: nothing is lost and the next sync finishes the job") {
 
     fixture.server.offline = false;
     CHECK(fixture.sync.sync().value().uploaded == 1);
-    CHECK(fixture.server.receipts.size() == 1);  // no duplicate
+    CHECK(fixture.server.receipts.size() == 1); // no duplicate
 }
 
 TEST_CASE("deletes are pushed, and receipts from other devices are pulled") {
     Fixture fixture;
     fixture.saveLocally("local-1", 100);
     REQUIRE(fixture.sync.sync());
-    fixture.server.receipts["r-99"] = 4200;  // created on another phone
+    fixture.server.receipts["r-99"] = 4200; // created on another phone
 
     REQUIRE(fixture.store->markPendingDelete("local-1"));
     const auto report = fixture.sync.sync().value();

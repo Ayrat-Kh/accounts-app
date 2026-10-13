@@ -28,11 +28,11 @@ TEST_CASE("thousands separators are understood in both conventions") {
 }
 
 TEST_CASE("numbers that are not prices are ignored") {
-    CHECK(amountsIn("2 x").empty());                   // quantity
-    CHECK(amountsIn("Bananas 0,512 kg").empty());      // weight: three decimals
-    CHECK(amountsIn("Art. 4006381333931").empty());    // article number
-    CHECK(amountsIn("Discount -1,50").empty());        // negative: never the total
-    CHECK(amountsIn("13.10.2026 18:42").empty());      // a date, not 13.10
+    CHECK(amountsIn("2 x").empty());                // quantity
+    CHECK(amountsIn("Bananas 0,512 kg").empty());   // weight: three decimals
+    CHECK(amountsIn("Art. 4006381333931").empty()); // article number
+    CHECK(amountsIn("Discount -1,50").empty());     // negative: never the total
+    CHECK(amountsIn("13.10.2026 18:42").empty());   // a date, not 13.10
 }
 
 TEST_CASE("several amounts on one line are all found") {

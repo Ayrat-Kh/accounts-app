@@ -9,13 +9,13 @@
 namespace receipts {
 
 enum class ErrorCode {
-    InvalidInput,  // the caller passed something unusable (e.g. an unreadable image)
-    NotSignedIn,   // the operation needs an account
-    Network,       // no connection, timeout, TLS failure
-    Server,        // the server answered with an error
+    InvalidInput, // the caller passed something unusable (e.g. an unreadable image)
+    NotSignedIn,  // the operation needs an account
+    Network,      // no connection, timeout, TLS failure
+    Server,       // the server answered with an error
     NotFound,
-    ModelMissing,  // OCR or embedding files have not been downloaded yet
-    Internal,      // a bug
+    ModelMissing, // OCR or embedding files have not been downloaded yet
+    Internal,     // a bug
 };
 
 struct Error {

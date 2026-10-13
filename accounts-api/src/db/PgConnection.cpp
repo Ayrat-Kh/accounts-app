@@ -29,7 +29,7 @@ awaitable<boost::system::error_code> waitOnSocket(int fd, bool forReading) {
     asio::posix::stream_descriptor socket(co_await asio::this_coro::executor, fd);
     auto [error] = co_await socket.async_wait(
         toWaitType(forReading), asio::cancel_after(socketWaitTimeout, asio::as_tuple(asio::use_awaitable)));
-    socket.release();  // hand the fd back without closing it
+    socket.release(); // hand the fd back without closing it
     co_return error;
 }
 
@@ -60,8 +60,7 @@ awaitable<Result<std::unique_ptr<PgConnection>>> PgConnection::connect(std::stri
 
     // Server notices ("relation already exists, skipping") go to our log at
     // debug level instead of libpq's default, a raw write to stderr.
-    PQsetNoticeProcessor(
-        raw, [](void *, const char *message) { spdlog::debug("postgres: {}", message); }, nullptr);
+    PQsetNoticeProcessor(raw, [](void *, const char *message) { spdlog::debug("postgres: {}", message); }, nullptr);
 
     if (PQsetnonblocking(raw, 1) != 0) {
         co_return fail(ErrorCode::UpstreamFailure, std::string("postgres: ") + PQerrorMessage(raw));
@@ -70,12 +69,12 @@ awaitable<Result<std::unique_ptr<PgConnection>>> PgConnection::connect(std::stri
     co_return std::unique_ptr<PgConnection>(new PgConnection(executor, connection.release()));
 }
 
-PgConnection::PgConnection(asio::any_io_executor executor, PGconn *connection)
-    : connection_(connection), socket_(std::move(executor), PQsocket(connection)) {}
+PgConnection::PgConnection(const asio::any_io_executor &executor, PGconn *connection)
+    : connection_(connection), socket_(executor, PQsocket(connection)) {}
 
 PgConnection::~PgConnection() {
-    socket_.release();  // libpq owns the file descriptor...
-    PQfinish(connection_);  // ...and closes it here.
+    socket_.release();     // libpq owns the file descriptor...
+    PQfinish(connection_); // ...and closes it here.
 }
 
 bool PgConnection::isHealthy() const {
@@ -87,9 +86,9 @@ AppError PgConnection::lastError(std::string_view context) const {
 }
 
 awaitable<Result<void>> PgConnection::waitForSocket(Direction direction) {
-    auto [error] = co_await socket_.async_wait(
-        toWaitType(direction == Direction::Read),
-        asio::cancel_after(socketWaitTimeout, asio::as_tuple(asio::use_awaitable)));
+    auto [error] =
+        co_await socket_.async_wait(toWaitType(direction == Direction::Read),
+                                    asio::cancel_after(socketWaitTimeout, asio::as_tuple(asio::use_awaitable)));
     if (error) {
         // The statement is still in flight; the connection is in an unknown state.
         broken_ = true;

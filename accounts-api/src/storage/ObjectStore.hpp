@@ -16,7 +16,7 @@ namespace accounts::storage {
 struct StoredObject {
     std::string bytes;
     std::string contentType;
-    std::uint64_t totalSize;  // of the whole object, even when only a range was read
+    std::uint64_t totalSize; // of the whole object, even when only a range was read
 };
 
 // Inclusive byte range, as in "Range: bytes=first-last".

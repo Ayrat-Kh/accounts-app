@@ -17,15 +17,33 @@ namespace accounts::db {
 
 using PgParam = std::optional<std::string>;
 
-inline PgParam toPgParam(std::string_view value) { return std::string(value); }
-inline PgParam toPgParam(const std::string &value) { return value; }
-inline PgParam toPgParam(const char *value) { return std::string(value); }
-inline PgParam toPgParam(std::int64_t value) { return std::to_string(value); }
-inline PgParam toPgParam(int value) { return std::to_string(value); }
-inline PgParam toPgParam(double value) { return std::format("{}", value); }  // shortest exact form
-inline PgParam toPgParam(bool value) { return value ? "true" : "false"; }
-inline PgParam toPgParam(Timestamp value) { return formatRfc3339(value); }
-inline PgParam toPgParam(std::nullopt_t) { return std::nullopt; }
+inline PgParam toPgParam(std::string_view value) {
+    return std::string(value);
+}
+inline PgParam toPgParam(const std::string &value) {
+    return value;
+}
+inline PgParam toPgParam(const char *value) {
+    return std::string(value);
+}
+inline PgParam toPgParam(std::int64_t value) {
+    return std::to_string(value);
+}
+inline PgParam toPgParam(int value) {
+    return std::to_string(value);
+}
+inline PgParam toPgParam(double value) {
+    return std::format("{}", value);
+} // shortest exact form
+inline PgParam toPgParam(bool value) {
+    return value ? "true" : "false";
+}
+inline PgParam toPgParam(Timestamp value) {
+    return formatRfc3339(value);
+}
+inline PgParam toPgParam(std::nullopt_t) {
+    return std::nullopt;
+}
 
 template <class T>
 PgParam toPgParam(const std::optional<T> &value) {

@@ -38,7 +38,7 @@ Result<void> validateMerchant(const std::string &merchant) {
 }
 
 Result<void> validateConfidence(double confidence) {
-    if (!(confidence >= 0.0 && confidence <= 1.0)) {  // also rejects NaN
+    if (!(confidence >= 0.0 && confidence <= 1.0)) { // also rejects NaN
         return fail(ErrorCode::InvalidInput, "ocr_confidence must be between 0 and 1");
     }
     return {};

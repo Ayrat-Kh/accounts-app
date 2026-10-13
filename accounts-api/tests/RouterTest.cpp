@@ -1,5 +1,5 @@
-#include "assets/AssetRoutes.hpp"
 #include "http/Router.hpp"
+#include "assets/AssetRoutes.hpp"
 #include "support/TestSupport.hpp"
 
 #include <catch2/catch_test_macros.hpp>
@@ -69,9 +69,8 @@ TEST_CASE("each route has its own body limit, defaulting to the router's") {
 TEST_CASE("an exception escaping a handler becomes a 500, not a crash") {
     FakeAuthenticator authenticator;
     Router router(authenticator, 1024);
-    router.add(
-        Method::Get, "/boom", [](Request &) -> awaitable<Response> { throw std::runtime_error("bug"); },
-        {.requiresAuth = false, .maxBodyBytes = {}});
+    router.add(Method::Get, "/boom", [](Request &) -> awaitable<Response> { throw std::runtime_error("bug"); },
+               {.requiresAuth = false, .maxBodyBytes = {}});
     const Response response = testing::runSync(router.dispatch(router.match(Method::Get, "/boom").value(), {}));
     CHECK(response.status == Status::InternalServerError);
 }

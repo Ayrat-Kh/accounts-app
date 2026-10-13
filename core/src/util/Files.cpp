@@ -13,7 +13,9 @@ namespace {
 
 class Sha256 {
 public:
-    Sha256() : context_(EVP_MD_CTX_new(), &EVP_MD_CTX_free) { EVP_DigestInit_ex(context_.get(), EVP_sha256(), nullptr); }
+    Sha256() : context_(EVP_MD_CTX_new(), &EVP_MD_CTX_free) {
+        EVP_DigestInit_ex(context_.get(), EVP_sha256(), nullptr);
+    }
 
     void update(const char *data, std::size_t size) { EVP_DigestUpdate(context_.get(), data, size); }
 

@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       build-essential cmake ninja-build pkg-config \
       git curl ca-certificates zip unzip tar jq python3 \
       autoconf autoconf-archive automake libtool bison flex \
-      linux-libc-dev \
+      linux-libc-dev clang-format-19 clang-tidy-19 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src

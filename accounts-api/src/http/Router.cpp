@@ -13,9 +13,12 @@ namespace {
 
 std::string percentDecode(std::string_view text) {
     auto hexValue = [](char c) -> int {
-        if (c >= '0' && c <= '9') return c - '0';
-        if (c >= 'a' && c <= 'f') return c - 'a' + 10;
-        if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+        if (c >= '0' && c <= '9')
+            return c - '0';
+        if (c >= 'a' && c <= 'f')
+            return c - 'a' + 10;
+        if (c >= 'A' && c <= 'F')
+            return c - 'A' + 10;
         return -1;
     };
     std::string decoded;
@@ -76,12 +79,18 @@ StringMap parseQueryString(std::string_view query) {
 Method parseMethod(std::string_view method) {
     std::string upper(method);
     std::ranges::transform(upper, upper.begin(), [](unsigned char c) { return static_cast<char>(std::toupper(c)); });
-    if (upper == "GET") return Method::Get;
-    if (upper == "HEAD") return Method::Head;
-    if (upper == "POST") return Method::Post;
-    if (upper == "PUT") return Method::Put;
-    if (upper == "PATCH") return Method::Patch;
-    if (upper == "DELETE") return Method::Delete;
+    if (upper == "GET")
+        return Method::Get;
+    if (upper == "HEAD")
+        return Method::Head;
+    if (upper == "POST")
+        return Method::Post;
+    if (upper == "PUT")
+        return Method::Put;
+    if (upper == "PATCH")
+        return Method::Patch;
+    if (upper == "DELETE")
+        return Method::Delete;
     return Method::Other;
 }
 

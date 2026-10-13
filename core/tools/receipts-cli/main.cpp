@@ -34,12 +34,12 @@ struct Options {
     std::string imagePath;
     std::string modelsDirectory = "core/testdata/models";
     std::string languages = "eng+deu+rus";
-    std::string engine = "local";  // local | remote | keywords
+    std::string engine = "local"; // local | remote | keywords
     std::string baseUrl;
     std::string model;
     std::string completionUrl;
     std::string completionModel;
-    std::string prefix = EngineConfig{}.textPrefix;  // the embedding model's task prefix
+    std::string prefix = EngineConfig{}.textPrefix; // the embedding model's task prefix
 };
 
 class StderrLogger : public Logger {
@@ -61,10 +61,14 @@ std::optional<Options> parseArguments(int argc, char **argv) {
     Options options;
     options.imagePath = argv[2];
     const std::map<std::string_view, std::string *> flags = {
-        {"--models", &options.modelsDirectory}, {"--languages", &options.languages},
-        {"--engine", &options.engine},          {"--base-url", &options.baseUrl},
-        {"--model", &options.model},            {"--completion-url", &options.completionUrl},
-        {"--completion-model", &options.completionModel}, {"--prefix", &options.prefix},
+        {"--models", &options.modelsDirectory},
+        {"--languages", &options.languages},
+        {"--engine", &options.engine},
+        {"--base-url", &options.baseUrl},
+        {"--model", &options.model},
+        {"--completion-url", &options.completionUrl},
+        {"--completion-model", &options.completionModel},
+        {"--prefix", &options.prefix},
     };
     for (int i = 3; i < argc; i += 2) {
         const auto flag = flags.find(argv[i]);
@@ -80,10 +84,12 @@ json toJson(const ScanResult &result) {
     auto money = [](const Money &m) { return json{{"amount_minor", m.amountMinor}, {"currency", m.currency}}; };
     json candidates = json::array();
     for (const auto &candidate : result.candidates) {
-        candidates.push_back({{"money", money(candidate.money)}, {"line", candidate.lineText}, {"score", candidate.score}});
+        candidates.push_back(
+            {{"money", money(candidate.money)}, {"line", candidate.lineText}, {"score", candidate.score}});
     }
-    static const std::map<ExtractionSource, const char *> sources = {
-        {ExtractionSource::Embedding, "embedding"}, {ExtractionSource::Keywords, "keywords"}, {ExtractionSource::Llm, "llm"}};
+    static const std::map<ExtractionSource, const char *> sources = {{ExtractionSource::Embedding, "embedding"},
+                                                                     {ExtractionSource::Keywords, "keywords"},
+                                                                     {ExtractionSource::Llm, "llm"}};
     return {
         {"total", result.total ? money(*result.total) : json(nullptr)},
         {"purchased_at", result.purchasedAt ? json(*result.purchasedAt) : json(nullptr)},
@@ -105,8 +111,8 @@ int main(int argc, char **argv) {
     StderrLogger logger;
     auto transport = std::make_shared<net::CurlHttpTransport>();
 
-    auto ocr = ocr::TesseractOcrEngine::create(
-        (std::filesystem::path(options->modelsDirectory) / "tessdata").string(), options->languages);
+    auto ocr = ocr::TesseractOcrEngine::create((std::filesystem::path(options->modelsDirectory) / "tessdata").string(),
+                                               options->languages);
     if (!ocr) {
         std::cerr << ocr.error().message << '\n';
         return 1;
@@ -125,7 +131,8 @@ int main(int argc, char **argv) {
     } else if (options->engine == "remote") {
         embeddingEngine = std::make_unique<inference::OpenAiCompatibleEngine>(
             transport,
-            EngineConfig{.kind = EngineConfig::Kind::OpenAiCompatible, .baseUrl = options->baseUrl, .model = options->model},
+            EngineConfig{
+                .kind = EngineConfig::Kind::OpenAiCompatible, .baseUrl = options->baseUrl, .model = options->model},
             std::nullopt);
     } else if (options->engine != "keywords") {
         return usage();
@@ -135,7 +142,8 @@ int main(int argc, char **argv) {
     if (embeddingEngine) {
         embeddingScorer = std::make_unique<extract::EmbeddingLineScorer>(*embeddingEngine, options->prefix);
     }
-    extract::LineScorer &scorer = embeddingScorer ? static_cast<extract::LineScorer &>(*embeddingScorer) : keywordScorer;
+    extract::LineScorer &scorer =
+        embeddingScorer ? static_cast<extract::LineScorer &>(*embeddingScorer) : keywordScorer;
 
     // Optional LLM second opinion.
     std::unique_ptr<inference::OpenAiCompatibleEngine> completionEngine;
@@ -143,8 +151,10 @@ int main(int argc, char **argv) {
     if (!options->completionUrl.empty()) {
         completionEngine = std::make_unique<inference::OpenAiCompatibleEngine>(
             transport,
-            EngineConfig{.kind = EngineConfig::Kind::OpenAiCompatible, .baseUrl = options->completionUrl,
-                         .model = options->completionModel, .timeout = std::chrono::seconds(120)},
+            EngineConfig{.kind = EngineConfig::Kind::OpenAiCompatible,
+                         .baseUrl = options->completionUrl,
+                         .model = options->completionModel,
+                         .timeout = std::chrono::seconds(120)},
             std::nullopt);
         llm = std::make_unique<extract::LlmTotalExtractor>(*completionEngine);
     }

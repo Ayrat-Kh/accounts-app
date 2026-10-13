@@ -35,8 +35,10 @@ std::string stateName(SyncState state) {
 }
 
 SyncState stateFromName(const std::string &name) {
-    if (name == "synced") return SyncState::Synced;
-    if (name == "pending_delete") return SyncState::PendingDelete;
+    if (name == "synced")
+        return SyncState::Synced;
+    if (name == "pending_delete")
+        return SyncState::PendingDelete;
     return SyncState::PendingUpload;
 }
 
@@ -124,7 +126,8 @@ Result<Receipt> LocalReceiptStore::addPending(const ReceiptDraft &draft, const s
 
 Result<std::optional<Receipt>> LocalReceiptStore::find(const std::string &localId) {
     return locked([&]() -> Result<std::optional<Receipt>> {
-        auto select = database_->prepare(std::string("SELECT ") + receiptColumns + " FROM receipts WHERE local_id = ?1");
+        auto select =
+            database_->prepare(std::string("SELECT ") + receiptColumns + " FROM receipts WHERE local_id = ?1");
         select.bind(1, localId);
         if (!select.step()) {
             return std::nullopt;

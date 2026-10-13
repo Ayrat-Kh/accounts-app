@@ -41,7 +41,7 @@ public:
     const std::optional<AppError> &firstError() const { return firstError_; }
 
 private:
-    const boost::json::value *find(std::string_view key) const;  // nullptr if absent or null
+    const boost::json::value *find(std::string_view key) const; // nullptr if absent or null
     void recordError(std::string_view key, std::string_view expected);
 
     const boost::json::object &object_;

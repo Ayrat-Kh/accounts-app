@@ -10,7 +10,7 @@ namespace accounts::receipts {
 
 struct ImageUpload {
     std::string bytes;
-    std::string declaredSha256;  // from the X-Content-SHA256 header; proves the upload arrived intact
+    std::string declaredSha256; // from the X-Content-SHA256 header; proves the upload arrived intact
 };
 
 class ReceiptService {

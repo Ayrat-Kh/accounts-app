@@ -32,7 +32,7 @@ awaitable<void> ObsidianSyncWorker::runLoop() {
     while (!stopped_) {
         co_await publishPendingReceipts();
         timer_.expires_after(interval_);
-        co_await timer_.async_wait(asio::as_tuple(asio::use_awaitable));  // cancelled by stop()
+        co_await timer_.async_wait(asio::as_tuple(asio::use_awaitable)); // cancelled by stop()
     }
 }
 

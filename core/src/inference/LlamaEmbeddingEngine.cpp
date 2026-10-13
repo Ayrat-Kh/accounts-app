@@ -6,8 +6,8 @@
 
 #include <algorithm>
 #include <cstdio>
-#include <mutex>
 #include <filesystem>
+#include <mutex>
 #include <thread>
 
 namespace receipts::inference {
@@ -47,17 +47,17 @@ Result<std::unique_ptr<LlamaEmbeddingEngine>> LlamaEmbeddingEngine::load(const s
     initialiseLlamaOnce();
 
     llama_model_params modelParams = llama_model_default_params();
-    modelParams.n_gpu_layers = 999;  // everything on the GPU where there is one (Metal); ignored on CPU builds
+    modelParams.n_gpu_layers = 999; // everything on the GPU where there is one (Metal); ignored on CPU builds
     llama_model *model = llama_model_load_from_file(modelPath.c_str(), modelParams);
     if (model == nullptr) {
         return fail(ErrorCode::ModelMissing, "cannot load embedding model " + modelPath);
     }
 
     llama_context_params contextParams = llama_context_default_params();
-    contextParams.embeddings = true;  // we want vectors, not next-token logits
+    contextParams.embeddings = true; // we want vectors, not next-token logits
     contextParams.n_ctx = contextTokens;
     contextParams.n_batch = contextTokens;
-    contextParams.n_ubatch = contextTokens;  // a non-causal model must see a whole text in one micro-batch
+    contextParams.n_ubatch = contextTokens; // a non-causal model must see a whole text in one micro-batch
     contextParams.n_threads = threadCount();
     contextParams.n_threads_batch = threadCount();
     // pooling_type stays "unspecified": the GGUF says how to pool (mean, for EmbeddingGemma).
@@ -99,8 +99,8 @@ Result<Embedding> LlamaEmbeddingEngine::embedOne(const std::string &text) {
                                           static_cast<int32_t>(tokens.size()), /*add_special=*/true,
                                           /*parse_special=*/false);
     if (tokenCount <= 0) {
-        return fail(ErrorCode::InvalidInput, "text is empty or longer than " + std::to_string(contextTokens) +
-                                                 " tokens");
+        return fail(ErrorCode::InvalidInput,
+                    "text is empty or longer than " + std::to_string(contextTokens) + " tokens");
     }
     tokens.resize(tokenCount);
 

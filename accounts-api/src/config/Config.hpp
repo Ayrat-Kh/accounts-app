@@ -15,19 +15,19 @@ namespace accounts {
 struct ServerConfig {
     std::string bindHost = "0.0.0.0";
     std::uint16_t port = 8080;
-    std::size_t maxJsonBodyBytes = 16 * 1024;
-    std::size_t maxImageBodyBytes = 10 * 1024 * 1024;
+    std::size_t maxJsonBodyBytes = 16UZ * 1024;
+    std::size_t maxImageBodyBytes = 10UZ * 1024 * 1024;
 };
 
 struct DatabaseConfig {
-    std::string connectionString;  // libpq "key=value" string, password included
+    std::string connectionString; // libpq "key=value" string, password included
     std::size_t poolSize = 8;
 };
 
 struct AuthConfig {
-    std::vector<std::string> googleClientIds;  // `aud` values we accept (Android + Web client ids)
+    std::vector<std::string> googleClientIds; // `aud` values we accept (Android + Web client ids)
     std::vector<std::string> allowedEmails;
-    std::string jwtPrivateKeyPem;              // Ed25519 private key
+    std::string jwtPrivateKeyPem; // Ed25519 private key
     std::string jwtIssuer = "accounts-api";
     std::chrono::seconds accessTokenTtl{15 * 60};
     std::chrono::days refreshTokenTtl{30};
@@ -35,7 +35,7 @@ struct AuthConfig {
 };
 
 struct S3Config {
-    std::string endpoint;  // e.g. "http://garage.app-obsync.svc.cluster.local:3900"
+    std::string endpoint; // e.g. "http://garage.app-obsync.svc.cluster.local:3900"
     std::string region = "garage";
     std::string bucket;
     std::string accessKey;

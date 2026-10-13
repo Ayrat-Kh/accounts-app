@@ -47,7 +47,7 @@ public:
 private:
     enum class Direction { Read, Write };
 
-    PgConnection(boost::asio::any_io_executor executor, PGconn *connection);
+    PgConnection(const boost::asio::any_io_executor &executor, PGconn *connection);
 
     boost::asio::awaitable<Result<void>> waitForSocket(Direction direction);
     boost::asio::awaitable<Result<void>> flushOutgoingData();

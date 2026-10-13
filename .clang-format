@@ -1,6 +1,9 @@
+# One C++ style for accounts-api, core and the JNI layer. CI checks it.
 BasedOnStyle: LLVM
 IndentWidth: 4
 ColumnLimit: 120
+AccessModifierOffset: -4                 # public:/private: flush with the class keyword
+BreakTemplateDeclarations: Yes           # template <...> on its own line
 PointerAlignment: Right
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortCaseLabelsOnASingleLine: true

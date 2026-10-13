@@ -18,7 +18,7 @@ std::string sha256Hex(std::string_view data) {
     }
     static constexpr char hexDigits[] = "0123456789abcdef";
     std::string hex;
-    hex.reserve(digestLength * 2);
+    hex.reserve(static_cast<std::size_t>(digestLength) * 2);
     for (unsigned int i = 0; i < digestLength; ++i) {
         hex.push_back(hexDigits[digest[i] >> 4]);
         hex.push_back(hexDigits[digest[i] & 0x0F]);
@@ -63,11 +63,16 @@ std::string base64UrlEncode(std::string_view data) {
 
 std::string base64UrlDecode(std::string_view encoded) {
     auto valueOf = [](char c) -> int {
-        if (c >= 'A' && c <= 'Z') return c - 'A';
-        if (c >= 'a' && c <= 'z') return c - 'a' + 26;
-        if (c >= '0' && c <= '9') return c - '0' + 52;
-        if (c == '-') return 62;
-        if (c == '_') return 63;
+        if (c >= 'A' && c <= 'Z')
+            return c - 'A';
+        if (c >= 'a' && c <= 'z')
+            return c - 'a' + 26;
+        if (c >= '0' && c <= '9')
+            return c - '0' + 52;
+        if (c == '-')
+            return 62;
+        if (c == '_')
+            return 63;
         return -1;
     };
     if (encoded.size() % 4 == 1) {

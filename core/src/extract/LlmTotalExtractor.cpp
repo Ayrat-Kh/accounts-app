@@ -66,9 +66,8 @@ Result<std::optional<Money>> LlmTotalExtractor::extractTotal(const std::vector<s
     }
 
     // The anti-hallucination rule: only amounts printed on the receipt count.
-    const auto printed = std::ranges::find_if(printedAmounts, [&](const Money &money) {
-        return money.amountMinor == *amount;
-    });
+    const auto printed =
+        std::ranges::find_if(printedAmounts, [&](const Money &money) { return money.amountMinor == *amount; });
     if (printed == printedAmounts.end()) {
         return std::nullopt;
     }

@@ -19,7 +19,7 @@ namespace receipts::extract {
 
 struct ParsedAmount {
     std::int64_t amountMinor;
-    std::string text;  // as printed, e.g. "1.234,56"
+    std::string text; // as printed, e.g. "1.234,56"
 };
 
 std::vector<ParsedAmount> findAmounts(std::string_view line);

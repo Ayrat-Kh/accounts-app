@@ -117,23 +117,23 @@ void Server::onRequest(UwsResponse *response, uWS::HttpRequest *request) {
 
     response->onAborted([exchange] { exchange->aborted = true; });
 
-    response->onData([this, response, exchange, match = std::move(*match)](std::string_view chunk,
-                                                                           bool isLast) mutable {
-        if (exchange->aborted) {
-            return;
-        }
-        std::string &body = exchange->request.body;
-        if (body.size() + chunk.size() > exchange->maxBodyBytes) {
-            // Only reachable for chunked uploads without Content-Length.
-            writeResponse(response, errorResponse({ErrorCode::PayloadTooLarge, "request body is too large"}), true);
-            exchange->aborted = true;  // already answered: ignore further chunks
-            return;
-        }
-        body.append(chunk);
-        if (isLast) {
-            asio::co_spawn(ioContext_, handle(response, exchange, std::move(match)), asio::detached);
-        }
-    });
+    response->onData(
+        [this, response, exchange, match = std::move(*match)](std::string_view chunk, bool isLast) mutable {
+            if (exchange->aborted) {
+                return;
+            }
+            std::string &body = exchange->request.body;
+            if (body.size() + chunk.size() > exchange->maxBodyBytes) {
+                // Only reachable for chunked uploads without Content-Length.
+                writeResponse(response, errorResponse({ErrorCode::PayloadTooLarge, "request body is too large"}), true);
+                exchange->aborted = true; // already answered: ignore further chunks
+                return;
+            }
+            body.append(chunk);
+            if (isLast) {
+                asio::co_spawn(ioContext_, handle(response, exchange, std::move(match)), asio::detached);
+            }
+        });
 }
 
 awaitable<void> Server::handle(UwsResponse *response, std::shared_ptr<Exchange> exchange, RouteMatch match) {

@@ -27,7 +27,7 @@ using testing::TestResponse;
 
 namespace {
 
-constexpr std::size_t maxImageBytes = 1024;  // tiny, so the 413 path is cheap to test
+constexpr std::size_t maxImageBytes = 1024; // tiny, so the 413 path is cheap to test
 
 // Accepts id tokens of the form "<subject>:<email>".
 class FakeGoogle : public auth::IdentityVerifier {
@@ -49,10 +49,13 @@ struct TestApp {
     FakeGoogle google;
     auth::UserRepository users{pool};
     auth::RefreshTokenRepository refreshTokens{pool};
-    auth::AuthService authService{
-        google, users, refreshTokens, accessTokens,
-        {.allowedEmails = {"alice@example.com", "bob@example.com"}, .refreshTokenTtl = std::chrono::days(30),
-         .refreshTokenAbsoluteTtl = std::chrono::days(90)}};
+    auth::AuthService authService{google,
+                                  users,
+                                  refreshTokens,
+                                  accessTokens,
+                                  {.allowedEmails = {"alice@example.com", "bob@example.com"},
+                                   .refreshTokenTtl = std::chrono::days(30),
+                                   .refreshTokenAbsoluteTtl = std::chrono::days(90)}};
     receipts::ReceiptRepository receiptRepository{pool};
     receipts::ReceiptService receiptService{receiptRepository, objectStore};
     http::Router router{accessTokens, 16 * 1024};
@@ -130,14 +133,14 @@ awaitable<void> scenario(http::Server &server) {
     bob.signInAs(asString(bobLogin.json().at("access_token")));
 
     // Create and validate
-    const int lowerCaseCurrency = (co_await alice.post("/v1/receipts", {{"amount_minor", 100},
-                                                                         {"currency", "eur"},
-                                                                         {"purchased_at", "2026-10-01T10:00:00Z"}}))
-                                      .status;
+    const int lowerCaseCurrency =
+        (co_await alice.post("/v1/receipts",
+                             {{"amount_minor", 100}, {"currency", "eur"}, {"purchased_at", "2026-10-01T10:00:00Z"}}))
+            .status;
     CHECK(lowerCaseCurrency == 400);
     const TestResponse created = co_await alice.post(
-        "/v1/receipts", {{"amount_minor", 1234}, {"currency", "EUR"}, {"purchased_at", "2026-10-01T10:00:00Z"},
-                         {"merchant", "Lidl"}});
+        "/v1/receipts",
+        {{"amount_minor", 1234}, {"currency", "EUR"}, {"purchased_at", "2026-10-01T10:00:00Z"}, {"merchant", "Lidl"}});
     REQUIRE(created.status == 201);
     const std::string receiptUrl = "/v1/receipts/" + asString(created.json().at("id"));
 
@@ -161,7 +164,8 @@ awaitable<void> scenario(http::Server &server) {
     const int wrongChecksum = (co_await alice.putImage(receiptUrl + "/image", fakeJpeg, std::string(64, '0'))).status;
     const int notAnImage =
         (co_await alice.putImage(receiptUrl + "/image", "plain text", crypto::sha256Hex("plain text"))).status;
-    const int oversized = (co_await alice.putImage(receiptUrl + "/image", tooLarge, crypto::sha256Hex(tooLarge))).status;
+    const int oversized =
+        (co_await alice.putImage(receiptUrl + "/image", tooLarge, crypto::sha256Hex(tooLarge))).status;
     CHECK(wrongChecksum == 400);
     CHECK(notAnImage == 400);
     CHECK(oversized == 413);
@@ -206,12 +210,11 @@ TEST_CASE("the HTTP API end to end") {
     TestApp app;
 
     std::exception_ptr failure;
-    boost::asio::co_spawn(testing::testIoContext(), scenario(app.server),
-                          [&](std::exception_ptr error) {
-                              failure = error;
-                              app.server.stop();  // also on failure, so run() returns
-                          });
-    app.server.run();  // returns once the scenario stopped the server and connections closed
+    boost::asio::co_spawn(testing::testIoContext(), scenario(app.server), [&](std::exception_ptr error) {
+        failure = error;
+        app.server.stop(); // also on failure, so run() returns
+    });
+    app.server.run(); // returns once the scenario stopped the server and connections closed
     if (failure) {
         std::rethrow_exception(failure);
     }

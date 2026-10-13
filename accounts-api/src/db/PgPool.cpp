@@ -38,7 +38,7 @@ awaitable<Result<std::unique_ptr<PgConnection>>> PgPool::acquire() {
             if (connection->isHealthy()) {
                 co_return connection;
             }
-            --openConnections_;  // dropped; try the next one or open a new one
+            --openConnections_; // dropped; try the next one or open a new one
             continue;
         }
 
@@ -52,9 +52,9 @@ awaitable<Result<std::unique_ptr<PgConnection>>> PgPool::acquire() {
         }
 
         auto waiter = std::make_shared<asio::steady_timer>(co_await asio::this_coro::executor,
-                                                          asio::steady_timer::time_point::max());
+                                                           asio::steady_timer::time_point::max());
         waiters_.push_back(waiter);
-        co_await waiter->async_wait(asio::as_tuple(asio::use_awaitable));  // "error" = woken up
+        co_await waiter->async_wait(asio::as_tuple(asio::use_awaitable)); // "error" = woken up
     }
 }
 

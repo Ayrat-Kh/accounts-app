@@ -17,7 +17,7 @@
 namespace accounts::db {
 
 struct Migration {
-    std::string name;  // file name without extension, e.g. "001_init"; defines the order
+    std::string name; // file name without extension, e.g. "001_init"; defines the order
     std::string sql;
 };
 

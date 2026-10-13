@@ -49,11 +49,13 @@ TEST_CASE("completions ask for structured JSON output and return the message con
 }
 
 TEST_CASE("server failures become errors, not crashes") {
-    auto transport = std::make_shared<FakeHttpTransport>([](const net::HttpRequest &) { return jsonResponse(503, "busy"); });
+    auto transport =
+        std::make_shared<FakeHttpTransport>([](const net::HttpRequest &) { return jsonResponse(503, "busy"); });
     inference::OpenAiCompatibleEngine engine(transport, serverConfig(), std::nullopt);
     CHECK(engine.embed({"x"}).error().code == ErrorCode::Server);
 
-    auto garbled = std::make_shared<FakeHttpTransport>([](const net::HttpRequest &) { return jsonResponse(200, "{}"); });
+    auto garbled =
+        std::make_shared<FakeHttpTransport>([](const net::HttpRequest &) { return jsonResponse(200, "{}"); });
     inference::OpenAiCompatibleEngine garbledEngine(garbled, serverConfig(), std::nullopt);
     CHECK(garbledEngine.embed({"x"}).error().code == ErrorCode::Server);
 }

@@ -17,22 +17,22 @@ std::size_t appendLowerCodePoint(std::string_view text, std::size_t i, std::stri
     }
     if (i + 1 < text.size() && (byte == 0xC3 || byte == 0xD0)) {
         const auto next = static_cast<unsigned char>(text[i + 1]);
-        if (byte == 0xC3 && next >= 0x80 && next <= 0x9E && next != 0x97) {  // À..Þ except ×
+        if (byte == 0xC3 && next >= 0x80 && next <= 0x9E && next != 0x97) { // À..Þ except ×
             out.push_back(static_cast<char>(0xC3));
             out.push_back(static_cast<char>(next + 0x20));
             return 2;
         }
-        if (byte == 0xD0 && next >= 0x90 && next <= 0x9F) {  // А..П -> а..п
+        if (byte == 0xD0 && next >= 0x90 && next <= 0x9F) { // А..П -> а..п
             out.push_back(static_cast<char>(0xD0));
             out.push_back(static_cast<char>(next + 0x20));
             return 2;
         }
-        if (byte == 0xD0 && next >= 0xA0 && next <= 0xAF) {  // Р..Я -> р..я
+        if (byte == 0xD0 && next >= 0xA0 && next <= 0xAF) { // Р..Я -> р..я
             out.push_back(static_cast<char>(0xD1));
             out.push_back(static_cast<char>(next - 0x20));
             return 2;
         }
-        if (byte == 0xD0 && next == 0x81) {  // Ё -> ё
+        if (byte == 0xD0 && next == 0x81) { // Ё -> ё
             out += "\xD1\x91";
             return 2;
         }
@@ -42,8 +42,8 @@ std::size_t appendLowerCodePoint(std::string_view text, std::size_t i, std::stri
 }
 
 bool isNumberCharacter(char c) {
-    return std::isdigit(static_cast<unsigned char>(c)) || c == '.' || c == ',' || c == '-' || c == '\'' ||
-           c == '%' || c == '$' || c == '*';
+    return std::isdigit(static_cast<unsigned char>(c)) || c == '.' || c == ',' || c == '-' || c == '\'' || c == '%' ||
+           c == '$' || c == '*';
 }
 
 } // namespace

@@ -13,13 +13,13 @@ namespace receipts::ocr {
 
 struct OcrLine {
     std::string text;
-    int top = 0;  // pixels from the top of the image; receipts put the total near the bottom
+    int top = 0; // pixels from the top of the image; receipts put the total near the bottom
     int height = 0;
-    float confidence = 0;  // 0..100, as Tesseract reports it
+    float confidence = 0; // 0..100, as Tesseract reports it
 };
 
 struct OcrPage {
-    std::vector<OcrLine> lines;  // top to bottom
+    std::vector<OcrLine> lines; // top to bottom
     int imageHeight = 0;
 };
 

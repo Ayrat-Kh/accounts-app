@@ -19,12 +19,9 @@ std::string secondsFromNow(int seconds) {
 // A tokeninfo answer that passes every check; tests break one field at a time.
 boost::json::object validTokenInfo() {
     return {
-        {"aud", "our-android-client"},
-        {"iss", "https://accounts.google.com"},
-        {"exp", secondsFromNow(600)},
-        {"email_verified", "true"},
-        {"sub", "1234567890"},
-        {"email", "me@example.com"},
+        {"aud", "our-android-client"}, {"iss", "https://accounts.google.com"},
+        {"exp", secondsFromNow(600)},  {"email_verified", "true"},
+        {"sub", "1234567890"},         {"email", "me@example.com"},
     };
 }
 

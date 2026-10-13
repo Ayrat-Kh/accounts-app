@@ -15,8 +15,8 @@
 namespace accounts::receipts {
 
 struct ReceiptImage {
-    std::string objectKey;  // in the object store
-    std::string sha256;     // hex
+    std::string objectKey; // in the object store
+    std::string sha256;    // hex
     std::int64_t sizeBytes;
     std::string mimeType;
 };
@@ -27,10 +27,10 @@ struct Receipt {
     // Money is an integer count of the currency's minor unit (12.34 EUR -> 1234),
     // so sums are exact. Floating point cannot represent 0.10 exactly.
     std::int64_t amountMinor;
-    std::string currency;  // ISO 4217, e.g. "EUR"
+    std::string currency; // ISO 4217, e.g. "EUR"
     Timestamp purchasedAt;
     std::optional<std::string> merchant;
-    std::optional<double> ocrConfidence;  // 0..1, how sure the on-device scanner was
+    std::optional<double> ocrConfidence; // 0..1, how sure the on-device scanner was
     std::optional<ReceiptImage> image;
     Timestamp createdAt;
     Timestamp updatedAt;

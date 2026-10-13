@@ -13,8 +13,11 @@ using testing::runSync;
 namespace {
 
 ReceiptDraft draftAt(const std::string &purchasedAt, std::int64_t amountMinor = 1999) {
-    return {.amountMinor = amountMinor, .currency = "EUR", .purchasedAt = parseRfc3339(purchasedAt).value(),
-            .merchant = "Bakery", .ocrConfidence = 0.87};
+    return {.amountMinor = amountMinor,
+            .currency = "EUR",
+            .purchasedAt = parseRfc3339(purchasedAt).value(),
+            .merchant = "Bakery",
+            .ocrConfidence = 0.87};
 }
 
 } // namespace

@@ -131,7 +131,7 @@ Result<ScanResult> PriceExtractor::extract(const ocr::OcrPage &page) {
 
     std::vector<Candidate> candidates = findCandidates(page);
     if (candidates.empty()) {
-        return result;  // no amounts at all: let the user type it in
+        return result; // no amounts at all: let the user type it in
     }
     auto source = scoreCandidates(page, candidates);
     if (!source) {
@@ -139,9 +139,8 @@ Result<ScanResult> PriceExtractor::extract(const ocr::OcrPage &page) {
     }
 
     const Candidate &best = candidates.front();
-    const auto runnerUp = std::ranges::find_if(candidates, [&](const Candidate &c) {
-        return c.money.amountMinor != best.money.amountMinor;
-    });
+    const auto runnerUp = std::ranges::find_if(
+        candidates, [&](const Candidate &c) { return c.money.amountMinor != best.money.amountMinor; });
     const double margin = runnerUp == candidates.end() ? best.score : best.score - runnerUp->score;
 
     result.total = best.money;

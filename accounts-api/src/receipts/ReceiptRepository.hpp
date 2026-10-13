@@ -30,8 +30,7 @@ public:
     // Soft delete: the row stays (with deleted_at set) but disappears from the API.
     boost::asio::awaitable<Result<bool>> remove(const std::string &userId, const std::string &id);
 
-    boost::asio::awaitable<Result<std::optional<Receipt>>> attachImage(const std::string &userId,
-                                                                       const std::string &id,
+    boost::asio::awaitable<Result<std::optional<Receipt>>> attachImage(const std::string &userId, const std::string &id,
                                                                        const ReceiptImage &image);
 
     // For the Obsidian sync worker, which acts on behalf of all users.

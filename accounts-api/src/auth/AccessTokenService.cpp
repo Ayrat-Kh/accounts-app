@@ -40,10 +40,10 @@ std::optional<AuthUser> AccessTokenService::verify(std::string_view token) const
     try {
         const auto decoded = jwt::decode(std::string(token));
         jwt::verify()
-            .allow_algorithm(signingAlgorithm(privateKeyPem_))  // pins EdDSA: no "alg: none" tricks
+            .allow_algorithm(signingAlgorithm(privateKeyPem_)) // pins EdDSA: no "alg: none" tricks
             .with_issuer(issuer_)
             .with_claim("typ", jwt::claim(std::string(accessTokenType)))
-            .leeway(30)  // seconds of clock skew
+            .leeway(30) // seconds of clock skew
             .verify(decoded);
         if (!decoded.has_subject() || decoded.get_subject().empty()) {
             return std::nullopt;

@@ -10,13 +10,13 @@
 namespace accounts {
 
 enum class ErrorCode {
-    InvalidInput,     // 400: the request is malformed or fails validation
-    Unauthorized,     // 401: missing, invalid or expired credentials
-    Forbidden,        // 403: valid credentials, but not allowed (e.g. e-mail not on the allowlist)
-    NotFound,         // 404: does not exist *for this user* (we never reveal other users' data)
-    PayloadTooLarge,  // 413
-    UpstreamFailure,  // 502: Google, Garage or Postgres failed
-    Internal,         // 500: a bug
+    InvalidInput,    // 400: the request is malformed or fails validation
+    Unauthorized,    // 401: missing, invalid or expired credentials
+    Forbidden,       // 403: valid credentials, but not allowed (e.g. e-mail not on the allowlist)
+    NotFound,        // 404: does not exist *for this user* (we never reveal other users' data)
+    PayloadTooLarge, // 413
+    UpstreamFailure, // 502: Google, Garage or Postgres failed
+    Internal,        // 500: a bug
 };
 
 struct AppError {

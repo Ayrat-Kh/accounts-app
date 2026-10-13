@@ -65,7 +65,7 @@ Result<std::vector<Embedding>> OpenAiCompatibleEngine::embed(const std::vector<s
                 return fail(ErrorCode::Server, "embedding index out of range");
             }
             embeddings[index] = item.at("embedding").get<Embedding>();
-            normalize(embeddings[index]);  // servers differ on whether they normalise
+            normalize(embeddings[index]); // servers differ on whether they normalise
         }
         return embeddings;
     } catch (const json::exception &error) {
@@ -84,11 +84,10 @@ Result<std::string> OpenAiCompatibleEngine::completeJson(const std::string &inst
     const json request = {
         {"model", config_.model},
         {"temperature", 0},
-        {"messages", json::array({{{"role", "system"}, {"content", instructions}},
-                                  {{"role", "user"}, {"content", input}}})},
+        {"messages",
+         json::array({{{"role", "system"}, {"content", instructions}}, {{"role", "user"}, {"content", input}}})},
         // Structured output: the server constrains generation to this schema.
-        {"response_format",
-         {{"type", "json_schema"}, {"json_schema", {{"name", "receipt"}, {"schema", schema}}}}},
+        {"response_format", {{"type", "json_schema"}, {"json_schema", {{"name", "receipt"}, {"schema", schema}}}}},
     };
     auto body = post("/v1/chat/completions", request.dump());
     if (!body) {

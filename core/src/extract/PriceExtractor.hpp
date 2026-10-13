@@ -44,8 +44,8 @@ private:
     struct Candidate {
         Money money;
         std::size_t lineIndex;
-        double meaning = 0;  // the LineScorer's verdict on this amount's line
-        double score = 0;    // the combined score above
+        double meaning = 0; // the LineScorer's verdict on this amount's line
+        double score = 0;   // the combined score above
     };
 
     std::vector<Candidate> findCandidates(const ocr::OcrPage &page) const;

@@ -10,7 +10,8 @@ namespace receipts::extract {
 namespace {
 
 bool containsAny(const std::string &line, const std::vector<std::string> &phrases) {
-    return std::ranges::any_of(phrases, [&](const std::string &phrase) { return line.find(phrase) != std::string::npos; });
+    return std::ranges::any_of(phrases,
+                               [&](const std::string &phrase) { return line.find(phrase) != std::string::npos; });
 }
 
 double scoreLine(const std::string &line) {

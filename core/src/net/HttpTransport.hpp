@@ -22,7 +22,7 @@ struct HttpRequest {
 
 struct HttpResponse {
     int status = 0;
-    std::map<std::string, std::string> headers;  // names in lower case
+    std::map<std::string, std::string> headers; // names in lower case
     std::string body;
 
     bool isSuccess() const { return status >= 200 && status < 300; }

@@ -23,9 +23,10 @@ std::string stringClaim(const boost::json::object &claims, std::string_view key)
 bool isTokenSafeForUrl(std::string_view token) {
     // JWTs are base64url segments joined by dots; anything else is not a token
     // and must not be pasted into a query string.
-    return !token.empty() && token.size() < 4096 && std::ranges::all_of(token, [](char c) {
-        return std::isalnum(static_cast<unsigned char>(c)) || c == '-' || c == '_' || c == '.';
-    });
+    return !token.empty() && token.size() < 4096 &&
+           std::ranges::all_of(
+               token,
+               [](char c) { return std::isalnum(static_cast<unsigned char>(c)) || c == '-' || c == '_' || c == '.'; });
 }
 
 } // namespace

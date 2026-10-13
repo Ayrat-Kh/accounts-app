@@ -11,8 +11,11 @@ using receipts::store::LocalReceiptStore;
 namespace {
 
 ReceiptDraft draft(std::int64_t amountMinor, std::string purchasedAt) {
-    return {.money = {amountMinor, "EUR"}, .purchasedAt = std::move(purchasedAt), .merchant = "Bakery",
-            .ocrConfidence = 0.9, .imagePath = std::nullopt};
+    return {.money = {amountMinor, "EUR"},
+            .purchasedAt = std::move(purchasedAt),
+            .merchant = "Bakery",
+            .ocrConfidence = 0.9,
+            .imagePath = std::nullopt};
 }
 
 Receipt serverReceipt(std::string id, std::int64_t amountMinor) {
@@ -95,7 +98,7 @@ TEST_CASE("merging never overwrites a receipt with local changes") {
     testing::TempDirectory directory;
     auto store = LocalReceiptStore::open(directory.file("receipts.db")).value();
     REQUIRE(store->addPending(draft(999, "2026-10-01T12:00:00.000Z"), "local-1", std::nullopt));
-    store->markUploaded("local-1", "a").value();  // uploaded, but the photo is still pending
+    store->markUploaded("local-1", "a").value(); // uploaded, but the photo is still pending
 
     REQUIRE(store->mergeFromServer({serverReceipt("a", 100)}));
     CHECK(store->find("local-1").value()->money.amountMinor == 999);

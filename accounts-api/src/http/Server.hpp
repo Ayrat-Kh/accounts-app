@@ -47,7 +47,7 @@ public:
     std::uint16_t port() const;
 
 private:
-    struct Exchange;  // one request/response pair in flight
+    struct Exchange; // one request/response pair in flight
 
     void onRequest(uWS::HttpResponse<false> *response, uWS::HttpRequest *request);
     boost::asio::awaitable<void> handle(uWS::HttpResponse<false> *response, std::shared_ptr<Exchange> exchange,

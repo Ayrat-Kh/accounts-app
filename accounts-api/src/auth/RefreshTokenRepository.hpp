@@ -15,7 +15,7 @@ namespace accounts::auth {
 
 struct StoredRefreshToken {
     std::string userId;
-    Timestamp absoluteExpiresAt;  // carried over on rotation, so a session cannot live forever
+    Timestamp absoluteExpiresAt; // carried over on rotation, so a session cannot live forever
 };
 
 class RefreshTokenRepository {

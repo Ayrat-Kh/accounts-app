@@ -14,7 +14,7 @@ namespace accounts::testing {
 
 struct TestResponse {
     int status = 0;
-    std::map<std::string, std::string> headers;  // lower-case names
+    std::map<std::string, std::string> headers; // lower-case names
     std::string body;
 
     boost::json::value json() const;

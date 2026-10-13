@@ -16,15 +16,14 @@ namespace {
 const std::regex amountPattern(R"((-?)\s?(\d{1,3}(?:[ .,']\d{3})+|\d+)[.,](\d{2})(?![.,]?\d))");
 
 struct CurrencyMark {
-    std::string_view mark;  // matched against the lower-cased line
+    std::string_view mark; // matched against the lower-cased line
     std::string_view isoCode;
 };
 
 constexpr std::array currencyMarks = {
-    CurrencyMark{"€", "EUR"},   CurrencyMark{"eur", "EUR"}, CurrencyMark{"$", "USD"},
-    CurrencyMark{"usd", "USD"}, CurrencyMark{"£", "GBP"},   CurrencyMark{"gbp", "GBP"},
-    CurrencyMark{"₽", "RUB"},   CurrencyMark{"rub", "RUB"}, CurrencyMark{"руб", "RUB"},
-    CurrencyMark{"zł", "PLN"},  CurrencyMark{"pln", "PLN"}, CurrencyMark{"chf", "CHF"},
+    CurrencyMark{"€", "EUR"},   CurrencyMark{"eur", "EUR"}, CurrencyMark{"$", "USD"},   CurrencyMark{"usd", "USD"},
+    CurrencyMark{"£", "GBP"},   CurrencyMark{"gbp", "GBP"}, CurrencyMark{"₽", "RUB"},   CurrencyMark{"rub", "RUB"},
+    CurrencyMark{"руб", "RUB"}, CurrencyMark{"zł", "PLN"},  CurrencyMark{"pln", "PLN"}, CurrencyMark{"chf", "CHF"},
     CurrencyMark{"czk", "CZK"}, CurrencyMark{"kč", "CZK"},
 };
 
@@ -32,7 +31,7 @@ std::int64_t integerFromDigits(std::string_view text) {
     std::int64_t value = 0;
     for (char c : text) {
         if (c >= '0' && c <= '9') {
-            value = value * 10 + (c - '0');  // separators are simply skipped
+            value = value * 10 + (c - '0'); // separators are simply skipped
         }
     }
     return value;

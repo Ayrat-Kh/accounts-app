@@ -13,18 +13,16 @@ namespace receipts::extract {
 
 inline const std::vector<std::string> &totalPhrases() {
     static const std::vector<std::string> phrases = {
-        "total",    "grand total", "amount due", "total to pay", "balance due", "summe",
-        "gesamt",   "zu zahlen",   "endbetrag",  "итого",        "итог",        "к оплате",
-        "всего",    "сумма к оплате",
+        "total",     "grand total", "amount due", "total to pay", "balance due", "summe", "gesamt",
+        "zu zahlen", "endbetrag",   "итого",      "итог",         "к оплате",    "всего", "сумма к оплате",
     };
     return phrases;
 }
 
 inline const std::vector<std::string> &notTotalPhrases() {
     static const std::vector<std::string> phrases = {
-        "subtotal", "sub total", "tax",        "vat",     "change",    "cash",       "tip",
-        "discount", "mwst",      "netto",      "rückgeld", "gegeben",  "zwischensumme",
-        "ндс",      "сдача",     "наличные",   "скидка",  "получено",
+        "subtotal", "sub total", "tax",     "vat",           "change", "cash",  "tip",      "discount", "mwst",
+        "netto",    "rückgeld",  "gegeben", "zwischensumme", "ндс",    "сдача", "наличные", "скидка",   "получено",
     };
     return phrases;
 }
@@ -34,9 +32,8 @@ inline const std::vector<std::string> &notTotalPhrases() {
 // embedding model; with them, items have a better home than "total".
 inline const std::vector<std::string> &itemPhrases() {
     static const std::vector<std::string> phrases = {
-        "milk",    "bread",    "coffee", "bananas", "cheese",  "pizza",   "shampoo", "water",
-        "milch",   "brot",     "kaffee", "äpfel",   "käse",    "wein",    "brötchen",
-        "молоко",  "хлеб",     "кофе",   "сыр",     "яблоки",  "творог",  "кефир",
+        "milk",  "bread", "coffee", "bananas",  "cheese", "pizza", "shampoo", "water", "milch",  "brot",   "kaffee",
+        "äpfel", "käse",  "wein",   "brötchen", "молоко", "хлеб",  "кофе",    "сыр",   "яблоки", "творог", "кефир",
     };
     return phrases;
 }

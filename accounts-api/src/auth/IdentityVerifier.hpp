@@ -12,8 +12,8 @@
 namespace accounts::auth {
 
 struct VerifiedIdentity {
-    std::string subject;  // the provider's stable user id ("sub")
-    std::string email;    // verified e-mail address
+    std::string subject; // the provider's stable user id ("sub")
+    std::string email;   // verified e-mail address
 };
 
 class IdentityVerifier {

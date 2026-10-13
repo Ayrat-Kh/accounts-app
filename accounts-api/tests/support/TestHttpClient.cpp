@@ -28,8 +28,7 @@ asio::awaitable<TestResponse> sendRequest(std::uint16_t port, TestRequest reques
     co_await stream.async_connect(asio::ip::tcp::endpoint(asio::ip::make_address("127.0.0.1"), port),
                                   asio::use_awaitable);
 
-    beast::http::request<beast::http::string_body> raw{beast::http::string_to_verb(request.method), request.target,
-                                                        11};
+    beast::http::request<beast::http::string_body> raw{beast::http::string_to_verb(request.method), request.target, 11};
     raw.set(beast::http::field::host, "localhost");
     raw.set(beast::http::field::connection, "close");
     for (const auto &[name, value] : request.headers) {

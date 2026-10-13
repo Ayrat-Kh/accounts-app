@@ -63,7 +63,7 @@ Result<HttpResponse> CurlHttpTransport::send(const HttpRequest &request) {
     }
     curl_easy_setopt(curl.get(), CURLOPT_TIMEOUT, static_cast<long>(request.timeout.count()));
     curl_easy_setopt(curl.get(), CURLOPT_CONNECTTIMEOUT, 10L);
-    curl_easy_setopt(curl.get(), CURLOPT_NOSIGNAL, 1L);  // required for multi-threaded use
+    curl_easy_setopt(curl.get(), CURLOPT_NOSIGNAL, 1L); // required for multi-threaded use
     curl_easy_setopt(curl.get(), CURLOPT_FOLLOWLOCATION, 0L);
     curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, appendBody);
     curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, &response);
@@ -76,8 +76,8 @@ Result<HttpResponse> CurlHttpTransport::send(const HttpRequest &request) {
     }
 
     if (const CURLcode result = curl_easy_perform(curl.get()); result != CURLE_OK) {
-        return fail(ErrorCode::Network, std::string("HTTP ") + request.method + " " + request.url + ": " +
-                                            curl_easy_strerror(result));
+        return fail(ErrorCode::Network,
+                    std::string("HTTP ") + request.method + " " + request.url + ": " + curl_easy_strerror(result));
     }
     long status = 0;
     curl_easy_getinfo(curl.get(), CURLINFO_RESPONSE_CODE, &status);

@@ -17,7 +17,7 @@ namespace {
 class FakeAssetServer {
 public:
     std::map<std::string, std::string> files = {
-        {"eng.traineddata", std::string(10'000'000, 'e')},  // > 8 MiB: needs two pieces
+        {"eng.traineddata", std::string(10'000'000, 'e')}, // > 8 MiB: needs two pieces
         {"model.gguf", "tiny model"},
     };
     int pieceRequests = 0;
@@ -44,16 +44,15 @@ public:
         if (corrupt) {
             piece[0] ^= 1;
         }
-        return net::HttpResponse{206,
-                                 {{"content-range", std::format("bytes {}-{}/{}", first, last, files.at(name).size())}},
-                                 piece};
+        return net::HttpResponse{
+            206, {{"content-range", std::format("bytes {}-{}/{}", first, last, files.at(name).size())}}, piece};
     }
 };
 
 struct Fixture {
     FakeAssetServer server;
-    std::shared_ptr<FakeHttpTransport> transport = std::make_shared<FakeHttpTransport>(
-        [this](const net::HttpRequest &request) { return server.handle(request); });
+    std::shared_ptr<FakeHttpTransport> transport =
+        std::make_shared<FakeHttpTransport>([this](const net::HttpRequest &request) { return server.handle(request); });
     std::shared_ptr<MemorySecureStore> secrets = [] {
         auto store = std::make_shared<MemorySecureStore>();
         store->write("accounts.access_token", "token");
@@ -74,7 +73,7 @@ TEST_CASE("all assets download in pieces and land in the right place") {
     CHECK(fixture.downloader.hasAll({"eng.traineddata", "model.gguf"}));
     CHECK(std::filesystem::exists(fixture.directory.path() / "tessdata" / "eng.traineddata"));
     CHECK(files::readAll(fixture.directory.path() / "model.gguf").value() == "tiny model");
-    CHECK(fixture.server.pieceRequests == 3);  // two for the 10 MB file, one for the small one
+    CHECK(fixture.server.pieceRequests == 3); // two for the 10 MB file, one for the small one
 }
 
 TEST_CASE("an interrupted download resumes where it stopped") {
@@ -85,7 +84,7 @@ TEST_CASE("an interrupted download resumes where it stopped") {
                           fixture.server.files["eng.traineddata"].substr(0, 8 * 1024 * 1024)));
 
     REQUIRE(fixture.downloader.downloadAll(nullptr));
-    CHECK(fixture.server.pieceRequests == 2);  // only the rest of the big file, plus the small one
+    CHECK(fixture.server.pieceRequests == 2); // only the rest of the big file, plus the small one
 }
 
 TEST_CASE("a corrupted download is discarded, never installed") {

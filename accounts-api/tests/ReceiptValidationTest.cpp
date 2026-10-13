@@ -10,7 +10,10 @@ using namespace accounts::receipts;
 namespace {
 
 ReceiptDraft validDraft() {
-    return {.amountMinor = 1234, .currency = "EUR", .purchasedAt = accounts::now(), .merchant = "Lidl",
+    return {.amountMinor = 1234,
+            .currency = "EUR",
+            .purchasedAt = accounts::now(),
+            .merchant = "Lidl",
             .ocrConfidence = 0.9};
 }
 
@@ -46,8 +49,8 @@ TEST_CASE("OCR confidence must be between 0 and 1") {
 
 TEST_CASE("partial changes validate only the fields that are present") {
     CHECK(validate(ReceiptChanges{}));
-    CHECK_FALSE(validate(ReceiptChanges{.amountMinor = {}, .currency = "usd", .purchasedAt = {}, .merchant = {},
-                                        .ocrConfidence = {}}));
+    CHECK_FALSE(validate(
+        ReceiptChanges{.amountMinor = {}, .currency = "usd", .purchasedAt = {}, .merchant = {}, .ocrConfidence = {}}));
 }
 
 TEST_CASE("isUuid accepts only canonical UUIDs") {
@@ -60,7 +63,7 @@ TEST_CASE("isUuid accepts only canonical UUIDs") {
 TEST_CASE("image formats are recognised by their magic bytes, not by name") {
     CHECK(detectImageMimeType("\xFF\xD8\xFF\xE0 rest of a jpeg") == "image/jpeg");
     CHECK(detectImageMimeType("\x89PNG\r\n\x1A\n rest of a png") == "image/png");
-    using namespace std::string_view_literals;  // "..."sv keeps the embedded NUL bytes
+    using namespace std::string_view_literals; // "..."sv keeps the embedded NUL bytes
     CHECK(detectImageMimeType("RIFF\x10\x00\x00\x00WEBPVP8 "sv) == "image/webp");
     CHECK_FALSE(detectImageMimeType("<html>definitely not an image"));
 }

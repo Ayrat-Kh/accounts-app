@@ -31,7 +31,7 @@ public:
     std::optional<double> optionalDouble(std::string_view column) const;
 
 private:
-    int columnIndex(std::string_view column) const;  // throws std::logic_error for an unknown column
+    int columnIndex(std::string_view column) const; // throws std::logic_error for an unknown column
 
     const PGresult *result_;
     int row_;

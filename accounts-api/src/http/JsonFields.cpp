@@ -23,8 +23,8 @@ const boost::json::value *JsonFields::find(std::string_view key) const {
 
 void JsonFields::recordError(std::string_view key, std::string_view expected) {
     if (!firstError_) {
-        firstError_ = AppError{ErrorCode::InvalidInput, "field '" + std::string(key) + "' must be " +
-                                                            std::string(expected)};
+        firstError_ =
+            AppError{ErrorCode::InvalidInput, "field '" + std::string(key) + "' must be " + std::string(expected)};
     }
 }
 

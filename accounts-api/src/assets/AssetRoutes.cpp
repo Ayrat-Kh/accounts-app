@@ -15,7 +15,7 @@ using http::Status;
 
 namespace {
 
-constexpr std::uint64_t maxRangeBytes = 8 * 1024 * 1024;
+constexpr std::uint64_t maxRangeBytes = 8ULL * 1024 * 1024;
 constexpr std::string_view manifestKey = "assets/manifest.json";
 
 // Asset names are plain file names; this also rules out "../" tricks.
@@ -53,7 +53,7 @@ awaitable<Response> getAssetRange(storage::ObjectStore &objectStore, Request &re
     // Without a Range header, the first piece is served; its Content-Range
     // tells the client the total size.
     const auto requested = request.header("range").empty() ? storage::ByteRange{0, maxRangeBytes - 1}
-                                                            : parseRangeHeader(request.header("range"));
+                                                           : parseRangeHeader(request.header("range"));
     if (!requested || requested->last - requested->first + 1 > maxRangeBytes) {
         co_return http::errorResponse({ErrorCode::InvalidInput, "Range must be bytes=first-last, at most 8 MiB"});
     }

@@ -9,8 +9,8 @@
 #include "extract/PriceExtractor.hpp"
 #include "inference/LlamaEmbeddingEngine.hpp"
 #include "ocr/TesseractOcrEngine.hpp"
-#include "support/Fakes.hpp"
 #include "receipts/Config.hpp"
+#include "support/Fakes.hpp"
 #include "util/Files.hpp"
 
 #include <catch2/catch_test_macros.hpp>
@@ -35,7 +35,7 @@ fs::path modelsDirectory() {
 
 struct Expectation {
     std::string file;
-    Money total;  // currency empty when the receipt doesn't print one
+    Money total; // currency empty when the receipt doesn't print one
 };
 
 std::vector<Expectation> expectations() {
@@ -43,8 +43,9 @@ std::vector<Expectation> expectations() {
     std::vector<Expectation> result;
     for (const auto &[file, total] : json.items()) {
         const auto &currency = total.at("currency");
-        result.push_back({file, {total.at("amount_minor").get<std::int64_t>(),
-                                 currency.is_null() ? std::string{} : currency.get<std::string>()}});
+        result.push_back({file,
+                          {total.at("amount_minor").get<std::int64_t>(),
+                           currency.is_null() ? std::string{} : currency.get<std::string>()}});
     }
     return result;
 }
@@ -66,14 +67,14 @@ double accuracy(extract::LineScorer &scorer, const std::vector<std::pair<Expecta
     int correct = 0;
     for (const auto &[expectation, page] : pages) {
         const auto result = extractor.extract(page).value();
-        const bool isCorrect = result.total && result.total->amountMinor == expectation.total.amountMinor &&
-                               (expectation.total.currency.empty() || result.total->currency == expectation.total.currency);
+        const bool isCorrect =
+            result.total && result.total->amountMinor == expectation.total.amountMinor &&
+            (expectation.total.currency.empty() || result.total->currency == expectation.total.currency);
         correct += isCorrect ? 1 : 0;
-        std::cout << std::format("  {:<26} expected {:>7} {}  got {:>7} {}  confidence {:.2f}  {}\n",
-                                 expectation.file, expectation.total.amountMinor, expectation.total.currency,
-                                 result.total ? result.total->amountMinor : -1,
-                                 result.total ? result.total->currency : "---", result.confidence,
-                                 isCorrect ? "ok" : "WRONG");
+        std::cout << std::format(
+            "  {:<26} expected {:>7} {}  got {:>7} {}  confidence {:.2f}  {}\n", expectation.file,
+            expectation.total.amountMinor, expectation.total.currency, result.total ? result.total->amountMinor : -1,
+            result.total ? result.total->currency : "---", result.confidence, isCorrect ? "ok" : "WRONG");
     }
     return static_cast<double>(correct) / static_cast<double>(pages.size());
 }

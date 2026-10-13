@@ -16,8 +16,8 @@ namespace accounts::sync {
 
 class ObsidianSyncWorker {
 public:
-    ObsidianSyncWorker(boost::asio::io_context &ioContext, receipts::ReceiptRepository &repository,
-                       ObsidianSink &sink, std::chrono::seconds interval);
+    ObsidianSyncWorker(boost::asio::io_context &ioContext, receipts::ReceiptRepository &repository, ObsidianSink &sink,
+                       std::chrono::seconds interval);
 
     void start();
     void stop();

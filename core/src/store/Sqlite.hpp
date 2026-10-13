@@ -53,9 +53,9 @@ public:
     static Result<std::unique_ptr<Database>> open(const std::string &path);
     ~Database();
 
-    void execute(const std::string &sql);  // several statements, no parameters
+    void execute(const std::string &sql); // several statements, no parameters
     Statement prepare(const std::string &sql);
-    int changes() const;  // rows changed by the last statement
+    int changes() const; // rows changed by the last statement
 
 private:
     explicit Database(sqlite3 *database) : database_(database) {}

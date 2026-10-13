@@ -11,8 +11,8 @@
 
 #include <boost/asio/awaitable.hpp>
 #include <boost/asio/post.hpp>
-#include <boost/asio/thread_pool.hpp>
 #include <boost/asio/this_coro.hpp>
+#include <boost/asio/thread_pool.hpp>
 #include <boost/asio/use_awaitable.hpp>
 
 #include <exception>

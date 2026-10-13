@@ -10,10 +10,10 @@ std::optional<std::string_view> parseBearerToken(std::string_view authorizationH
     if (authorizationHeader.size() <= scheme.size()) {
         return std::nullopt;
     }
-    const bool hasScheme = std::equal(scheme.begin(), scheme.end(), authorizationHeader.begin(),
-                                      [](char expected, char actual) {
-                                          return expected == std::tolower(static_cast<unsigned char>(actual));
-                                      });
+    const bool hasScheme =
+        std::equal(scheme.begin(), scheme.end(), authorizationHeader.begin(), [](char expected, char actual) {
+            return expected == std::tolower(static_cast<unsigned char>(actual));
+        });
     if (!hasScheme) {
         return std::nullopt;
     }

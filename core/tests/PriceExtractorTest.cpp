@@ -1,5 +1,5 @@
-#include "extract/KeywordLineScorer.hpp"
 #include "extract/PriceExtractor.hpp"
+#include "extract/KeywordLineScorer.hpp"
 #include "support/Fakes.hpp"
 
 #include <catch2/catch_test_macros.hpp>
@@ -63,8 +63,8 @@ TEST_CASE("the TOTAL line wins over items, tax and the cash given") {
 TEST_CASE("Russian receipts work the same way") {
     Fixture fixture;
     PriceExtractor extractor(fixture.keywords, fixture.keywords, nullptr, fixture.logger);
-    const auto result = extractor.extract(page({"Пятёрочка", "Хлеб  45,90", "Молоко 89,99", "ИТОГО ₽ 135,89",
-                                                "Наличные 200,00", "Сдача 64,11"}));
+    const auto result = extractor.extract(
+        page({"Пятёрочка", "Хлеб  45,90", "Молоко 89,99", "ИТОГО ₽ 135,89", "Наличные 200,00", "Сдача 64,11"}));
     REQUIRE(result->total);
     CHECK(result->total->amountMinor == 13589);
     CHECK(result->total->currency == "RUB");

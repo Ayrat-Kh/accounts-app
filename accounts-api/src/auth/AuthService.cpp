@@ -11,7 +11,7 @@ using boost::asio::awaitable;
 
 namespace {
 
-constexpr std::size_t refreshTokenBytes = 32;  // 256 bits of randomness
+constexpr std::size_t refreshTokenBytes = 32; // 256 bits of randomness
 
 bool equalsIgnoringCase(std::string_view a, std::string_view b) {
     return std::ranges::equal(a, b, [](char x, char y) {
@@ -67,8 +67,7 @@ awaitable<Result<TokenPair>> AuthService::issueTokens(std::string userId, Timest
     const std::string refreshToken = crypto::randomToken(refreshTokenBytes);
     const Timestamp expiresAt = std::min(now() + policy_.refreshTokenTtl, absoluteExpiresAt);
 
-    auto stored =
-        co_await refreshTokens_.insert(userId, crypto::sha256Hex(refreshToken), expiresAt, absoluteExpiresAt);
+    auto stored = co_await refreshTokens_.insert(userId, crypto::sha256Hex(refreshToken), expiresAt, absoluteExpiresAt);
     if (!stored) {
         co_return std::unexpected(stored.error());
     }

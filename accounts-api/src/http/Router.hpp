@@ -34,12 +34,12 @@ using Handler = std::function<boost::asio::awaitable<Response>(Request &)>;
 
 struct RouteOptions {
     bool requiresAuth = true;
-    std::optional<std::size_t> maxBodyBytes;  // unset: the router's default (small JSON bodies)
+    std::optional<std::size_t> maxBodyBytes; // unset: the router's default (small JSON bodies)
 };
 
 struct Route {
     Method method;
-    std::vector<std::string> segments;  // "/v1/receipts/:id" -> {"v1", "receipts", ":id"}
+    std::vector<std::string> segments; // "/v1/receipts/:id" -> {"v1", "receipts", ":id"}
     Handler handler;
     RouteOptions options;
 };
@@ -74,6 +74,6 @@ private:
 // Helpers for turning a raw request line into a Request; exposed for tests.
 std::vector<std::string> splitPath(std::string_view path);
 StringMap parseQueryString(std::string_view query);
-Method parseMethod(std::string_view method);  // case-insensitive: "get" and "GET" both work
+Method parseMethod(std::string_view method); // case-insensitive: "get" and "GET" both work
 
 } // namespace accounts::http

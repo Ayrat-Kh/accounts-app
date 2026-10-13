@@ -20,12 +20,12 @@ using StringMap = std::map<std::string, std::string, std::less<>>;
 
 struct Request {
     Method method = Method::Other;
-    std::string path;             // without the query string
-    StringMap queryParams;        // percent-decoded
-    StringMap headers;            // names in lower case, as uWebSockets delivers them
+    std::string path;      // without the query string
+    StringMap queryParams; // percent-decoded
+    StringMap headers;     // names in lower case, as uWebSockets delivers them
     std::string body;
     StringMap pathParams;         // "/v1/receipts/:id" -> {"id", "..."}, filled by the Router
-    std::optional<AuthUser> user;  // filled by the Router for routes that require auth
+    std::optional<AuthUser> user; // filled by the Router for routes that require auth
 
     std::string_view header(std::string_view lowerCaseName) const {
         auto found = headers.find(lowerCaseName);

@@ -46,9 +46,7 @@ public:
     }
 
     // `<key>` holds a path; the secret is the file's content.
-    std::string requiredSecretFile(std::string_view key) const {
-        return readSecretFile(required<std::string>(key));
-    }
+    std::string requiredSecretFile(std::string_view key) const { return readSecretFile(required<std::string>(key)); }
 
 private:
     template <class T>
@@ -77,8 +75,8 @@ Config loadConfig(const std::string &path) {
 
     const Section database(root, "database");
     // The password lives in a Secret; everything else is plain config.
-    config.database.connectionString = database.required<std::string>("connection") +
-                                       " password=" + database.requiredSecretFile("password_file");
+    config.database.connectionString =
+        database.required<std::string>("connection") + " password=" + database.requiredSecretFile("password_file");
     config.database.poolSize = database.optional<std::int64_t>("pool_size", 8);
 
     const Section auth(root, "auth");

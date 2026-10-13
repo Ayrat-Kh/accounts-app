@@ -24,7 +24,8 @@ std::shared_ptr<MemorySecureStore> signedInStore() {
 } // namespace
 
 TEST_CASE("signing in stores both tokens") {
-    auto transport = std::make_shared<FakeHttpTransport>([](const net::HttpRequest &) { return jsonResponse(200, tokens); });
+    auto transport =
+        std::make_shared<FakeHttpTransport>([](const net::HttpRequest &) { return jsonResponse(200, tokens); });
     auto secrets = std::make_shared<MemorySecureStore>();
     api::ApiClient api(transport, "https://api.test", secrets);
 
@@ -58,7 +59,7 @@ TEST_CASE("an expired access token is refreshed once and the request retried") {
     api::ApiClient api(transport, "https://api.test", secrets);
 
     REQUIRE(api.listAllReceipts());
-    CHECK(transport->requests.size() == 3);  // 401, refresh, retry
+    CHECK(transport->requests.size() == 3); // 401, refresh, retry
     CHECK(secrets->values.at("accounts.refresh_token") == "refresh-2");
 }
 
@@ -76,8 +77,8 @@ TEST_CASE("a rejected refresh token signs the user out") {
 TEST_CASE("listing follows the pagination cursor to the end") {
     auto transport = std::make_shared<FakeHttpTransport>([](const net::HttpRequest &request) {
         const bool secondPage = request.url.find("cursor=page2") != std::string::npos;
-        return jsonResponse(200, "{\"items\": [" + receiptJson + "], \"next_cursor\": " +
-                                     (secondPage ? "null" : "\"page2\"") + "}");
+        return jsonResponse(200, "{\"items\": [" + receiptJson +
+                                     "], \"next_cursor\": " + (secondPage ? "null" : "\"page2\"") + "}");
     });
     api::ApiClient api(transport, "https://api.test", signedInStore());
 
@@ -97,7 +98,8 @@ TEST_CASE("server errors keep the server's message") {
 }
 
 TEST_CASE("image uploads carry the SHA-256 the server checks") {
-    auto transport = std::make_shared<FakeHttpTransport>([](const net::HttpRequest &) { return jsonResponse(200, receiptJson); });
+    auto transport =
+        std::make_shared<FakeHttpTransport>([](const net::HttpRequest &) { return jsonResponse(200, receiptJson); });
     api::ApiClient api(transport, "https://api.test", signedInStore());
 
     REQUIRE(api.uploadImage("r-1", "abc"));

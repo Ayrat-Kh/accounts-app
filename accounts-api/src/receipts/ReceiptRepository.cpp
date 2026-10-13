@@ -19,7 +19,7 @@ const std::string receiptColumns = R"sql(
 )sql";
 
 Timestamp timestampColumn(const PgRow &row, std::string_view column) {
-    return parseRfc3339(row.text(column)).value();  // the database always sends valid ones
+    return parseRfc3339(row.text(column)).value(); // the database always sends valid ones
 }
 
 Receipt receiptFromRow(const PgRow &row) {
@@ -81,7 +81,7 @@ awaitable<Result<Receipt>> ReceiptRepository::create(const std::string &userId, 
     if (!created) {
         co_return std::unexpected(created.error());
     }
-    co_return created->value();  // INSERT ... RETURNING always yields the row
+    co_return created->value(); // INSERT ... RETURNING always yields the row
 }
 
 awaitable<Result<std::optional<Receipt>>> ReceiptRepository::find(const std::string &userId, const std::string &id) {
@@ -94,8 +94,7 @@ awaitable<Result<std::vector<Receipt>>> ReceiptRepository::list(const std::strin
                                                                 const std::optional<PageCursor> &after, int limit) {
     // Row comparison (a, b) < (x, y) matches the ORDER BY exactly and uses
     // receipts_user_purchased_idx. $2/$3 are NULL for the first page.
-    co_return allReceipts(co_await pool_.query(
-        "SELECT " + receiptColumns + R"sql(
+    co_return allReceipts(co_await pool_.query("SELECT " + receiptColumns + R"sql(
         FROM receipts
         WHERE user_id = $1
           AND deleted_at IS NULL
@@ -103,8 +102,8 @@ awaitable<Result<std::vector<Receipt>>> ReceiptRepository::list(const std::strin
         ORDER BY purchased_at DESC, id DESC
         LIMIT $4
     )sql",
-        userId, after ? std::optional(after->purchasedAt) : std::nullopt,
-        after ? std::optional(after->id) : std::nullopt, limit));
+                                               userId, after ? std::optional(after->purchasedAt) : std::nullopt,
+                                               after ? std::optional(after->id) : std::nullopt, limit));
 }
 
 awaitable<Result<std::optional<Receipt>>> ReceiptRepository::update(const std::string &userId, const std::string &id,
@@ -139,9 +138,8 @@ awaitable<Result<bool>> ReceiptRepository::remove(const std::string &userId, con
     co_return !result->empty();
 }
 
-awaitable<Result<std::optional<Receipt>>> ReceiptRepository::attachImage(const std::string &userId,
-                                                                         const std::string &id,
-                                                                         const ReceiptImage &image) {
+awaitable<Result<std::optional<Receipt>>>
+ReceiptRepository::attachImage(const std::string &userId, const std::string &id, const ReceiptImage &image) {
     co_return optionalReceipt(co_await pool_.query(R"sql(
         UPDATE receipts SET
             image_object_key = $3,
